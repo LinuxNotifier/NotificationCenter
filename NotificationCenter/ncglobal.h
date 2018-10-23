@@ -1,0 +1,11 @@
+#ifndef GLOBAL_H
+#define GLOBAL_H
+
+#define __NOTIFICATIONCENTER_VERSION__ "ver 0.2.0"
+#define __INTERFACE_VERSION__ "ver 0.2.0"
+
+#define BORDER_RADIUS 5px
+#define WIDGET_MINIMUM_HEIGHT 40
+#define WIDGET_MAXIMUM_HEIGHT_IN_PREVIEW 200
+
+#endif // GLOBAL_H

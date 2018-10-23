@@ -1,0 +1,81 @@
+QTabWidget {
+spacing: 10px;
+}
+
+QTabWidget::tab-bar {
+min-width: 300px;
+alignment: center;
+subcontrol-origin: margin;
+subcontrol-position: top -5px;
+}
+
+QTabBar::tab {
+alignment: top center;
+border: 1px solid;
+/* prevent some letters (e.g. y) from touching with the boundary */
+padding-bottom: 2px;
+}
+
+QTabBar::tab:first {
+border-top-left-radius: 5px;
+border-bottom-left-radius: 5px;
+}
+
+QTabBar::tab:last {
+border-top-right-radius: 5px;
+border-bottom-right-radius: 5px;
+}
+
+/* reduce the pixels in middle bar */
+QTabBar::tab:!last {
+border-right: 0px;
+}
+
+QTabBar::tab:selected {
+background-color: grey;
+}
+
+QTabWidget::pane {
+top: 15px;
+border-top: 1px solid grey;
+subcontrol-position: top 10px;
+}
+
+QWidget#MainWindow {
+    background: transparent;
+    /* background-color: rgba(255, 255, 255, 0.66); */
+    /* background-color: rgba(238, 238, 238, 0.2); */
+    background-color: rgba(37, 37, 37, 0.9);
+    /* background-color: rgba(200, 200, 200, 50); */
+}
+
+NcBaseWidget {
+    background-color: white;
+}
+
+QWidget {
+    background: transparent;
+    /* background-color: rgba(235, 235, 235, 0.85); */
+    /* background-color: rgba(255, 255, 255, 0); */
+    background-color: rgba(100, 100, 100, 0);
+    margin: 0px;
+    padding: 0px;
+    color: rgba(255, 255, 255, 1);
+}
+
+
+QScrollBar {
+    height: 0px;
+    width: 0px;
+}
+
+QTabWidget::pane {
+    background: transparent;
+    background-color: rgbs(255, 255, 255, 0);
+}
+
+QPushButton {
+    background: rgba(238, 238, 238, 0.2);
+    border: 1px solid;
+    border-radius: 5px;
+}
