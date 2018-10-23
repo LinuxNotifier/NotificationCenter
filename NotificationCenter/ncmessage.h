@@ -5,6 +5,7 @@
 #include <QIcon>
 #include <QSharedPointer>
 #include <QList>
+#include <QHash>
 
 class NcMessagePrivate;
 class NotificationCenter;
@@ -12,7 +13,8 @@ class NotificationCenterPrivate;
 class DatabaseManager;
 class NcMessage;
 
-typedef QList<NcMessage&> MessageList;
+typedef QList<NcMessage*> MessageList;
+typedef QHash<QString, NcMessage*> MessageMap;
 
 /**
  * This class encapsulates a message that transfered among the NotificationCenter
@@ -84,15 +86,19 @@ class NcMessage
         const QString& notificationId() const;
         const QString& applicationId() const;
 
+        bool isValid() const;
+
     private:
         NcMessage();
         ~NcMessage();
         Q_DISABLE_COPY(NcMessage)
         Q_DECLARE_PRIVATE(NcMessage)
 
+        NcMessage& setCreatedTime(const QString& createdTime);
         NcMessage& setMessageId(const QString& messageId);
         NcMessage& setNotificationId(const QString& notificationId);
         NcMessage& setApplicationId(const QString& applicationId);
+        NcMessage& setValid(bool valid = true);
 
         QSharedPointer<NcMessagePrivate> d_ptr;
 };

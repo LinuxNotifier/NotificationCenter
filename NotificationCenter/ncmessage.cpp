@@ -2,11 +2,11 @@
 #include "ncmessage_p.h"
 #include "nclogging.h"
 #include "ncglobal.h"
+#include <QUuid>
 #include <QDateTime>
 
 NcMessagePrivate::NcMessagePrivate(NcMessage *q_ptr) :
-    q_ptr(q_ptr),
-    m_createdTime(QDateTime::currentDateTime().toString())
+    q_ptr(q_ptr)
 {
 
 }
@@ -19,6 +19,8 @@ NcMessagePrivate::~NcMessagePrivate()
 NcMessage::NcMessage() :
     d_ptr(new NcMessagePrivate(this))
 {
+    setMessageId(QUuid::createUuid().toString());
+    setCreatedTime(QDateTime::currentDateTime().toString());
     setIcon(":/images/ncmessage_default_icon.png");
     setDuration(Duration::Default);
 }
@@ -27,9 +29,16 @@ NcMessage::~NcMessage()
 {
 
 }
+
 const QString& NcMessage::createdTime() const
 {
     return d_ptr->m_createdTime;
+}
+
+NcMessage& NcMessage::setCreatedTime(const QString& createdTime)
+{
+    d_ptr->m_createdTime = createdTime;
+    return *this;
 }
 
 const QIcon& NcMessage::icon() const
@@ -175,5 +184,16 @@ const QString& NcMessage::applicationId() const
 NcMessage& NcMessage::setApplicationId(const QString& applicationId)
 {
     d_ptr->m_applicationId = applicationId;
+    return *this;
+}
+
+bool NcMessage::isValid() const
+{
+    return d_ptr->valid;
+}
+
+NcMessage& NcMessage::setValid(bool valid)
+{
+    d_ptr->valid = valid;
     return *this;
 }

@@ -38,18 +38,11 @@ NcMessage& NotificationCenter::createMessage()
     return *(new NcMessage);
 }
 
-bool NotificationCenter::notify(const NcMessage& message)
+bool NotificationCenter::notify(NcMessage& message)
 {
-    return DatabaseManager::instance().insertMessage(message.messageId(),
-            message.title(),
-            message.preview(),
-            message.content(),
-            message.icon(),
-            static_cast<int>(message.action()),
-            message.createdTime(),
-            static_cast<int>(message.priority()),
-            message.duration(),
-            message.notificationId(),
-            message.applicationId()
-            );
+    if (message.isValid())          // already notified
+        return false;
+
+    message.setValid();
+    return DatabaseManager::instance().insertMessage(message);
 }

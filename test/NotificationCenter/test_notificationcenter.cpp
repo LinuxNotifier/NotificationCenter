@@ -12,4 +12,5 @@ TEST_CASE("test NotificationCenter", "[notificationcenter]") {
     msg.setTitle("hello")
         .setContent("hello world");
     REQUIRE(NotificationCenter::notify(msg));
+    REQUIRE(!NotificationCenter::notify(msg));
 }

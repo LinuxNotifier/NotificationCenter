@@ -14,7 +14,7 @@ class NotificationCenter : public QObject
     public:
         static NotificationCenter& instance();
         static NcMessage& createMessage();
-        static bool notify(const NcMessage& message);
+        static bool notify(NcMessage& message);
 
     private:
         explicit NotificationCenter(QObject *parent = nullptr);

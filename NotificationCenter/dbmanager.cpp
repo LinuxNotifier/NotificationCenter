@@ -56,7 +56,7 @@ bool DatabaseManager::initDatabase()
     if (!exists) {
         QSqlQuery query(m_db);
         if (!query.exec("CREATE TABLE messages "
-                    "(message_id TEXT PRIMARY KEY, "
+                    "(message_id TEXT PRIMARY KEY NOT NULL, "
                     "title TEXT, "
                     "preview TEXT, "
                     "content TEXT, "
@@ -77,14 +77,32 @@ bool DatabaseManager::initDatabase()
     return true;
 }
 
+bool DatabaseManager::insertMessage(const NcMessage& message)
+{
+    if (!message.isValid())
+        return false;
+
+    return DatabaseManager::insertMessage(message.messageId(),
+            message.title(),
+            message.preview(),
+            message.content(),
+            message.icon(),
+            static_cast<int>(message.action()),
+            message.createdTime(),
+            static_cast<int>(message.priority()),
+            message.duration(),
+            message.notificationId(),
+            message.applicationId()
+            );
+}
+
 bool DatabaseManager::insertMessage(const QString& message_id, const QString& title,
         const QString& preview, const QString& content,
         const QIcon& icon, int action,
         const QString& created_time, int priority, int duration,
         const QString& notification_id, const QString& application_id)
 {
-    DatabaseManager &dbManager = DatabaseManager::instance();
-    QSqlQuery query(dbManager.internalDatabase());
+    QSqlQuery query(m_db);
     query.prepare("INSERT INTO messages "
             "(message_id, "
             "title, "
@@ -120,7 +138,9 @@ bool DatabaseManager::insertMessage(const QString& message_id, const QString& ti
     QBuffer buffer(&bytes);
     buffer.open(QIODevice::WriteOnly);
     pixmap.save(&buffer, "PNG");
-    qDebug() << pixmap;
+#if DEBUG
+    qDebug() << "saving" <<pixmap << "into database";
+#endif
     query.bindValue(":icon", bytes);
 
     query.bindValue(":priority", priority);
@@ -130,6 +150,22 @@ bool DatabaseManager::insertMessage(const QString& message_id, const QString& ti
     query.bindValue(":notification_id", notification_id);
     query.bindValue(":application_id", application_id);
     return query.exec();
+}
+
+bool DatabaseManager::alterMessage(const NcMessage& message)
+{
+    return DatabaseManager::alterMessage(message.messageId(),
+            message.title(),
+            message.preview(),
+            message.content(),
+            message.icon(),
+            static_cast<int>(message.action()),
+            message.createdTime(),
+            static_cast<int>(message.priority()),
+            message.duration(),
+            message.notificationId(),
+            message.applicationId()
+            );
 }
 
 bool DatabaseManager::alterMessage(const QString& message_id, const QString& title,
@@ -146,11 +182,58 @@ bool DatabaseManager::alterMessage(const QString& message_id, const QString& tit
 
 bool DatabaseManager::deleteMessage(const QString& message_id)
 {
-    DatabaseManager &dbManager = DatabaseManager::instance();
-    QSqlQuery query(dbManager.internalDatabase());
+    QSqlQuery query(m_db);
     query.prepare("DELETE FROM messages WHERE message_id = :message_id");
     query.bindValue(":message_id", message_id);
     return query.exec();
+}
+
+NcMessage& DatabaseManager::selectMessage(const QString& message_id)
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT * FROM messages WHERE message_id = :message_id");
+    query.bindValue(":message_id", message_id);
+    NcMessage &message = NotificationCenter::createMessage();
+    if (query.exec() && query.first())
+    {
+        message.setMessageId(query.value(0).toString())
+            .setTitle(query.value(1).toString())
+            .setPreview(query.value(2).toString())
+            .setContent(query.value(3).toString())
+            .setAction(static_cast<NcMessage::Action>(query.value(5).toInt()))
+            .setCreatedTime(query.value(6).toString())
+            .setPriority(static_cast<NcMessage::Priority>(query.value(7).toInt()))
+            .setDuration(query.value(8).toInt())
+            .setNotificationId(query.value(9).toString())
+            .setApplicationId(query.value(10).toString());
+
+        QPixmap pixmap;
+        if (pixmap.loadFromData(query.value(4).toByteArray(), "PNG") and !pixmap.isNull()) {
+            message.setIcon(QIcon(pixmap));
+#if DEBUG
+        qDebug() << "loading icon from database succeeded" << pixmap;
+#endif
+        }
+        message.setValid();
+    }
+#if DEBUG
+    else {
+        qDebug() << "no such message:" << message_id;
+    }
+#endif
+    return message;
+}
+
+MessageList DatabaseManager::selectAllMessages()
+{
+    MessageList messageList;
+    QSqlQuery query(m_db);
+    if (!query.exec("SELECT message_id FROM messages ORDER BY created_time"))
+        return messageList;
+    while (query.next()) {
+        messageList << &selectMessage(query.value(0).toString());
+    }
+    return messageList;
 }
 
 QSqlDatabase& DatabaseManager::internalDatabase()
