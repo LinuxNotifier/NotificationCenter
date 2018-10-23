@@ -10,7 +10,6 @@ class NotificationCenter;
 class NcMessagePrivate
 {
     friend class NcMessage;
-    friend class NotificationCenter;
 
     public:
         ~NcMessagePrivate();
@@ -28,7 +27,6 @@ class NcMessagePrivate
         QString m_title;
         QString m_preview;
         QString m_content;
-        QString m_sound;
 
         const QString m_createdTime;
         NcMessage::Priority m_priority = NcMessage::Priority::Normal;

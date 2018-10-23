@@ -44,10 +44,7 @@ bool NotificationCenter::notify(const NcMessage& message)
             message.title(),
             message.preview(),
             message.content(),
-            // FIXME: store QIcon data
-            // message.icon(),
-            QString(""),
-            message.sound(),
+            message.icon(),
             static_cast<int>(message.action()),
             message.createdTime(),
             static_cast<int>(message.priority()),

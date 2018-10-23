@@ -4,10 +4,15 @@
 #include <QString>
 #include <QIcon>
 #include <QSharedPointer>
+#include <QList>
 
 class NcMessagePrivate;
 class NotificationCenter;
 class NotificationCenterPrivate;
+class DatabaseManager;
+class NcMessage;
+
+typedef QList<NcMessage&> MessageList;
 
 /**
  * This class encapsulates a message that transfered among the NotificationCenter
@@ -16,6 +21,7 @@ class NcMessage
 {
     friend class NotificationCenter;
     friend class NotificationCenterPrivate;
+    friend class DatabaseManager;
 
     public:
         enum class Action {
@@ -44,14 +50,6 @@ class NcMessage
             High,
             Urgent,
         };
-        enum class Sound {
-            /**
-             * Quiet: no sound
-             * Default: the default sound
-             */
-            Quiet,
-            Default,
-        };
         enum class Duration {
             /**
              *
@@ -75,9 +73,6 @@ class NcMessage
         NcMessage& setPreview(const QString& preview);
         const QString& content() const;
         NcMessage& setContent(const QString& content);
-        const QString& sound() const;
-        NcMessage& setSound(Sound sound);
-        NcMessage& setSound(const QString& sound);
         int duration() const;
         NcMessage& setDuration(Duration duration);
         NcMessage& setDuration(int duration);

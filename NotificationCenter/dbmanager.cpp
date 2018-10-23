@@ -1,10 +1,15 @@
 #include "dbmanager.h"
 #include "notificationcenter.h"
 #include "nclogging.h"
+#include "ncglobal.h"
 #include <QDir>
 #include <QApplication>
 #include <QSqlRecord>
 #include <QSqlQuery>
+#include <QByteArray>
+#include <QBuffer>
+#include <QPixmap>
+#include <QIcon>
 
 DatabaseManager::DatabaseManager(NotificationCenter *parent) :
     QObject(parent)
@@ -55,8 +60,7 @@ bool DatabaseManager::initDatabase()
                     "title TEXT, "
                     "preview TEXT, "
                     "content TEXT, "
-                    "icon TEXT, "
-                    "sound TEXT, "
+                    "icon BLOB, "
                     "action INTEGER, "
                     "created_time TEXT, "
                     "priority INTEGER, "
@@ -75,7 +79,7 @@ bool DatabaseManager::initDatabase()
 
 bool DatabaseManager::insertMessage(const QString& message_id, const QString& title,
         const QString& preview, const QString& content,
-        const QString& icon, const QString& sound, int action,
+        const QIcon& icon, int action,
         const QString& created_time, int priority, int duration,
         const QString& notification_id, const QString& application_id)
 {
@@ -87,7 +91,6 @@ bool DatabaseManager::insertMessage(const QString& message_id, const QString& ti
             "preview, "
             "content, "
             "icon, "
-            "sound, "
             "action, "
             "created_time, "
             "priority, "
@@ -100,7 +103,6 @@ bool DatabaseManager::insertMessage(const QString& message_id, const QString& ti
             ":preview, "
             ":content, "
             ":icon, "
-            ":sound, "
             ":action, "
             ":created_time, "
             ":priority, "
@@ -112,11 +114,18 @@ bool DatabaseManager::insertMessage(const QString& message_id, const QString& ti
     query.bindValue(":title", title);
     query.bindValue(":preview", preview);
     query.bindValue(":content", content);
-    query.bindValue(":icon", icon);
+
+    QPixmap pixmap = icon.pixmap(ICON_SIZE, ICON_SIZE);
+    QByteArray bytes;
+    QBuffer buffer(&bytes);
+    buffer.open(QIODevice::WriteOnly);
+    pixmap.save(&buffer, "PNG");
+    qDebug() << pixmap;
+    query.bindValue(":icon", bytes);
+
     query.bindValue(":priority", priority);
     query.bindValue(":created_time", created_time);
     query.bindValue(":duration", duration);
-    query.bindValue(":sound", sound);
     query.bindValue(":action", action);
     query.bindValue(":notification_id", notification_id);
     query.bindValue(":application_id", application_id);
@@ -125,13 +134,13 @@ bool DatabaseManager::insertMessage(const QString& message_id, const QString& ti
 
 bool DatabaseManager::alterMessage(const QString& message_id, const QString& title,
         const QString& preview, const QString& content,
-        const QString& icon, const QString& sound, int action,
+        const QIcon& icon, int action,
         const QString& created_time, int priority, int duration,
         const QString& notification_id, const QString& application_id)
 {
     deleteMessage(message_id);
     return insertMessage(message_id, title, preview, content, icon,
-            sound, action, created_time, priority, duration,
+            action, created_time, priority, duration,
             notification_id, application_id);
 }
 

@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QDateTime>
 #include <QUuid>
+#include <QIcon>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <Catch2/catch.hpp>
@@ -16,17 +17,17 @@ TEST_CASE("test DatabaseManager", "[dbmanager], [database]") {
     QSqlQuery query(dbManager.internalDatabase());
     query.exec("DELETE FROM messages");
     REQUIRE(dbManager.insertMessage(QUuid::createUuid().toString(), "test title", "test preview",
-                "this is a test message", ":/images/test_icon.png", "sounds.wav", 1,
+                "this is a test message", QIcon::fromTheme("edit", QIcon()), 1,
                 QDateTime::currentDateTime().toString(), 1, 10,
                 QUuid::createUuid().toString(), QUuid::createUuid().toString()
                 ));
     REQUIRE(dbManager.insertMessage(QUuid::createUuid().toString(), "test title", "test preview",
-                "this is a test message", ":/images/test_icon.png", "sounds.wav", 1,
+                "this is a test message", QIcon::fromTheme("edit-undo", QIcon()), 1,
                 QDateTime::currentDateTime().toString(), 1, 10,
                 QUuid::createUuid().toString(), QUuid::createUuid().toString()
                 ));
     REQUIRE(dbManager.insertMessage(QUuid::createUuid().toString(), "test title", "test preview",
-                "this is a test message", ":/images/test_icon.png", "sounds.wav", 1,
+                "this is a test message", QIcon(), 1,
                 QDateTime::currentDateTime().toString(), 1, 10,
                 QUuid::createUuid().toString(), QUuid::createUuid().toString()
                 ));

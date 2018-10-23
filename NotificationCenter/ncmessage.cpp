@@ -1,6 +1,7 @@
 #include "ncmessage.h"
 #include "ncmessage_p.h"
 #include "nclogging.h"
+#include "ncglobal.h"
 #include <QDateTime>
 
 NcMessagePrivate::NcMessagePrivate(NcMessage *q_ptr) :
@@ -44,7 +45,8 @@ NcMessage& NcMessage::setIcon(const QString& icon)
 
 NcMessage& NcMessage::setIcon(const QIcon& icon)
 {
-    d_ptr->m_icon = const_cast<QIcon&>(icon);
+    if (!icon.pixmap(ICON_SIZE, ICON_SIZE).isNull())
+        d_ptr->m_icon = const_cast<QIcon&>(icon);
     return *this;
 }
 
@@ -78,30 +80,6 @@ const QString& NcMessage::content() const
 NcMessage& NcMessage::setContent(const QString& content)
 {
     d_ptr->m_content = content;
-    return *this;
-}
-
-const QString& NcMessage::sound() const
-{
-    return d_ptr->m_sound;
-}
-
-NcMessage& NcMessage::setSound(Sound sound)
-{
-    switch(sound) {
-        case Sound::Quiet:
-            setSound(QString());
-            break;
-        case Sound::Default:
-        default:
-            setSound(":/sounds/ncmessage_default_sound.wav");
-    }
-    return *this;
-}
-
-NcMessage& NcMessage::setSound(const QString& sound)
-{
-    d_ptr->m_sound = const_cast<QString&>(sound);
     return *this;
 }
 
