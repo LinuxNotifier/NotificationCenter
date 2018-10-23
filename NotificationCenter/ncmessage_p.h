@@ -15,39 +15,11 @@ class NcMessagePrivate
     public:
         ~NcMessagePrivate();
 
-        const QString& createdTime() const;
-        const QIcon& icon() const;
-        NcMessagePrivate& setIcon(const QString& icon);
-        NcMessagePrivate& setIcon(const QIcon& icon);
-        const QString& title() const;
-        NcMessagePrivate& setTitle(const QString& title);
-        const QString& preview() const;
-        NcMessagePrivate& setPreview(const QString& preview);
-        const QString& content() const;
-        NcMessagePrivate& setContent(const QString& content);
-        const QString& sound() const;
-        NcMessagePrivate& setSound(NcMessage::Sound sound);
-        NcMessagePrivate& setSound(const QString& sound);
-        int duration() const;
-        NcMessagePrivate& setDuration(NcMessage::Duration duration);
-        NcMessagePrivate& setDuration(int duration);
-        NcMessage::Priority priority() const;
-        NcMessagePrivate& setPriority(NcMessage::Priority priority);
-        NcMessage::Action action() const;
-        NcMessagePrivate& setAction(NcMessage::Action action);
-
-        const QString& messageId() const;
-        const QString& notificationId() const;
-        const QString& applicationId() const;
     private:
         explicit NcMessagePrivate(NcMessage *q_ptr);
         Q_DISABLE_COPY(NcMessagePrivate)
         // FIXME: d_func() somehow returns a const pointer
         Q_DECLARE_PUBLIC(NcMessage)
-
-        NcMessagePrivate& setMessageId(const QString& messageId);
-        NcMessagePrivate& setNotificationId(const QString& notificationId);
-        NcMessagePrivate& setApplicationId(const QString& applicationId);
 
         QString m_messageId;
         QString m_applicationId;

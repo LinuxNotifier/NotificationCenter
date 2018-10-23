@@ -11,10 +11,6 @@ class NotificationCenterPrivate
     public:
         ~NotificationCenterPrivate();
 
-        static NotificationCenterPrivate& instance();
-        static NcMessage& createMessage();
-        static bool notify(const NcMessage& message);
-
     private:
         explicit NotificationCenterPrivate(NotificationCenter *q_ptr);
         Q_DISABLE_COPY(NotificationCenterPrivate)
