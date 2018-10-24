@@ -11,6 +11,11 @@ class QIcon;
 class QByteArray;
 
 
+/**
+ * This class manages storing data on local machine. Every plugin should
+ * use QSqlQuery query(DatabaseManager::instance().internalDatabase())
+ * to get a query handle, and use it to create tables, query values, etc.
+ */
 class DatabaseManager : public QObject
 {
     Q_OBJECT

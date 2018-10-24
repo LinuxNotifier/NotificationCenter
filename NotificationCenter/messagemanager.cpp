@@ -7,10 +7,6 @@
 MessageManager::MessageManager(NotificationCenter *parent) :
     QObject(parent)
 {
-    // TODO: connect signals
-#if DEBUG
-    connect(parent, SIGNAL(newMessage(const NcMessage&)), this, SLOT(onNewMessage(const NcMessage&)));
-#endif
     connect(parent, SIGNAL(messageClosed(const QString&)), this, SLOT(messageClosed(const QString&)));
 }
 

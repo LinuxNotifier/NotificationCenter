@@ -11,14 +11,14 @@ class QString;
 /**
  * This class manages the lifetime of messages.
  */
-class MessageManager : QObject
+class MessageManager : public QObject
 {
     Q_OBJECT
-
     friend class NotificationCenter;
-    friend class NotificationCenterPrivate;
 
     public:
+        explicit MessageManager(NotificationCenter *parent);
+        ~MessageManager();
 
     signals:
         void newMessage(const NcMessage& message);
@@ -28,12 +28,7 @@ class MessageManager : QObject
         void messageClosed(const QString& messageId);
 
     private:
-        explicit MessageManager(NotificationCenter *parent);
-        ~MessageManager();
-        Q_DISABLE_COPY(MessageManager)
-
         bool insertMessage(const NcMessage& message);
-
         bool addMessage(const NcMessage& message);
     
 };

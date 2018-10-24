@@ -3,11 +3,11 @@
 #include "messagemanager.h"
 #include "ncmessage.h"
 #include "dbmanager.h"
+#include "mainwindow.h"
 #include "nclogging.h"
 
 NotificationCenterPrivate::NotificationCenterPrivate(NotificationCenter *q_ptr) :
-    q_ptr(q_ptr),
-    m_messageManager(new MessageManager(q_ptr))
+    q_ptr(q_ptr)
 {
 
 }
@@ -21,8 +21,6 @@ NotificationCenter::NotificationCenter(QObject *parent) :
     QObject(parent),
     d_ptr(new NotificationCenterPrivate(this))
 {
-    connect(d_ptr->m_messageManager, SIGNAL(newMessage(const NcMessage&)), this, SIGNAL(newMessage(const NcMessage&)));
-    connect(d_ptr->m_messageManager, SIGNAL(messageExpired(const QString&)), this, SIGNAL(messageExpired(const QString&)));
     
 }
 
@@ -31,10 +29,23 @@ NotificationCenter::~NotificationCenter()
     
 }
 
-NotificationCenter& NotificationCenter::instance()
+NotificationCenter& NotificationCenter::instance(QObject *parent)
 {
-    static NotificationCenter instance;
+    static NotificationCenter instance(parent);
     return instance;
+}
+
+void NotificationCenter::setView(MainWindow *view)
+{
+    connect(view, SIGNAL(messageClosed(const QString&)), this, SIGNAL(messageExpired(const QString&)));
+    
+}
+
+void NotificationCenter::setMessageModel(MessageManager *messageModel)
+{
+    d_ptr->m_messageManager = messageModel;
+    connect(d_ptr->m_messageManager, SIGNAL(newMessage(const NcMessage&)), this, SIGNAL(newMessage(const NcMessage&)));
+    connect(d_ptr->m_messageManager, SIGNAL(messageExpired(const QString&)), this, SIGNAL(messageExpired(const QString&)));
 }
 
 NcMessage& NotificationCenter::createMessage()

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "notificationcenter.h"
+#include "messagemanager.h"
 #include "nclogging.h"
 #include "ncglobal.h"
 #include <QApplication>
@@ -25,9 +26,14 @@ int main(int argc, char *argv[])
 
     setLanguage("zh_TW");
 
-    NotificationCenter::instance();
+    NotificationCenter &nc = NotificationCenter::instance();
 
     MainWindow w;
+    nc.setView(&w);
+
+    MessageManager msgManager(&nc);
+    nc.setMessageModel(&msgManager);
+
     w.show();
 
     return app.exec();
