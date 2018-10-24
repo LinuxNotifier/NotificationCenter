@@ -51,7 +51,7 @@ void DatabaseManager::initDatabase()
         dbDir.cd(dbDirName);
     }
 #if DEBUG
-    if (dbDir.exists(dbFileName))
+    if (!dbDir.exists(dbFileName))
         qInfo() << "creating new database";
 #endif
 

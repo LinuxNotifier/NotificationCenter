@@ -4,6 +4,7 @@
 #include "ncmessage.h"
 #include <QObject>
 #include <memory>
+#include "ncglobal.h"
 
 using namespace std;
 
@@ -36,7 +37,8 @@ class MessageManager : public QObject
 
     private:
         void initMessageTable();
-        // bool addMessage(const NcMessage& message);
+        void loadMessagees();
+
         bool insertMessage(shared_ptr<NcMessage> message);
         bool insertMessage(const QString& messageId, const QString& title,
             const QString& preview, const QString& content,
@@ -56,6 +58,7 @@ class MessageManager : public QObject
         MessageList selectAllMessages();
 
         DatabaseManager &m_dbManager;
+        MessageMap m_messageMap;
         bool m_valid = false;
 };
 

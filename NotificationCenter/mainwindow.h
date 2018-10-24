@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QRect>
+#include <memory>
+
+using namespace std;
 
 class QFocusEvent;
 class QEvent;
@@ -44,7 +47,7 @@ class MainWindow : public QWidget
 
     private slots:
         void focusChanged(QWidget *old, QWidget *now);
-        void onNewMessage(const NcMessage& message);
+        void onNewMessage(shared_ptr<NcMessage> message);
         void onMessageExpired(const QString& message);
 
     private:

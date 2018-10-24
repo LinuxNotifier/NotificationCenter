@@ -14,6 +14,7 @@
 #include <QUuid>
 #include <QDateTime>
 #include <QSqlError>
+#include <QTimer>
 
 MessageManager::MessageManager(NotificationCenter *parent) :
     QObject(parent),
@@ -21,6 +22,7 @@ MessageManager::MessageManager(NotificationCenter *parent) :
 {
     connect(parent, SIGNAL(messageClosed(const QString&)), this, SLOT(messageClosed(const QString&)));
     initMessageTable();
+    QTimer::singleShot(1000, this, &MessageManager::loadMessagees);
 }
 
 MessageManager::~MessageManager()
@@ -57,14 +59,32 @@ void MessageManager::initMessageTable()
         m_valid = true;
 }
 
+void MessageManager::loadMessagees()
+{
+    MessageList msgList = selectAllMessages();
+    for (shared_ptr<NcMessage> msg : msgList) {
+        NcMessage::Duration duration = static_cast<NcMessage::Duration>(msg->duration());
+        if (duration != NcMessage::Duration::UntilShutdown) {
+            emit newMessage(msg);
+            m_messageMap[msg->messageId()] = msg;
+        }
+        else {
+            deleteMessage(msg->messageId());
+        }
+    }
+}
+
+
 void MessageManager::messageClosed(const QString& messageId)
 {
     qDebug() << "message closed:" << messageId;
+    m_messageMap.remove(messageId);
+    deleteMessage(messageId);
 }
 
 bool MessageManager::insertMessage(shared_ptr<NcMessage> message)
 {
-    return MessageManager::insertMessage(message->messageId(),
+    bool inserted = MessageManager::insertMessage(message->messageId(),
             message->title(),
             message->preview(),
             message->content(),
@@ -76,6 +96,11 @@ bool MessageManager::insertMessage(shared_ptr<NcMessage> message)
             message->notificationId(),
             message->applicationId()
             );
+    if (inserted) {
+        m_messageMap[message->messageId()] = message;
+        emit newMessage(message);
+    }
+    return inserted;
 }
 
 bool MessageManager::insertMessage(const QString& messageId, const QString& title,
@@ -131,10 +156,11 @@ bool MessageManager::insertMessage(const QString& messageId, const QString& titl
     query.bindValue(":action", action);
     query.bindValue(":notification_id", notificationId);
     query.bindValue(":application_id", applicationId);
-    bool result = query.exec();
-    if (!result)
+
+    bool inserted = query.exec();
+    if (!inserted)
         qCritical() << query.lastError();
-    return result;
+    return inserted;
 }
 
 bool MessageManager::alterMessage(shared_ptr<NcMessage> message)

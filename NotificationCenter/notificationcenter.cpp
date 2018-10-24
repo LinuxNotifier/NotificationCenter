@@ -43,7 +43,7 @@ void NotificationCenter::setView(MainWindow *view)
 void NotificationCenter::setMessageModel(MessageManager *messageModel)
 {
     d_ptr->m_messageManager = messageModel;
-    connect(d_ptr->m_messageManager, SIGNAL(newMessage(shared_ptr<NcMessage> message)), this, SIGNAL(newMessage(shared_ptr<NcMessage> message)));
+    connect(d_ptr->m_messageManager, SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SIGNAL(newMessage(shared_ptr<NcMessage>)));
     connect(d_ptr->m_messageManager, SIGNAL(messageExpired(const QString&)), this, SIGNAL(messageExpired(const QString&)));
 }
 
@@ -62,10 +62,8 @@ bool NotificationCenter::notify(shared_ptr<NcMessage> message)
     message->setValid();
     // we need the result of inserting a message, so didn't implement it with signals
     bool inserted = instance().d_ptr->m_messageManager->insertMessage(message);
-    if (inserted) {
-        emit (instance().newMessage(message));
-        return true;
-    }
-    else
+    if (!inserted)
         return false;
+    emit (instance().newMessage(message));
+    return true;
 }

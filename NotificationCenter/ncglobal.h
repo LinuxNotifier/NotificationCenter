@@ -1,6 +1,11 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+// for testing private methods
+#ifdef DEBUG
+#define private public
+#endif
+
 #define __NOTIFICATIONCENTER_VERSION__ "ver 0.2.0"
 #define __INTERFACE_VERSION__ "ver 0.2.0"
 

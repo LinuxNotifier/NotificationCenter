@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupSystemTrayIcon();
     initUi();
 
-    connect(&NotificationCenter::instance(), SIGNAL(newMessage(const NcMessage&)), this, SLOT(onNewMessage(const NcMessage&)));
+    connect(&NotificationCenter::instance(), SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SLOT(onNewMessage(shared_ptr<NcMessage>)));
     connect(&NotificationCenter::instance(), SIGNAL(messageExpired(const QString&)), this, SLOT(onMessageExpired(const QString&)));
 }
 
@@ -206,10 +206,10 @@ void MainWindow::initUi()
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
 }
 
-void MainWindow::onNewMessage(const NcMessage& message)
+void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
 {
     // TODO
-    qDebug() << "received a new message:" << message.title();
+    qDebug() << "received a new message:" << message->title();
 }
 
 void MainWindow::onMessageExpired(const QString& messageId)
