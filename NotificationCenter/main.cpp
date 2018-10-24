@@ -2,7 +2,7 @@
 #include "notificationcenter.h"
 #include "messagemanager.h"
 #include "ncmessage.h"
-#include "nclogging.h"
+#include "ncdebug.h"
 #include "ncglobal.h"
 #include <QApplication>
 #include <QTranslator>
@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
     app.setOrganizationName("LinuxNotifier");
+    app.setOrganizationDomain("https://github.com/LinuxNotifier");
     app.setApplicationName("NotificationCenter");
     app.setApplicationVersion(__NOTIFICATIONCENTER_VERSION__);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);

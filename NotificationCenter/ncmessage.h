@@ -12,7 +12,7 @@ using namespace std;
 class NcMessagePrivate;
 class NotificationCenter;
 class NotificationCenterPrivate;
-class DatabaseManager;
+class NcDatabase;
 class NcMessage;
 
 typedef QList<shared_ptr<NcMessage> > MessageList;
@@ -62,9 +62,9 @@ class NcMessage
              * UntilShutdown: remove this message after this machine shutdown
              * Default: to keep this message in default seconds, right now 10s
              */
-            UntilConfirmation = -9,
-            UntilShutdown,
-            Default = 0,
+            UntilConfirmation = 1 << 0,
+            UntilShutdown = 1 << 1,
+            Default = UntilConfirmation | UntilShutdown,
         };
 
         ~NcMessage();

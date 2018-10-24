@@ -1,7 +1,7 @@
-#include "dbmanager.h"
-#include "dbmanager_p.h"
+#include "ncdatabase.h"
+#include "ncdatabase_p.h"
 #include "notificationcenter.h"
-#include "nclogging.h"
+#include "ncdebug.h"
 #include "ncglobal.h"
 #include <QDir>
 #include <QApplication>
@@ -12,36 +12,36 @@
 #include <QPixmap>
 #include <QIcon>
 
-DatabaseManagerPrivate::DatabaseManagerPrivate(DatabaseManager *q_ptr) :
+NcDatabasePrivate::NcDatabasePrivate(NcDatabase *q_ptr) :
     q_ptr(q_ptr)
 {
 
 }
 
-DatabaseManagerPrivate::~DatabaseManagerPrivate()
+NcDatabasePrivate::~NcDatabasePrivate()
 {
 
 }
 
-DatabaseManager::DatabaseManager(NotificationCenter *parent) :
+NcDatabase::NcDatabase(NotificationCenter *parent) :
     QObject(parent),
-    d_ptr(new DatabaseManagerPrivate(this))
+    d_ptr(new NcDatabasePrivate(this))
 {
     initDatabase();
 }
 
-DatabaseManager::~DatabaseManager()
+NcDatabase::~NcDatabase()
 {
     
 }
 
-DatabaseManager& DatabaseManager::instance()
+NcDatabase& NcDatabase::instance()
 {
-    static DatabaseManager databaseManager(&NotificationCenter::instance());
-    return databaseManager;
+    static NcDatabase ncDb(&NotificationCenter::instance());
+    return ncDb;
 }
 
-void DatabaseManager::initDatabase()
+void NcDatabase::initDatabase()
 {
     const QString dbDirName = "dbs";
     const QString dbFileName = "nc.sqlite";

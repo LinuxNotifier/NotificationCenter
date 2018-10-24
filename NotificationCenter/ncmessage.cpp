@@ -1,6 +1,6 @@
 #include "ncmessage.h"
 #include "ncmessage_p.h"
-#include "nclogging.h"
+#include "ncdebug.h"
 #include "ncglobal.h"
 #include <QUuid>
 #include <QDateTime>

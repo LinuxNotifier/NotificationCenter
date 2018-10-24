@@ -12,7 +12,7 @@ class NotificationCenter;
 class NotificationCenterPrivate;
 class NcMessage;
 class QString;
-class DatabaseManager;
+class NcDatabase;
 
 /**
  * This class manages the lifetime of messages.
@@ -57,7 +57,7 @@ class MessageManager : public QObject
         shared_ptr<NcMessage> selectMessage(const QString& messageId);
         MessageList selectAllMessages();
 
-        DatabaseManager &m_dbManager;
+        NcDatabase &m_ncDb;
         MessageMap m_messageMap;
         bool m_valid = false;
 };

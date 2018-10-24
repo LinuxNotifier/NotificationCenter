@@ -1,13 +1,13 @@
 #include "messagemanager.h"
 #include "notificationcenter.h"
-#include "nclogging.h"
+#include "ncdebug.h"
 #include <QApplication>
 #include <QDateTime>
 #include <QUuid>
 #include <QIcon>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include "dbmanager.h"
+#include "ncdatabase.h"
 #include <Catch2/catch.hpp>
 
 TEST_CASE("test MessageManager", "[message], [database]") {
@@ -20,8 +20,8 @@ TEST_CASE("test MessageManager", "[message], [database]") {
 
     MessageManager msgManager(&nc);
     nc.setMessageModel(&msgManager);
-    DatabaseManager &dbManager = DatabaseManager::instance();
-    QSqlQuery query(dbManager.internalDatabase());
+    NcDatabase &ncDb = NcDatabase::instance();
+    QSqlQuery query(ncDb.internalDatabase());
     query.exec("DELETE FROM messages");
     query.exec("SELECT * FROM messages");
     QSqlRecord record = query.record();

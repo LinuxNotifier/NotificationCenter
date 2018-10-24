@@ -49,6 +49,7 @@ class MainWindow : public QWidget
         void focusChanged(QWidget *old, QWidget *now);
         void onNewMessage(shared_ptr<NcMessage> message);
         void onMessageExpired(const QString& message);
+        void onModeChanged(bool quiet);
 
     private:
         Q_DISABLE_COPY(MainWindow)

@@ -1,7 +1,7 @@
 #include "notificationcenter.h"
 #include "ncmessage.h"
 #include "messagemanager.h"
-#include "nclogging.h"
+#include "ncdebug.h"
 #include <QApplication>
 #include <Catch2/catch.hpp>
 

@@ -1,6 +1,6 @@
-#include "dbmanager.h"
+#include "ncdatabase.h"
 #include "notificationcenter.h"
-#include "nclogging.h"
+#include "ncdebug.h"
 #include <QApplication>
 #include <QDateTime>
 #include <QUuid>
@@ -9,14 +9,14 @@
 #include <QSqlRecord>
 #include <Catch2/catch.hpp>
 
-TEST_CASE("test DatabaseManager", "[dbmanager], [database]") {
+TEST_CASE("test NcDatabase", "[database]") {
 
     qSetMessagePattern("[%{type}] " __FILENAME__ ":%{line} <%{function}> %{message}");
     int argc = 1;
     char *argv[] = {(char *)"./test_main"};
     QApplication app(argc, argv);
-    DatabaseManager &dbManager = DatabaseManager::instance();
-    QSqlQuery query(dbManager.internalDatabase());
+    NcDatabase &ncDb = NcDatabase::instance();
+    QSqlQuery query(ncDb.internalDatabase());
     query.exec("DELETE FROM messages");
     query.exec("SELECT * FROM messages");
     QSqlRecord record = query.record();

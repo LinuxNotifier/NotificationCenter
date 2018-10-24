@@ -3,7 +3,7 @@
 #include "messagemanager.h"
 #include "ncmessage.h"
 #include "mainwindow.h"
-#include "nclogging.h"
+#include "ncdebug.h"
 
 NotificationCenterPrivate::NotificationCenterPrivate(NotificationCenter *q_ptr) :
     q_ptr(q_ptr)
@@ -66,4 +66,21 @@ bool NotificationCenter::notify(shared_ptr<NcMessage> message)
         return false;
     emit (instance().newMessage(message));
     return true;
+}
+
+bool NotificationCenter::quietMode()
+{
+    return instance().d_ptr->m_quietMode;
+}
+
+void NotificationCenter::setQuietMode(bool quiet)
+{
+    instance().d_ptr->m_quietMode = quiet;
+    emit instance().modeChanged(quiet);
+}
+
+void NotificationCenter::toggleQuietMode()
+{
+    NotificationCenter &nc = instance();
+    nc.d_ptr->m_quietMode = !nc.d_ptr->m_quietMode;
 }

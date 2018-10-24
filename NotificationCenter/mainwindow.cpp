@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include "ncmessage.h"
 #include "notificationcenter.h"
-#include "nclogging.h"
+#include "ncdebug.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QKeyEvent>
@@ -34,8 +34,11 @@ MainWindow::MainWindow(QWidget *parent) :
     setupSystemTrayIcon();
     initUi();
 
+    NotificationCenter &nc = NotificationCenter::instance();
     connect(&NotificationCenter::instance(), SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SLOT(onNewMessage(shared_ptr<NcMessage>)));
-    connect(&NotificationCenter::instance(), SIGNAL(messageExpired(const QString&)), this, SLOT(onMessageExpired(const QString&)));
+    connect(&nc, SIGNAL(messageExpired(const QString&)), this, SLOT(onMessageExpired(const QString&)));
+    connect(&nc, SIGNAL(messageExpired(const QString&)), this, SLOT(onMessageExpired(const QString&)));
+    connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -216,4 +219,9 @@ void MainWindow::onMessageExpired(const QString& messageId)
 {
     // TODO
     qDebug() << "received a message expired" << messageId;
+}
+
+void MainWindow::onModeChanged(bool quiet)
+{
+    qDebug() << "mode changed:" << quiet;
 }

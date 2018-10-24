@@ -12,7 +12,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 add_executable(${TARGET} test_main.cpp
-    test_dbmanager.cpp
+    test_ncdatabase.cpp
     test_ncmessage.cpp
     test_notificationcenter.cpp
     test_messagemanager.cpp

@@ -17,19 +17,22 @@ set(CMAKE_AUTOUIC ON)
 
 set(HEADERS mainwindow.h
     ncglobal.h
-    nclogging.h
+    ncdebug.h
     notificationcenter.h
     notificationcenter_p.h
-    dbmanager.h
+    ncdatabase.h
     ncmessage.h
     ncmessage_p.h
+    ncsettings.h
+    ncsettings_p.h
     messagemanager.h
     )
 # set(${PROJECT_NAME}_SOURCES main.cpp
 set(SOURCES mainwindow.cpp
     notificationcenter.cpp
-    dbmanager.cpp
+    ncdatabase.cpp
     ncmessage.cpp
+    ncsettings.cpp
     messagemanager.cpp
     )
 set(FORMS mainwindow.ui

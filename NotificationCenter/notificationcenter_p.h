@@ -17,6 +17,7 @@ class NotificationCenterPrivate
         Q_DISABLE_COPY(NotificationCenterPrivate)
 
         MessageManager *m_messageManager;
+        bool m_quietMode = false;
         NotificationCenter *q_ptr;
 };
 

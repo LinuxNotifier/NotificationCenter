@@ -25,10 +25,16 @@ class NotificationCenter : public QObject
         static shared_ptr<NcMessage> createMessage();
         static bool notify(shared_ptr<NcMessage> message);
 
+        static bool quietMode();
+        static void setQuietMode(bool quiet = true);
+        static void toggleQuietMode();
+
     signals:
         void newMessage(shared_ptr<NcMessage> message);
         void messageExpired(const QString& messageId);
         void messageClosed(const QString& messageId);
+
+        void modeChanged(bool quiet);
 
     private:
         explicit NotificationCenter(QObject *parent = nullptr);
