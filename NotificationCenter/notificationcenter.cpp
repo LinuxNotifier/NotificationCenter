@@ -2,7 +2,6 @@
 #include "notificationcenter_p.h"
 #include "messagemanager.h"
 #include "ncmessage.h"
-#include "dbmanager.h"
 #include "mainwindow.h"
 #include "nclogging.h"
 
@@ -21,12 +20,12 @@ NotificationCenter::NotificationCenter(QObject *parent) :
     QObject(parent),
     d_ptr(new NotificationCenterPrivate(this))
 {
-    
+
 }
 
 NotificationCenter::~NotificationCenter()
 {
-    
+
 }
 
 NotificationCenter& NotificationCenter::instance(QObject *parent)
@@ -38,7 +37,7 @@ NotificationCenter& NotificationCenter::instance(QObject *parent)
 void NotificationCenter::setView(MainWindow *view)
 {
     connect(view, SIGNAL(messageClosed(const QString&)), this, SIGNAL(messageExpired(const QString&)));
-    
+
 }
 
 void NotificationCenter::setMessageModel(MessageManager *messageModel)

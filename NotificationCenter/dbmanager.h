@@ -2,14 +2,18 @@
 #define DatabaseManager_H
 
 #include "ncmessage.h"
+#include "dbmanager_p.h"
+#include "nclogging.h"
 #include <QSqlDatabase>
 #include <QObject>
+#include <QScopedPointer>
 
 class NotificationCenter;
 class QSqlDatabase;
 class QIcon;
 class QByteArray;
-
+class DatabaseManagerPrivate;
+class QSqlDatabase;
 
 /**
  * This class manages storing data on local machine. Every plugin should
@@ -21,37 +25,23 @@ class DatabaseManager : public QObject
     Q_OBJECT
     public:
         static DatabaseManager& instance();
-        bool insertMessage(const NcMessage&);
-        bool insertMessage(const QString& message_id, const QString& title,
-            const QString& preview, const QString& content,
-            const QIcon& icon, int action,
-            const QString& created_time, int priority, int duration,
-            const QString& notification_id, const QString& application_id);
-        bool alterMessage(const NcMessage&);
-        bool alterMessage(const QString& message_id, const QString& title,
-            const QString& preview, const QString& content,
-            const QIcon& icon, int action,
-            const QString& created_time, int priority, int duration,
-            const QString& notification_id, const QString& application_id);
-        bool deleteMessage(const QString& message_id);
-        /* this method return the first message with this message in database,
-        thought there should be "always" at most one such message. */
-        NcMessage& selectMessage(const QString& message_id);
-        MessageList selectAllMessages();
+        inline bool isValid() {
+            return d_ptr->m_valid;
+        };
 
-        QSqlDatabase& internalDatabase();
-
-    signals:
+        inline QSqlDatabase internalDatabase() {
+            return d_ptr->m_db;
+        };
 
     private:
         Q_DISABLE_COPY(DatabaseManager);
         explicit DatabaseManager(NotificationCenter *parent);
         ~DatabaseManager();
+        Q_DECLARE_PRIVATE(DatabaseManager)
 
-        bool initDatabase();
+        void initDatabase();
 
-        QSqlDatabase m_db;
-    
+        QScopedPointer<DatabaseManagerPrivate> d_ptr;
 };
 
 #endif // DatabaseManager_H

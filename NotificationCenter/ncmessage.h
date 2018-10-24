@@ -23,7 +23,7 @@ class NcMessage
 {
     friend class NotificationCenter;
     friend class NotificationCenterPrivate;
-    friend class DatabaseManager;
+    friend class MessageManager;
 
     public:
         enum class Action {

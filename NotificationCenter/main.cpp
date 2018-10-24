@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "notificationcenter.h"
 #include "messagemanager.h"
+#include "ncmessage.h"
 #include "nclogging.h"
 #include "ncglobal.h"
 #include <QApplication>
@@ -35,6 +36,13 @@ int main(int argc, char *argv[])
     nc.setMessageModel(&msgManager);
 
     w.show();
+
+    NcMessage &msg = NotificationCenter::createMessage();
+    msg.setTitle("hello")
+        .setContent("hello world");
+    NotificationCenter::notify(msg);
+    NotificationCenter::notify(msg);
+
 
     return app.exec();
 }
