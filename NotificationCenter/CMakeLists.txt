@@ -23,8 +23,6 @@ set(HEADERS mainwindow.h
     ncdatabase.h
     ncmessage.h
     ncmessage_p.h
-    ncsettings.h
-    ncsettings_p.h
     messagemanager.h
     )
 # set(${PROJECT_NAME}_SOURCES main.cpp
@@ -32,7 +30,6 @@ set(SOURCES mainwindow.cpp
     notificationcenter.cpp
     ncdatabase.cpp
     ncmessage.cpp
-    ncsettings.cpp
     messagemanager.cpp
     )
 set(FORMS mainwindow.ui

@@ -10,9 +10,12 @@
 #include <QObject>
 #include <QLocale>
 #include <memory>
+#include <QSettings>
+#include <QFile>
 
 using namespace std;
 
+void initSettings();
 bool setLanguage(const QString& language);
 
 int main(int argc, char *argv[])
@@ -28,7 +31,12 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(__NOTIFICATIONCENTER_VERSION__);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-    setLanguage("zh_TW");
+    QSettings settings;
+    qDebug() << settings.fileName();
+    if (!QFile(settings.fileName()).exists())
+        initSettings();
+
+    setLanguage(settings.value("language", "zh_TW").toString());
 
     NotificationCenter &nc = NotificationCenter::instance();
 
@@ -69,4 +77,12 @@ bool setLanguage(const QString& language)
         qWarning() << "loading translation file for " + language + " failed";
         return false;
     }
+}
+
+void initSettings()
+{
+    QSettings settings;
+    // beginGroup
+    settings.setValue("language", "zh_TW");
+    settings.setValue("quiet", false);
 }
