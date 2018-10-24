@@ -35,21 +35,21 @@ class MessageManager : public QObject
         void initMessageTable();
         // bool addMessage(const NcMessage& message);
         bool insertMessage(const NcMessage&);
-        bool insertMessage(const QString& message_id, const QString& title,
+        bool insertMessage(const QString& messageId, const QString& title,
             const QString& preview, const QString& content,
             const QIcon& icon, int action,
             const QString& created_time, int priority, int duration,
-            const QString& notification_id, const QString& application_id);
+            const QString& notificationId, const QString& applicationId);
         bool alterMessage(const NcMessage&);
-        bool alterMessage(const QString& message_id, const QString& title,
+        bool alterMessage(const QString& messageId, const QString& title,
             const QString& preview, const QString& content,
             const QIcon& icon, int action,
             const QString& created_time, int priority, int duration,
-            const QString& notification_id, const QString& application_id);
-        bool deleteMessage(const QString& message_id);
+            const QString& notificationId, const QString& applicationId);
+        bool deleteMessage(const QString& messageId);
         /* this method return the first message with this message in database,
         thought there should be "always" at most one such message. */
-        NcMessage& selectMessage(const QString& message_id);
+        NcMessage& selectMessage(const QString& messageId);
         MessageList selectAllMessages();
 
         DatabaseManager &m_dbManager;

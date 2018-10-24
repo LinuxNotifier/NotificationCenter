@@ -78,11 +78,11 @@ bool MessageManager::insertMessage(const NcMessage& message)
             );
 }
 
-bool MessageManager::insertMessage(const QString& message_id, const QString& title,
+bool MessageManager::insertMessage(const QString& messageId, const QString& title,
         const QString& preview, const QString& content,
         const QIcon& icon, int action,
         const QString& created_time, int priority, int duration,
-        const QString& notification_id, const QString& application_id)
+        const QString& notificationId, const QString& applicationId)
 {
     QSqlQuery query(m_dbManager.internalDatabase());
     query.prepare("INSERT INTO messages "
@@ -110,7 +110,7 @@ bool MessageManager::insertMessage(const QString& message_id, const QString& tit
             ":notification_id, "
             ":application_id"
             ")");
-    query.bindValue(":message_id", message_id);
+    query.bindValue(":message_id", messageId);
     query.bindValue(":title", title);
     query.bindValue(":preview", preview);
     query.bindValue(":content", content);
@@ -129,8 +129,8 @@ bool MessageManager::insertMessage(const QString& message_id, const QString& tit
     query.bindValue(":created_time", created_time);
     query.bindValue(":duration", duration);
     query.bindValue(":action", action);
-    query.bindValue(":notification_id", notification_id);
-    query.bindValue(":application_id", application_id);
+    query.bindValue(":notification_id", notificationId);
+    query.bindValue(":application_id", applicationId);
     bool result = query.exec();
     if (!result)
         qCritical() << query.lastError();
@@ -153,34 +153,34 @@ bool MessageManager::alterMessage(const NcMessage& message)
             );
 }
 
-bool MessageManager::alterMessage(const QString& message_id, const QString& title,
+bool MessageManager::alterMessage(const QString& messageId, const QString& title,
         const QString& preview, const QString& content,
         const QIcon& icon, int action,
         const QString& created_time, int priority, int duration,
-        const QString& notification_id, const QString& application_id)
+        const QString& notificationId, const QString& applicationId)
 {
-    deleteMessage(message_id);
-    return insertMessage(message_id, title, preview, content, icon,
+    deleteMessage(messageId);
+    return insertMessage(messageId, title, preview, content, icon,
             action, created_time, priority, duration,
-            notification_id, application_id);
+            notificationId, applicationId);
 }
 
-bool MessageManager::deleteMessage(const QString& message_id)
+bool MessageManager::deleteMessage(const QString& messageId)
 {
     QSqlQuery query(m_dbManager.internalDatabase());
     query.prepare("DELETE FROM messages WHERE message_id = :message_id");
-    query.bindValue(":message_id", message_id);
+    query.bindValue(":message_id", messageId);
     bool result = query.exec();
     if (!result)
         qCritical() << query.lastError();
     return result;
 }
 
-NcMessage& MessageManager::selectMessage(const QString& message_id)
+NcMessage& MessageManager::selectMessage(const QString& messageId)
 {
     QSqlQuery query(m_dbManager.internalDatabase());
     query.prepare("SELECT * FROM messages WHERE message_id = :message_id");
-    query.bindValue(":message_id", message_id);
+    query.bindValue(":message_id", messageId);
     NcMessage &message = NotificationCenter::createMessage();
     if (query.exec() && query.first())
     {
@@ -207,7 +207,7 @@ NcMessage& MessageManager::selectMessage(const QString& message_id)
 #if DEBUG
     else {
         qCritical() << query.lastError();
-        qDebug() << "no such message:" << message_id;
+        qDebug() << "no such message:" << messageId;
     }
 #endif
     return message;
