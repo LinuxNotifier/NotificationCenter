@@ -3,9 +3,11 @@
 
 #include <QString>
 #include <QIcon>
-#include <QSharedPointer>
 #include <QList>
 #include <QHash>
+#include <memory>
+
+using namespace std;
 
 class NcMessagePrivate;
 class NotificationCenter;
@@ -13,8 +15,8 @@ class NotificationCenterPrivate;
 class DatabaseManager;
 class NcMessage;
 
-typedef QList<NcMessage*> MessageList;
-typedef QHash<QString, NcMessage*> MessageMap;
+typedef QList<shared_ptr<NcMessage> > MessageList;
+typedef QHash<QString, shared_ptr<NcMessage> > MessageMap;
 
 /**
  * This class encapsulates a message that transfered among the NotificationCenter
@@ -65,6 +67,8 @@ class NcMessage
             Default = 0,
         };
 
+        ~NcMessage();
+
         const QString& createdTime() const;
         const QIcon& icon() const;
         NcMessage& setIcon(const QString& icon);
@@ -90,9 +94,7 @@ class NcMessage
 
     private:
         NcMessage();
-        ~NcMessage();
         Q_DISABLE_COPY(NcMessage)
-        Q_DECLARE_PRIVATE(NcMessage)
 
         NcMessage& setCreatedTime(const QString& createdTime);
         NcMessage& setMessageId(const QString& messageId);
@@ -100,8 +102,7 @@ class NcMessage
         NcMessage& setApplicationId(const QString& applicationId);
         NcMessage& setValid(bool valid = true);
 
-        QSharedPointer<NcMessagePrivate> d_ptr;
+        shared_ptr<NcMessagePrivate> d_ptr;
 };
-// Q_DECLARE_METATYPE(NcMessage)
 
 #endif // NCMESSAGE_H   

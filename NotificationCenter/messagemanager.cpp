@@ -62,19 +62,19 @@ void MessageManager::messageClosed(const QString& messageId)
     qDebug() << "message closed:" << messageId;
 }
 
-bool MessageManager::insertMessage(const NcMessage& message)
+bool MessageManager::insertMessage(shared_ptr<NcMessage> message)
 {
-    return MessageManager::insertMessage(message.messageId(),
-            message.title(),
-            message.preview(),
-            message.content(),
-            message.icon(),
-            static_cast<int>(message.action()),
-            message.createdTime(),
-            static_cast<int>(message.priority()),
-            message.duration(),
-            message.notificationId(),
-            message.applicationId()
+    return MessageManager::insertMessage(message->messageId(),
+            message->title(),
+            message->preview(),
+            message->content(),
+            message->icon(),
+            static_cast<int>(message->action()),
+            message->createdTime(),
+            static_cast<int>(message->priority()),
+            message->duration(),
+            message->notificationId(),
+            message->applicationId()
             );
 }
 
@@ -137,19 +137,19 @@ bool MessageManager::insertMessage(const QString& messageId, const QString& titl
     return result;
 }
 
-bool MessageManager::alterMessage(const NcMessage& message)
+bool MessageManager::alterMessage(shared_ptr<NcMessage> message)
 {
-    return MessageManager::alterMessage(message.messageId(),
-            message.title(),
-            message.preview(),
-            message.content(),
-            message.icon(),
-            static_cast<int>(message.action()),
-            message.createdTime(),
-            static_cast<int>(message.priority()),
-            message.duration(),
-            message.notificationId(),
-            message.applicationId()
+    return MessageManager::alterMessage(message->messageId(),
+            message->title(),
+            message->preview(),
+            message->content(),
+            message->icon(),
+            static_cast<int>(message->action()),
+            message->createdTime(),
+            static_cast<int>(message->priority()),
+            message->duration(),
+            message->notificationId(),
+            message->applicationId()
             );
 }
 
@@ -176,15 +176,15 @@ bool MessageManager::deleteMessage(const QString& messageId)
     return result;
 }
 
-NcMessage& MessageManager::selectMessage(const QString& messageId)
+shared_ptr<NcMessage> MessageManager::selectMessage(const QString& messageId)
 {
     QSqlQuery query(m_dbManager.internalDatabase());
     query.prepare("SELECT * FROM messages WHERE message_id = :message_id");
     query.bindValue(":message_id", messageId);
-    NcMessage &message = NotificationCenter::createMessage();
+    shared_ptr<NcMessage> message = NotificationCenter::createMessage();
     if (query.exec() && query.first())
     {
-        message.setMessageId(query.value(0).toString())
+        message->setMessageId(query.value(0).toString())
             .setTitle(query.value(1).toString())
             .setPreview(query.value(2).toString())
             .setContent(query.value(3).toString())
@@ -197,12 +197,12 @@ NcMessage& MessageManager::selectMessage(const QString& messageId)
 
         QPixmap pixmap;
         if (pixmap.loadFromData(query.value(4).toByteArray(), "PNG") and !pixmap.isNull()) {
-            message.setIcon(QIcon(pixmap));
+            message->setIcon(QIcon(pixmap));
 #if DEBUG
             qDebug() << "loading icon from database succeeded" << pixmap;
 #endif
         }
-        message.setValid();
+        message->setValid();
     }
 #if DEBUG
     else {
@@ -222,7 +222,7 @@ MessageList MessageManager::selectAllMessages()
         return messageList;
     }
     while (query.next()) {
-        messageList << &selectMessage(query.value(0).toString());
+        messageList << selectMessage(query.value(0).toString());
     }
     return messageList;
 }

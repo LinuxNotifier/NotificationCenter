@@ -9,7 +9,9 @@
 #include <QFile>
 #include <QObject>
 #include <QLocale>
-#include <stdio.h>
+#include <memory>
+
+using namespace std;
 
 bool setLanguage(const QString& language);
 
@@ -37,8 +39,8 @@ int main(int argc, char *argv[])
 
     w.show();
 
-    NcMessage &msg = NotificationCenter::createMessage();
-    msg.setTitle("hello")
+    shared_ptr<NcMessage> msg = NotificationCenter::createMessage();
+    msg->setTitle("hello")
         .setContent("hello world");
     NotificationCenter::notify(msg);
     NotificationCenter::notify(msg);

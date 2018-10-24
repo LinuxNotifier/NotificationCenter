@@ -13,8 +13,8 @@ TEST_CASE("test NotificationCenter", "[notificationcenter]") {
     NotificationCenter &nc = NotificationCenter::instance();
     MessageManager msgManager(&nc);
     nc.setMessageModel(&msgManager);
-    NcMessage &msg = NotificationCenter::createMessage();
-    msg.setTitle("hello")
+    shared_ptr<NcMessage> msg = NotificationCenter::createMessage();
+    msg->setTitle("hello")
         .setContent("hello world");
     REQUIRE(NotificationCenter::notify(msg));
     REQUIRE(!NotificationCenter::notify(msg));

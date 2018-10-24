@@ -6,7 +6,7 @@
 #include "nclogging.h"
 #include <QSqlDatabase>
 #include <QObject>
-#include <QScopedPointer>
+#include <memory>
 
 class NotificationCenter;
 class QSqlDatabase;
@@ -37,11 +37,10 @@ class DatabaseManager : public QObject
         Q_DISABLE_COPY(DatabaseManager);
         explicit DatabaseManager(NotificationCenter *parent);
         ~DatabaseManager();
-        Q_DECLARE_PRIVATE(DatabaseManager)
 
         void initDatabase();
 
-        QScopedPointer<DatabaseManagerPrivate> d_ptr;
+        shared_ptr<DatabaseManagerPrivate> d_ptr;
 };
 
 #endif // DatabaseManager_H

@@ -40,8 +40,8 @@ TEST_CASE("test MessageManager", "[message], [database]") {
                 QDateTime::currentDateTime().toString(), 1, 10,
                 QUuid::createUuid().toString(), QUuid::createUuid().toString()
                 ));
-    NcMessage& msg = NotificationCenter::createMessage();
-    msg.setTitle("title111")
+    shared_ptr<NcMessage> msg = NotificationCenter::createMessage();
+    msg->setTitle("title111")
         .setContent("content111");
     REQUIRE(!msgManager.insertMessage(msg));
     NotificationCenter::notify(msg);

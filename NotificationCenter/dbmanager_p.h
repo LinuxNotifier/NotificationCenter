@@ -14,7 +14,6 @@ class DatabaseManagerPrivate
 
     private:
         DatabaseManagerPrivate(DatabaseManager *q_ptr);
-        Q_DECLARE_PUBLIC(DatabaseManager)
 
         bool m_valid = false;
         QSqlDatabase m_db;

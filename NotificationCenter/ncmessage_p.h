@@ -18,7 +18,6 @@ class NcMessagePrivate
         explicit NcMessagePrivate(NcMessage *q_ptr);
         Q_DISABLE_COPY(NcMessagePrivate)
         // FIXME: d_func() somehow returns a const pointer
-        Q_DECLARE_PUBLIC(NcMessage)
 
         QString m_messageId;
         QString m_applicationId;

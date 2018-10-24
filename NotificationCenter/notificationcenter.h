@@ -2,7 +2,9 @@
 #define NOTIFICATIONCENTER_H
 
 #include <QObject>
-#include <QScopedPointer>
+#include <memory>
+
+using namespace std;
 
 class NcMessage;
 class NotificationCenterPrivate;
@@ -20,11 +22,11 @@ class NotificationCenter : public QObject
         void setMessageModel(MessageManager *messageModel);
         // void setPluginModel(QObject *pluginModel);
 
-        static NcMessage& createMessage();
-        static bool notify(NcMessage& message);
+        static shared_ptr<NcMessage> createMessage();
+        static bool notify(shared_ptr<NcMessage> message);
 
     signals:
-        void newMessage(const NcMessage& message);
+        void newMessage(shared_ptr<NcMessage> message);
         void messageExpired(const QString& messageId);
         void messageClosed(const QString& messageId);
 
@@ -32,9 +34,8 @@ class NotificationCenter : public QObject
         explicit NotificationCenter(QObject *parent = nullptr);
         ~NotificationCenter();
         Q_DISABLE_COPY(NotificationCenter);
-        Q_DECLARE_PRIVATE(NotificationCenter)
 
-        QScopedPointer<NotificationCenterPrivate> d_ptr;
+        shared_ptr<NotificationCenterPrivate> d_ptr;
 };
 
 #endif // NOTIFICATIONCENTER_H

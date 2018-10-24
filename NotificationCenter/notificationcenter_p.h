@@ -15,7 +15,6 @@ class NotificationCenterPrivate
     private:
         explicit NotificationCenterPrivate(NotificationCenter *q_ptr);
         Q_DISABLE_COPY(NotificationCenterPrivate)
-        Q_DECLARE_PUBLIC(NotificationCenter)
 
         MessageManager *m_messageManager;
         NotificationCenter *q_ptr;
