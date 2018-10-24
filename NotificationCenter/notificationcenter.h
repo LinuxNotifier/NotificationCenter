@@ -16,6 +16,11 @@ class NotificationCenter : public QObject
         static NcMessage& createMessage();
         static bool notify(NcMessage& message);
 
+    signals:
+        void newMessage(const NcMessage& message);
+        void messageExpired(const QString& messageId);
+        void messageClosed(const QString& messageId);
+
     private:
         explicit NotificationCenter(QObject *parent = nullptr);
         ~NotificationCenter();

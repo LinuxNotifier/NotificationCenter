@@ -15,7 +15,6 @@ DatabaseManager::DatabaseManager(NotificationCenter *parent) :
     QObject(parent)
 {
     // TODO: connection with aprent, check if database exists
-    m_notificationCenter = parent;
     initDatabase();
     
 }

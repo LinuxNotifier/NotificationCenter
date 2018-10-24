@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ncmessage.h"
+#include "notificationcenter.h"
 #include "nclogging.h"
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -31,6 +33,9 @@ MainWindow::MainWindow(QWidget *parent) :
     loadTheme("dark");
     setupSystemTrayIcon();
     initUi();
+
+    connect(&NotificationCenter::instance(), SIGNAL(newMessage(const NcMessage&)), this, SLOT(onNewMessage(const NcMessage&)));
+    connect(&NotificationCenter::instance(), SIGNAL(messageExpired(const QString&)), this, SLOT(onMessageExpired(const QString&)));
 }
 
 MainWindow::~MainWindow()
@@ -199,4 +204,16 @@ void MainWindow::initUi()
     m_pluginsLayout->setContentsMargins(0, 0, 0, 0);
     m_pluginsLayout->setSpacing(10);
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
+}
+
+void MainWindow::onNewMessage(const NcMessage& message)
+{
+    // TODO
+    qDebug() << "received a new message:" << message.title();
+}
+
+void MainWindow::onMessageExpired(const QString& messageId)
+{
+    // TODO
+    qDebug() << "received a message expired" << messageId;
 }

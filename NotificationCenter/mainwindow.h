@@ -9,6 +9,8 @@ class QEvent;
 class QVBoxLayout;
 class QRect;
 class QSystemTrayIcon;
+class NcMessage;
+class QString;
 
 namespace Ui {
 class MainWindow;
@@ -34,11 +36,16 @@ class MainWindow : public QWidget
         void keyPressEvent(QKeyEvent *event) override;
 
     signals:
+        void messageClosed(const QString& messageId);
 
     public slots:
-        void focusChanged(QWidget *old, QWidget *now);
         void show();
         void hide();
+
+    private slots:
+        void focusChanged(QWidget *old, QWidget *now);
+        void onNewMessage(const NcMessage& message);
+        void onMessageExpired(const QString& message);
 
     private:
         Q_DISABLE_COPY(MainWindow)

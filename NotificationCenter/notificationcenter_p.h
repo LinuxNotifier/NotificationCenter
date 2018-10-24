@@ -3,6 +3,7 @@
 
 class NotificationCenter;
 class NcMessage;
+class MessageManager;
 
 class NotificationCenterPrivate
 {
@@ -16,6 +17,7 @@ class NotificationCenterPrivate
         Q_DISABLE_COPY(NotificationCenterPrivate)
         Q_DECLARE_PUBLIC(NotificationCenter)
 
+        MessageManager *m_messageManager;
         NotificationCenter *q_ptr;
 };
 

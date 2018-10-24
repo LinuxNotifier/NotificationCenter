@@ -46,7 +46,6 @@ class DatabaseManager : public QObject
         bool initDatabase();
 
         QSqlDatabase m_db;
-        NotificationCenter *m_notificationCenter;
     
 };
 
