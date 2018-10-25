@@ -13,6 +13,8 @@ set(HEADERS mainwindow.h
     messagemanager.h
     pluginmanager.h
     plugininterface.h
+    # ncwidget.h
+    # ncpluginwidget.h
     )
 # set(${PROJECT_NAME}_SOURCES main.cpp
 set(SOURCES mainwindow.cpp
@@ -21,13 +23,16 @@ set(SOURCES mainwindow.cpp
     ncmessage.cpp
     messagemanager.cpp
     pluginmanager.cpp
+    # ncwidget.cpp
+    # ncpluginwidget.cpp
     )
 set(FORMS mainwindow.ui
     )
 set(RESOURCES resources.qrc
     )
+file(GLOB_RECURSE WIDGETS "widgets/*")
 
-add_library(${${PROJECT_NAME}_LIBRARY} STATIC ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES})
+add_library(${${PROJECT_NAME}_LIBRARY} STATIC ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES} ${WIDGETS})
 target_link_libraries(${${PROJECT_NAME}_LIBRARY} ${Qt})
 qt5_use_modules(${${PROJECT_NAME}_LIBRARY} ${QT})
 

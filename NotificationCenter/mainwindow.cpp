@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "ncwidget.h"
 #include "ui_mainwindow.h"
 #include "ncmessage.h"
 #include "notificationcenter.h"

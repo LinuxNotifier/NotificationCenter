@@ -21,6 +21,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+file(GLOB_RECURSE SOURCES "NotificationCenter/*.cpp")
+file(GLOB_RECURSE HEADERS "NotificationCenter/*.h")
+file(GLOB_RECURSE FORMS "NotificationCenter/*.ui")
+
+include_directories(NotificationCenter/widgets)
 add_subdirectory(NotificationCenter)
 enable_testing()
 # add_subdirectory(third_libraries)
@@ -29,10 +34,6 @@ include_directories(NotificationCenter)
 add_subdirectory(test)
 
 add_subdirectory(plugins)
-
-file(GLOB_RECURSE SOURCES "NotificationCenter/*.cpp")
-file(GLOB_RECURSE HEADERS "NotificationCenter/*.h")
-file(GLOB_RECURSE FORMS "NotificationCenter/*.ui")
 
 # don't clean *.ts files when execute `make clean`
 set_directory_properties(PROPERTIES CLEAN_NO_CUSTOM TRUE)
