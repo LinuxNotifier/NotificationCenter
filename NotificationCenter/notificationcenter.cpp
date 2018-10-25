@@ -36,7 +36,7 @@ NotificationCenter& NotificationCenter::instance(QObject *parent)
 
 void NotificationCenter::setView(MainWindow *view)
 {
-    connect(view, SIGNAL(messageClosed(const QString&)), this, SIGNAL(messageExpired(const QString&)));
+    connect(view, SIGNAL(messageClosed(const QString)), this, SIGNAL(messageExpired(const QString)));
 
 }
 
@@ -44,7 +44,7 @@ void NotificationCenter::setMessageModel(MessageManager *messageModel)
 {
     d_ptr->m_messageManager = messageModel;
     connect(d_ptr->m_messageManager, SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SIGNAL(newMessage(shared_ptr<NcMessage>)));
-    connect(d_ptr->m_messageManager, SIGNAL(messageExpired(const QString&)), this, SIGNAL(messageExpired(const QString&)));
+    connect(d_ptr->m_messageManager, SIGNAL(messageExpired(const QString)), this, SIGNAL(messageExpired(const QString)));
 }
 
 shared_ptr<NcMessage> NotificationCenter::createMessage()

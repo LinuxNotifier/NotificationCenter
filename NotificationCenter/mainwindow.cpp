@@ -36,8 +36,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     NotificationCenter &nc = NotificationCenter::instance();
     connect(&NotificationCenter::instance(), SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SLOT(onNewMessage(shared_ptr<NcMessage>)));
-    connect(&nc, SIGNAL(messageExpired(const QString&)), this, SLOT(onMessageExpired(const QString&)));
-    connect(&nc, SIGNAL(messageExpired(const QString&)), this, SLOT(onMessageExpired(const QString&)));
+    connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
+    connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 }
 
@@ -215,7 +215,7 @@ void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
     qDebug() << "received a new message:" << message->title();
 }
 
-void MainWindow::onMessageExpired(const QString& messageId)
+void MainWindow::onMessageExpired(const QString messageId)
 {
     // TODO
     qDebug() << "received a message expired" << messageId;

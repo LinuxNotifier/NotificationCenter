@@ -39,7 +39,7 @@ class MainWindow : public QWidget
         void keyPressEvent(QKeyEvent *event) override;
 
     signals:
-        void messageClosed(const QString& messageId);
+        void messageClosed(const QString messageId);
 
     public slots:
         void show();
@@ -48,7 +48,7 @@ class MainWindow : public QWidget
     private slots:
         void focusChanged(QWidget *old, QWidget *now);
         void onNewMessage(shared_ptr<NcMessage> message);
-        void onMessageExpired(const QString& message);
+        void onMessageExpired(const QString message);
         void onModeChanged(bool quiet);
 
     private:

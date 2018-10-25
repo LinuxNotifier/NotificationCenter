@@ -31,8 +31,8 @@ class NotificationCenter : public QObject
 
     signals:
         void newMessage(shared_ptr<NcMessage> message);
-        void messageExpired(const QString& messageId);
-        void messageClosed(const QString& messageId);
+        void messageExpired(const QString messageId);
+        void messageClosed(const QString messageId);
 
         void modeChanged(bool quiet);
 

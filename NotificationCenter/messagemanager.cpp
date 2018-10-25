@@ -20,7 +20,7 @@ MessageManager::MessageManager(NotificationCenter *parent) :
     QObject(parent),
     m_ncDb(NcDatabase::instance())
 {
-    connect(parent, SIGNAL(messageClosed(const QString&)), this, SLOT(messageClosed(const QString&)));
+    connect(parent, SIGNAL(messageClosed(const QString)), this, SLOT(messageClosed(const QString)));
     initMessageTable();
     QTimer::singleShot(1000, this, &MessageManager::loadMessagees);
 }
@@ -70,7 +70,7 @@ void MessageManager::loadMessagees()
 }
 
 
-void MessageManager::messageClosed(const QString& messageId)
+void MessageManager::messageClosed(const QString messageId)
 {
     qDebug() << "message closed:" << messageId;
     m_messageMap.remove(messageId);
