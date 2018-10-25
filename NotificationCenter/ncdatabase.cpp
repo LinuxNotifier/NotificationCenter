@@ -27,6 +27,7 @@ NcDatabase::NcDatabase(NotificationCenter *parent) :
     QObject(parent),
     d_ptr(new NcDatabasePrivate(this))
 {
+    d_ptr->m_dbName = "ncdb";
     initDatabase();
 }
 
@@ -41,10 +42,15 @@ NcDatabase& NcDatabase::instance()
     return ncDb;
 }
 
+QString NcDatabase::dbName() const
+{
+    return d_ptr->m_dbName;
+}
+
 void NcDatabase::initDatabase()
 {
     const QString dbDirName = "dbs";
-    const QString dbFileName = "nc.sqlite";
+    const QString dbFileName = "nc.db";
     QDir dbDir = QDir(qApp->applicationDirPath());
     if (!dbDir.cd(dbDirName)) {
         dbDir.mkdir(dbDirName);
@@ -55,16 +61,16 @@ void NcDatabase::initDatabase()
         qInfo() << "creating new database";
 #endif
 
-    d_ptr->m_db = QSqlDatabase::addDatabase("QSQLITE", "ncdb");
+    d_ptr->m_db = QSqlDatabase::addDatabase("QSQLITE", d_ptr->m_dbName);
     d_ptr->m_db.setDatabaseName(dbDir.absoluteFilePath(dbFileName));
     if (!d_ptr->m_db.open()) {
-        qCritical() << QObject::tr("Error: connecting to database \"ncdb\" failed");
+        qCritical() << QObject::tr("Error: connecting to database \"%1\" failed").arg(d_ptr->m_dbName);
         d_ptr->m_valid = false;
     }
     else {
         d_ptr->m_valid = true;
 #if DEBUG
-        qDebug() << "connected to database \"ncdb\"";
+        qDebug() << QString("connected to database \"%1\"").arg(d_ptr->m_dbName);
 #endif
     }
 }

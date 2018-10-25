@@ -18,6 +18,8 @@ class NcDatabasePrivate
         bool m_valid = false;
         QSqlDatabase m_db;
 
+        QString m_dbName;
+
         NcDatabase *q_ptr;
 };
 
