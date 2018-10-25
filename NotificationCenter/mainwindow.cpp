@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "ncmessage.h"
 #include "notificationcenter.h"
+#include "plugininterface.h"
 #include "ncdebug.h"
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -39,6 +40,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
     connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
+
+    connect(&nc, SIGNAL(newPlugin(shared_ptr<PluginInterface>)), this, SLOT(onNewPlugin(shared_ptr<PluginInterface>)));
+    connect(&nc, SIGNAL(pluginDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
+
 }
 
 MainWindow::~MainWindow()
@@ -224,4 +229,14 @@ void MainWindow::onMessageExpired(const QString messageId)
 void MainWindow::onModeChanged(bool quiet)
 {
     qDebug() << "mode changed:" << quiet;
+}
+
+void MainWindow::onNewPlugin(shared_ptr<PluginInterface> plugin)
+{
+    qDebug() << "new plugin";
+}
+
+void MainWindow::onPluginDeleted(const QString pluginId)
+{
+    qDebug() << "plugin deleted" << pluginId;
 }

@@ -4,6 +4,7 @@
 class NotificationCenter;
 class NcMessage;
 class MessageManager;
+class PluginManager;
 
 class NotificationCenterPrivate
 {
@@ -17,6 +18,7 @@ class NotificationCenterPrivate
         Q_DISABLE_COPY(NotificationCenterPrivate)
 
         MessageManager *m_messageManager;
+        PluginManager *m_pluginManager;
         bool m_quietMode = false;
         NotificationCenter *q_ptr;
 };

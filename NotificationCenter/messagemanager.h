@@ -20,6 +20,14 @@ class NcDatabase;
 class MessageManager : public QObject
 {
     Q_OBJECT
+
+    signals:
+        void newMessage(shared_ptr<NcMessage> message);
+        void messageExpired(const QString messageId);
+
+    private slots:
+        void messageClosed(const QString messageId);
+
     friend class NotificationCenter;
 
     public:
@@ -29,13 +37,6 @@ class MessageManager : public QObject
         inline bool isValid() {
             return m_valid;
         };
-
-    signals:
-        void newMessage(shared_ptr<NcMessage> message);
-        void messageExpired(const QString messageId);
-
-    private slots:
-        void messageClosed(const QString messageId);
 
     private:
         void initMessageTable();

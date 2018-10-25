@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "notificationcenter.h"
 #include "messagemanager.h"
+#include "pluginmanager.h"
 #include "ncmessage.h"
 #include "ncdebug.h"
 #include "ncglobal.h"
@@ -45,6 +46,9 @@ int main(int argc, char *argv[])
 
     MessageManager msgManager(&nc);
     nc.setMessageModel(&msgManager);
+
+    PluginManager pluginManager(&nc);
+    nc.setPluginModel(&pluginManager);
 
     w.show();
 

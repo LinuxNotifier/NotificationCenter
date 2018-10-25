@@ -7,6 +7,7 @@
 
 using namespace std;
 
+class PluginInterface;
 class QFocusEvent;
 class QEvent;
 class QVBoxLayout;
@@ -25,6 +26,26 @@ class MainWindow : public QWidget
 {
     Q_OBJECT
 
+    signals:
+        void messageClosed(const QString messageId);
+
+        void pluginEnabled(const QString pluginId);
+        void pluginDisabled(const QString pluginId);
+        void pluginRemoved(const QString pluginId);
+
+    public slots:
+        void show();
+        void hide();
+
+    private slots:
+        void focusChanged(QWidget *old, QWidget *now);
+        void onNewMessage(shared_ptr<NcMessage> message);
+        void onMessageExpired(const QString message);
+        void onModeChanged(bool quiet);
+
+        void onNewPlugin(shared_ptr<PluginInterface> plugin);
+        void onPluginDeleted(const QString pluginId);
+
     public:
         explicit MainWindow(QWidget *parent = 0);
         ~MainWindow();
@@ -37,19 +58,6 @@ class MainWindow : public QWidget
         void paintEvent(QPaintEvent *event) override;
         void hideEvent(QHideEvent *event) override;
         void keyPressEvent(QKeyEvent *event) override;
-
-    signals:
-        void messageClosed(const QString messageId);
-
-    public slots:
-        void show();
-        void hide();
-
-    private slots:
-        void focusChanged(QWidget *old, QWidget *now);
-        void onNewMessage(shared_ptr<NcMessage> message);
-        void onMessageExpired(const QString message);
-        void onModeChanged(bool quiet);
 
     private:
         Q_DISABLE_COPY(MainWindow)

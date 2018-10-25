@@ -24,6 +24,8 @@ set(HEADERS mainwindow.h
     ncmessage.h
     ncmessage_p.h
     messagemanager.h
+    pluginmanager.h
+    # plugininterface.h
     )
 # set(${PROJECT_NAME}_SOURCES main.cpp
 set(SOURCES mainwindow.cpp
@@ -31,6 +33,8 @@ set(SOURCES mainwindow.cpp
     ncdatabase.cpp
     ncmessage.cpp
     messagemanager.cpp
+    pluginmanager.cpp
+    # plugininterface.cpp
     )
 set(FORMS mainwindow.ui
     )
