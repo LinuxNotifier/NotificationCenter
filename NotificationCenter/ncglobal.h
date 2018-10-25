@@ -6,10 +6,10 @@
 #define private public
 #endif
 
-// #define __NOTIFICATIONCENTER_VERSION__ "ver 0.2.0"
-// #define __INTERFACE_VERSION__ "ver 0.2.0"
-#define __NOTIFICATIONCENTER_VERSION__ "ver 0.5.0"
-#define __INTERFACE_VERSION__ "ver 0.5.0"
+#define __NOTIFICATIONCENTER_VERSION__ "ver 0.2.0"
+#define __INTERFACE_VERSION__ "ver 0.2.0"
+// #define __NOTIFICATIONCENTER_VERSION__ "ver 0.5.0"
+// #define __INTERFACE_VERSION__ "ver 0.5.0"
 
 #define ICON_SIZE 24
 

@@ -1,5 +1,6 @@
 #include "testplugin.h"
 #include "notificationcenter.h"
+#include "ncglobal.h"
 #include "ncdebug.h"
 #include <QWidget>
 
@@ -26,4 +27,9 @@ QWidget* TestPlugin::centralWidget()
 QWidget* TestPlugin::settingsWidget()
 {
     return new QWidget;
+}
+
+QString TestPlugin::interfaceVersion() const
+{
+    return __INTERFACE_VERSION__;
 }

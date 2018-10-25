@@ -19,6 +19,7 @@ class TestPlugin : public QObject, public PluginInterface
         void initialize(NotificationCenter *nc) override;
         QWidget* centralWidget() override;
         QWidget* settingsWidget() override;
+        QString interfaceVersion() const override;
 };
 
 #endif // TESTPLUGIN_H
