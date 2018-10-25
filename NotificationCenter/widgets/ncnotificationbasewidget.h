@@ -3,6 +3,9 @@
 
 #include "ncwidget.h"
 #include <QHash>
+#include <memory>
+
+using namespace std;
 
 class NcMessage;
 class QVBoxLayout;
@@ -17,13 +20,13 @@ class NcNotificationBaseWidget : public NcWidget
         // FIXME: use virtual keyword for all base classes
         virtual ~NcNotificationBaseWidget();
 
-        bool addMessage(NcMessage *msg);
+        bool addMessage(shared_ptr<NcMessage> message);
         bool removeMessage(QString& msgUuid);
         void removeNotification();
 
 
     protected:
-        QHash<QString, NcMessage *> m_messageList;
+        QHash<QString, shared_ptr<NcMessage> > m_messageList;
         QVBoxLayout *m_messageLayout;
         QWidget *m_messageWidget;
 

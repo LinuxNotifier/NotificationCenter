@@ -22,7 +22,7 @@ NcNotificationBaseWidget::~NcNotificationBaseWidget()
     
 }
 
-bool NcNotificationBaseWidget::addMessage(NcMessage *msg)
+bool NcNotificationBaseWidget::addMessage(shared_ptr<NcMessage> msg)
 {
     m_messageList[msg->messageId()] = msg;
     return true;

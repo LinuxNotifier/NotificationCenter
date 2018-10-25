@@ -47,14 +47,14 @@ NcNotificationWidget::~NcNotificationWidget()
 // 標題應該是自動滑動展示（如果標題過長的話）, 如果內容過長，可以生成preview
 // 如果preview已經被指定，而且也過長，那麼滑動展示 (only when this notification is activated,
 // otherwise it would be a mess}
-bool NcNotificationWidget::addMessage(NcMessage *msg)
+bool NcNotificationWidget::addMessage(shared_ptr<NcMessage> message)
 {
     // FIXME: the close button will be push off the title bar
     // when the content is too long
-    m_messageList[msg->messageId()] = msg;
+    m_messageList[message->messageId()] = message;
     // QLabel *messageLabel = new QLabel(this);
-    // messageLabel->setText(msg->content());
-    // messageLabel->setWindowTitle(msg->title());
+    // messageLabel->setText(message->content());
+    // messageLabel->setWindowTitle(message->title());
     // messageLabel->setWindowIcon(QIcon(":/imgs/n.png"));
     // // setWidget(messageLabel);
     // m_messageLayout->addWidget(messageLabel);
@@ -65,8 +65,8 @@ bool NcNotificationWidget::addMessage(NcMessage *msg)
     QVBoxLayout *messageLayout = new QVBoxLayout(messageWidget);
     QLabel *titleLabel = new QLabel(messageWidget);
     QLabel *contentLabel = new QLabel(messageWidget);
-    titleLabel->setText(msg->title());
-    contentLabel->setText(msg->content());
+    titleLabel->setText(message->title());
+    contentLabel->setText(message->content());
     titleLabel->setFixedHeight(20);
     // titleLabel->setStyleSheet("QLabel {background-color: yellow;}");
     // contentLabel->setStyleSheet("QLabel {background-color: red;}");

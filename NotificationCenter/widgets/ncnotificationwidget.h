@@ -17,12 +17,12 @@ class NcNotificationWidget : public NcNotificationBaseWidget
         NcNotificationWidget(QWidget *parent=nullptr);
         ~NcNotificationWidget();
 
-        bool addMessage(NcMessage *msg);
+        bool addMessage(shared_ptr<NcMessage> message);
         bool removeMessage(QString& msgUuid);
         void removeNotification();
 
     private:
-        QHash<QString, NcMessage *> m_messageList;
+        QHash<QString, shared_ptr<NcMessage> > m_messageList;
         QPushButton *m_closeButton;
 
 };

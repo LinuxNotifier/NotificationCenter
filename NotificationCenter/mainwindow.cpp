@@ -1,5 +1,6 @@
 #include "mainwindow.h"
-#include "ncwidget.h"
+#include "ncnotificationwidget.h"
+#include "datetimewidget.h"
 #include "ui_mainwindow.h"
 #include "ncmessage.h"
 #include "notificationcenter.h"
@@ -45,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&nc, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(shared_ptr<QPluginLoader>)));
     connect(&nc, SIGNAL(pluginDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
+    connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
 
 }
 
@@ -213,13 +215,52 @@ void MainWindow::initUi()
     m_pluginsLayout->setAlignment(Qt::AlignTop);
     m_pluginsLayout->setContentsMargins(0, 0, 0, 0);
     m_pluginsLayout->setSpacing(10);
-    connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
+    
+
+
+
+    // TODO: change the margin of notification layout, 已經跟那絛橫線連在一起了
+    m_notificationsTabLayout = new QVBoxLayout(ui->notificationsTab);
+    ui->notificationsTab->setLayout(m_notificationsTabLayout);
+    m_notificationsTabLayout->setAlignment(Qt::AlignTop);
+    m_notificationsTabLayout->setContentsMargins(0, 0, 0, 0);
+    m_notificationsTabLayout->setSpacing(10);
+    // m_notificationsTabLayout->addStretch();
+
+    QScrollArea *notificationScrollArea = new QScrollArea;
+    auto *scrollBar = notificationScrollArea->verticalScrollBar();
+    scrollBar->setSingleStep(1);
+    m_notificationsTabLayout->addWidget(notificationScrollArea);
+    notificationScrollArea->setWidgetResizable(true);
+    notificationScrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QWidget *notificationWidget = new QWidget(notificationScrollArea);
+    notificationScrollArea->setWidget(notificationWidget);
+    m_notificationsLayout = new QVBoxLayout(notificationWidget);
+    m_notificationsLayout->setAlignment(Qt::AlignTop);
+    m_notificationsLayout->setContentsMargins(0, 0, 0, 0);
+    m_notificationsLayout->setSpacing(10);
+    m_notificationsLayout->addStretch();
+    notificationWidget->setLayout(m_notificationsLayout);
+    notificationWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
 void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
 {
     // TODO
     qDebug() << "received a new message:" << message->title();
+
+    NcNotificationWidget *ncw = new NcNotificationWidget;
+    ncw->addMessage(message);
+    ncw->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_notificationsLayout->insertWidget(0, ncw);
+    ncw->setMaximumHeight(100);
+    QWidget *frameWidget = ncw->frameWidget();
+    qDebug() << "parent of frameWidget: " << frameWidget->parent();
+    frameWidget->installEventFilter(this);
+    // ncw->installEventFilter(this);
+    connect(ncw, SIGNAL(closed()), this, SLOT(messageClosed(QString)));
+
+
 }
 
 void MainWindow::onMessageExpired(const QString messageId)
