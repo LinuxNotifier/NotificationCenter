@@ -69,15 +69,15 @@ class NcMessage
 
         ~NcMessage();
 
-        const QString& createdTime() const;
-        const QIcon& icon() const;
+        QString createdTime() const;
+        QIcon icon() const;
         NcMessage& setIcon(const QString& icon);
         NcMessage& setIcon(const QIcon& icon);
-        const QString& title() const;
+        QString title() const;
         NcMessage& setTitle(const QString& title);
-        const QString& preview() const;
+        QString preview() const;
         NcMessage& setPreview(const QString& preview);
-        const QString& content() const;
+        QString content() const;
         NcMessage& setContent(const QString& content);
         int duration() const;
         NcMessage& setDuration(Duration duration);
@@ -86,9 +86,9 @@ class NcMessage
         NcMessage& setPriority(Priority priority);
         Action action() const;
         NcMessage& setAction(Action action);
-        const QString& messageId() const;
-        const QString& notificationId() const;
-        const QString& applicationId() const;
+        QString messageId() const;
+        QString notificationId() const;
+        QString applicationId() const;
 
         bool isValid() const;
 

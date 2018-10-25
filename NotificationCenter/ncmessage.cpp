@@ -30,7 +30,7 @@ NcMessage::~NcMessage()
 
 }
 
-const QString& NcMessage::createdTime() const
+QString NcMessage::createdTime() const
 {
     return d_ptr->m_createdTime;
 }
@@ -41,7 +41,7 @@ NcMessage& NcMessage::setCreatedTime(const QString& createdTime)
     return *this;
 }
 
-const QIcon& NcMessage::icon() const
+QIcon NcMessage::icon() const
 {
     return d_ptr->m_icon;
 }
@@ -59,7 +59,7 @@ NcMessage& NcMessage::setIcon(const QIcon& icon)
     return *this;
 }
 
-const QString& NcMessage::title() const
+QString NcMessage::title() const
 {
     return d_ptr->m_title;
 }
@@ -70,7 +70,7 @@ NcMessage& NcMessage::setTitle(const QString& title)
     return *this;
 }
 
-const QString& NcMessage::preview() const
+QString NcMessage::preview() const
 {
     return d_ptr->m_preview;
 }
@@ -81,7 +81,7 @@ NcMessage& NcMessage::setPreview(const QString& preview)
     return *this;
 }
 
-const QString& NcMessage::content() const
+QString NcMessage::content() const
 {
     return d_ptr->m_content;
 }
@@ -154,7 +154,7 @@ NcMessage& NcMessage::setDuration(int duration)
     return *this;
 }
 
-const QString& NcMessage::messageId() const
+QString NcMessage::messageId() const
 {
     return d_ptr->m_messageId;
 }
@@ -165,7 +165,7 @@ NcMessage& NcMessage::setMessageId(const QString& messageId)
     return *this;
 }
 
-const QString& NcMessage::notificationId() const
+QString NcMessage::notificationId() const
 {
     return d_ptr->m_notificationId;
 }
@@ -176,7 +176,7 @@ NcMessage& NcMessage::setNotificationId(const QString& notificationId)
     return *this;
 }
 
-const QString& NcMessage::applicationId() const
+QString NcMessage::applicationId() const
 {
     return d_ptr->m_applicationId;
 }
