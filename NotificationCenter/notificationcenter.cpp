@@ -6,10 +6,12 @@
 #include "ncmessage.h"
 #include "mainwindow.h"
 #include "ncdebug.h"
+#include "ncglobal.h"
 #include <memory>
 
 NotificationCenterPrivate::NotificationCenterPrivate(NotificationCenter *q_ptr) :
-    q_ptr(q_ptr)
+    q_ptr(q_ptr),
+    m_ncVersion(__NOTIFICATIONCENTER_VERSION__)
 {
 
 }
@@ -23,7 +25,7 @@ NotificationCenter::NotificationCenter(QObject *parent) :
     QObject(parent),
     d_ptr(new NotificationCenterPrivate(this))
 {
-
+    // instance().d_ptr->m_ncVersion = __NOTIFICATIONCENTER_VERSION__;
 }
 
 NotificationCenter::~NotificationCenter()
@@ -35,6 +37,11 @@ NotificationCenter& NotificationCenter::instance(QObject *parent)
 {
     static NotificationCenter instance(parent);
     return instance;
+}
+
+QString NotificationCenter::version()
+{
+    return instance().d_ptr->m_ncVersion;
 }
 
 void NotificationCenter::setView(MainWindow *view)

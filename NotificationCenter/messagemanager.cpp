@@ -22,6 +22,8 @@ MessageManager::MessageManager(NotificationCenter *parent) :
 {
     connect(parent, SIGNAL(messageClosed(const QString)), this, SLOT(messageClosed(const QString)));
     initMessageTable();
+    // FIXME: duplicate message if new message is inserted before loading
+    // messages when program starts up
     QTimer::singleShot(1000, this, &MessageManager::loadMessagees);
 }
 
@@ -57,7 +59,7 @@ void MessageManager::initMessageTable()
 void MessageManager::loadMessagees()
 {
     MessageList msgList = selectAllMessages();
-    for (shared_ptr<NcMessage> msg : msgList) {
+    for (const shared_ptr<NcMessage> msg : msgList) {
         NcMessage::Duration duration = static_cast<NcMessage::Duration>(msg->duration());
         if (duration != NcMessage::Duration::UntilShutdown) {
             emit newMessage(msg);

@@ -148,7 +148,7 @@ bool MainWindow::loadTheme(QString name)
     if (!name.endsWith(".qss"))
         name.append(".qss");
 
-    qInfo() << tr("loading qss file:") << name;
+    qInfo() << tr("loading theme file:") << name;
 
     QDir themesDir(qApp->applicationDirPath());
     themesDir.cd("themes");

@@ -1,6 +1,8 @@
 #ifndef NOTIFICATIONCENTER_P_H
 #define NOTIFICATIONCENTER_P_H
 
+#include <QString>
+
 class NotificationCenter;
 class NcMessage;
 class MessageManager;
@@ -20,6 +22,7 @@ class NotificationCenterPrivate
         MessageManager *m_messageManager;
         PluginManager *m_pluginManager;
         bool m_quietMode = false;
+        const QString m_ncVersion;
         NotificationCenter *q_ptr;
 };
 

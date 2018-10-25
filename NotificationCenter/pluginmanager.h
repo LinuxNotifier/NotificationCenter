@@ -3,12 +3,16 @@
 
 #include <QObject>
 #include <memory>
+#include <QHash>
 
 using namespace std;
 
 class NotificationCenter;
 class NcDatabase;
 class PluginInterface;
+class QPluginLoader;
+
+typedef QHash<QString, QPluginLoader*> PluginMap;
 
 class PluginManager : public QObject
 {
@@ -40,6 +44,7 @@ class PluginManager : public QObject
         // bool insertPlugin()
 
         NcDatabase &m_ncDb;
+        PluginMap m_pluginMap;
         bool m_valid = false;
     
 };

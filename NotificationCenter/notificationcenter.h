@@ -33,6 +33,8 @@ class NotificationCenter : public QObject
     public:
         static NotificationCenter& instance(QObject *parent = nullptr);
 
+        static QString version();
+
         void setView(MainWindow *view);
         void setMessageModel(MessageManager *messageManager);
         void setPluginModel(PluginManager *pluginManager);

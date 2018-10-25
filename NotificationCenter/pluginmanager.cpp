@@ -43,7 +43,43 @@ void PluginManager::initPluginTable()
 
 void PluginManager::loadPlugins()
 {
+    QDir pluginDir(qApp->applicationDirPath());
+    if (!pluginDir.cd("plugins")) {
+        if (!pluginDir.mkdir("plugins")) {
+            qWarning() << tr("creating plugins directory failed");
+            return;
+        }
+        pluginDir.cd("plugins");
+    }
+    pluginDir.setSorting(QDir::Name);
+    QStringList files = pluginDir.entryList(QDir::Files);
 
+    for (const QString file : files)
+    {
+        if (!QLibrary::isLibrary(file))
+            continue;
+#if DEBUG
+        qDebug() << "checking: " << file;
+#endif
+        QPluginLoader *pluginLoader = new QPluginLoader(pluginDir.absoluteFilePath(file), this);
+#if DEBUG
+        qDebug() << "loading plugin: " << pluginLoader->metaData();
+#endif
+
+        PluginInterface *interface = qobject_cast<PluginInterface*>(pluginLoader->instance());
+        if (!interface)
+        {
+            qWarning() << pluginLoader->errorString();
+            pluginLoader->unload();
+            pluginLoader->deleteLater();
+            return;
+        }
+#if DEBUG
+        qDebug() << QString("plugin %1 loaded").arg(pluginLoader->fileName());
+        // qDebug() << interface->interfaceVersion();
+#endif
+        m_pluginMap[pluginLoader->fileName()] = pluginLoader;
+    }
 }
 
 void PluginManager::onPluginEnabled(const QString pluginId)

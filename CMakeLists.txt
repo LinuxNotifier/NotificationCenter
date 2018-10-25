@@ -6,8 +6,20 @@ set(${PROJECT_NAME}_LIBRARY NC)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++14 -Wno-reorder")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG -rdynamic")
 set(CMAKE_CXX_FLAGS_RELEASE "-O4")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(notdir $(abspath $<))\"'")
 
+find_package(PkgConfig REQUIRED)
+set(QT Core Gui Widgets Network DBus Sql X11Extras)
+find_package(Qt5 REQUIRED ${QT})
 find_package(Qt5LinguistTools)
+
+find_package(X11 REQUIRED)
+include_directories(${X11_INCLUDE_DIR})
+link_libraries(${X11_LIBRARIES})
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 add_subdirectory(NotificationCenter)
 enable_testing()
@@ -15,6 +27,8 @@ enable_testing()
 include_directories(third_libraries)
 include_directories(NotificationCenter)
 add_subdirectory(test)
+
+add_subdirectory(plugins)
 
 file(GLOB_RECURSE SOURCES "NotificationCenter/*.cpp")
 file(GLOB_RECURSE HEADERS "NotificationCenter/*.h")

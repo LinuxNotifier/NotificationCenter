@@ -53,7 +53,10 @@ void NcDatabase::initDatabase()
     const QString dbFileName = "nc.db";
     QDir dbDir = QDir(qApp->applicationDirPath());
     if (!dbDir.cd(dbDirName)) {
-        dbDir.mkdir(dbDirName);
+        if (!dbDir.mkdir(dbDirName)) {
+            qWarning() << tr("create database directory %1 failed").arg(dbDirName);
+            return;
+        }
         dbDir.cd(dbDirName);
     }
 #if DEBUG
