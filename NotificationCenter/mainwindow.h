@@ -8,6 +8,7 @@
 using namespace std;
 
 class PluginInterface;
+class QPluginLoader;
 class QFocusEvent;
 class QEvent;
 class QVBoxLayout;
@@ -43,7 +44,7 @@ class MainWindow : public QWidget
         void onMessageExpired(const QString message);
         void onModeChanged(bool quiet);
 
-        void onNewPlugin(shared_ptr<PluginInterface> plugin);
+        void onNewPlugin(shared_ptr<QPluginLoader> plugin);
         void onPluginDeleted(const QString pluginId);
 
     public:

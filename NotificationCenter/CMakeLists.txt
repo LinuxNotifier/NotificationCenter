@@ -21,7 +21,6 @@ set(SOURCES mainwindow.cpp
     ncmessage.cpp
     messagemanager.cpp
     pluginmanager.cpp
-    plugininterface.cpp
     )
 set(FORMS mainwindow.ui
     )

@@ -60,7 +60,7 @@ void NotificationCenter::setMessageModel(MessageManager *messageManager)
 void NotificationCenter::setPluginModel(PluginManager *pluginManager)
 {
     d_ptr->m_pluginManager = pluginManager;
-    connect(d_ptr->m_pluginManager, SIGNAL(newPlugin(shared_ptr<PluginInterface>)), this, SIGNAL(newPlugin(shared_ptr<PluginInterface>)));
+    connect(d_ptr->m_pluginManager, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)));
     connect(d_ptr->m_pluginManager, SIGNAL(pluginDeleted(const QString)), this, SIGNAL(pluginDeleted(const QString)));
 }
 

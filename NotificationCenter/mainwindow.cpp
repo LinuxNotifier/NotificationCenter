@@ -19,6 +19,7 @@
 #include <QDir>
 #include <QScrollBar>
 #include <QIcon>
+#include <QPluginLoader>
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
@@ -41,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 
-    connect(&nc, SIGNAL(newPlugin(shared_ptr<PluginInterface>)), this, SLOT(onNewPlugin(shared_ptr<PluginInterface>)));
+    connect(&nc, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(shared_ptr<QPluginLoader>)));
     connect(&nc, SIGNAL(pluginDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
 
 }
@@ -231,9 +232,9 @@ void MainWindow::onModeChanged(bool quiet)
     qDebug() << "mode changed:" << quiet;
 }
 
-void MainWindow::onNewPlugin(shared_ptr<PluginInterface> plugin)
+void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> plugin)
 {
-    qDebug() << "new plugin";
+    qDebug() << "got new plugin" << plugin->fileName();
 }
 
 void MainWindow::onPluginDeleted(const QString pluginId)

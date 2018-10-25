@@ -21,7 +21,7 @@ class PluginManager : public QObject
     friend class NotificationCenter;
 
     signals:
-        void newPlugin(shared_ptr<PluginInterface> plugin);
+        void newPlugin(shared_ptr<QPluginLoader> plugin);
         void pluginDeleted(const QString pluginId);
 
     private slots:

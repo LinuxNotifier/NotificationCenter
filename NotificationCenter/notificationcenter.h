@@ -12,6 +12,7 @@ class NotificationCenterPrivate;
 class MainWindow;
 class MessageManager;
 class PluginManager;
+class QPluginLoader;
 
 class NotificationCenter : public QObject
 {
@@ -24,7 +25,7 @@ class NotificationCenter : public QObject
 
         void modeChanged(bool quiet);
 
-        void newPlugin(shared_ptr<PluginInterface> plugin);
+        void newPlugin(shared_ptr<QPluginLoader> plugin);
         void pluginEnabled(const QString pluginId);
         void pluginDisabled(const QString pluginId);
         void pluginRemoved(const QString pluginId);

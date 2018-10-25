@@ -14,7 +14,6 @@ typedef QHash<QString, QString> PluginMetadata;
 class PluginInterface
 {
     public:
-        // PluginInterface();
         virtual void initialize(NotificationCenter *nc) = 0;
         // this widget will be showed on NotificationCenter
         // return nullptr when no widget
