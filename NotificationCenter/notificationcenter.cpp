@@ -51,7 +51,6 @@ shared_ptr<NcMessage> NotificationCenter::createMessage()
 {
     shared_ptr<NcMessage> msg(new NcMessage);
     return msg;
-    // return *(new NcMessage);
 }
 
 bool NotificationCenter::notify(shared_ptr<NcMessage> message)
@@ -64,7 +63,6 @@ bool NotificationCenter::notify(shared_ptr<NcMessage> message)
     bool inserted = instance().d_ptr->m_messageManager->insertMessage(message);
     if (!inserted)
         return false;
-    emit (instance().newMessage(message));
     return true;
 }
 
