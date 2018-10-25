@@ -8,6 +8,7 @@
 #include "ncdebug.h"
 #include "ncglobal.h"
 #include <memory>
+#include <QDateTime>
 
 NotificationCenterPrivate::NotificationCenterPrivate(NotificationCenter *q_ptr) :
     q_ptr(q_ptr),
@@ -75,6 +76,7 @@ bool NotificationCenter::notify(shared_ptr<NcMessage> message)
     if (message->isValid())          // already notified
         return false;
 
+    message->setCreatedTime(QDateTime::currentDateTime().toString());
     message->setValid();
     // we need the result of inserting a message, so didn't implement it with signals
     bool inserted = instance().d_ptr->m_messageManager->insertMessage(message);
