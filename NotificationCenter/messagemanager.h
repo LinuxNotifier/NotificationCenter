@@ -26,7 +26,9 @@ class MessageManager : public QObject
         explicit MessageManager(NotificationCenter *parent);
         ~MessageManager();
 
-        inline bool isValid();
+        inline bool isValid() {
+            return m_valid;
+        };
 
     signals:
         void newMessage(shared_ptr<NcMessage> message);

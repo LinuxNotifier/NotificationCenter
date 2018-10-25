@@ -30,11 +30,6 @@ MessageManager::~MessageManager()
 
 }
 
-bool MessageManager::isValid()
-{
-    return m_valid;
-}
-
 void MessageManager::initMessageTable()
 {
     QSqlQuery query(m_ncDb.internalDatabase());
@@ -51,7 +46,7 @@ void MessageManager::initMessageTable()
                 "notification_id TEXT, "
                 "application_id TEXT)"
                 )) {
-        qCritical() << QObject::tr("initializing database \"ncdb\" failed");
+        qCritical() << QObject::tr("creating table \"messages\" failed");
         qCritical() << query.lastError();
         m_valid = false;
     }
