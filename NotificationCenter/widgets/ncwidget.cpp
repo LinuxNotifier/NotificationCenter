@@ -136,21 +136,12 @@ void NcWidget::setWidget(QWidget *widget)
     m_widget = widget;
     m_widget->setMinimumHeight(40);
     m_widget->setParent(this);
-    // m_mainLayout->addWidget(m_widget);
     qDebug() << "count of mainlayout: " << m_mainLayout->count();
     // m_mainLayout->insertWidget(m_mainLayout->count(), m_widget);
     m_mainLayout->addWidget(m_widget);
-    m_title = m_widget->windowTitle();
-    m_titleLabel->setText(m_title);
-    m_icon = m_widget->windowIcon();
-    // connect(m_widget, SIGNAL(close()), this, SLOT(close()));
-    // TODO: more detailed distinction between with/without icon
-    if (!m_icon.isNull()) {
-        m_iconButton->setIcon(m_icon);
-    }
-    else {
-        m_iconButton->hide();
-    }
+    // FIXME: 
+    setWindowIcon(m_widget->windowIcon());
+    setWindowTitle(m_widget->windowTitle());
 }
 
 void NcWidget::paintEvent(QPaintEvent *event)
@@ -201,14 +192,22 @@ QWidget* NcWidget::frameWidget()
     return m_frameWidget;
 }
 
-void NcWidget::setNotificationIcon(const QIcon& icon)
+void NcWidget::setWindowIcon(const QIcon& icon)
 {
-    m_icon = icon;
-    m_iconButton->setIcon(m_icon);
-    m_iconButton->show();
+    // m_icon = icon;
+    // m_iconButton->setIcon(m_icon);
+    // m_iconButton->show();
+
+    // TODO: more detailed distinction between with/without icon
+    if (!m_icon.isNull()) {
+        m_iconButton->setIcon(m_icon);
+    }
+    else {
+        m_iconButton->hide();
+    }
 }
 
-void NcWidget::setNotificationTitle(const QString& title)
+void NcWidget::setWindowTitle(const QString& title)
 {
     m_title = title;
     m_titleLabel->setText(m_title);

@@ -21,62 +21,64 @@ class QLabel;
 class NcWidget : public QWidget
 {
     Q_OBJECT
-public:
-    enum class Style {
-        Preview,
-        Normal,
-        Extended,
-    };
-    Q_ENUM(Style)
 
-    explicit NcWidget(QWidget *parent=nullptr);
-    virtual ~NcWidget();
+    public:
+        enum class Style {
+            Preview,
+            Normal,
+            Extended,
+        };
+        Q_ENUM(Style)
 
-    inline bool isCallable();
-    void setCallable(bool callable=true);
-    void setWidget(QWidget *widget);
-    bool eventFilter(QObject *watched, QEvent *event) override;
+        explicit NcWidget(QWidget *parent=nullptr);
+        virtual ~NcWidget();
 
-    QWidget *frameWidget();
+        inline bool isCallable();
+        void setCallable(bool callable=true);
+        void setWidget(QWidget *widget);
+        bool eventFilter(QObject *watched, QEvent *event) override;
 
-    Style getStyle();
-    void setStyle(Style style);
-    void toggleStyle();
+        QWidget *frameWidget();
 
-    // void setWindowIcon(const QIcon& icon) override;
-    // void setWindowTitle(const QString& title) override;
-    void setNotificationIcon(const QIcon& icon);
-    void setNotificationTitle(const QString& title);
+        Style getStyle();
+        void setStyle(Style style);
+        void toggleStyle();
 
-protected:
-    void closeEvent(QCloseEvent *event) override;
-    void paintEvent(QPaintEvent *event) override;
+        void setWindowIcon(const QIcon& icon);
+        void setWindowTitle(const QString& title);
+        // // FIXME: figure out will the icon since it's reference
+        // void setIcon(const QIcon& icon);
+        // void setTitle(const QString& title);
 
-    // inline QHBoxLayout* frameLayout();     // used for custom title bar
-    // inline QVBoxLayout* mainLayout();
+    protected:
+        void closeEvent(QCloseEvent *event) override;
+        void paintEvent(QPaintEvent *event) override;
 
-    QHBoxLayout *m_frameLayout;
-    QVBoxLayout *m_mainLayout;
+        // inline QHBoxLayout* frameLayout();     // used for custom title bar
+        // inline QVBoxLayout* mainLayout();
 
-signals:
-    void startUpApp();
-    void closed();
+        QHBoxLayout *m_frameLayout;
+        QVBoxLayout *m_mainLayout;
 
-public slots:
-    virtual void onStartUpApp();
-    virtual void refreshContents();          // used when the NC contents needs udpated
+    signals:
+        void startUpApp();
+        void closed();
 
-private:
+    public slots:
+        virtual void onStartUpApp();
+        virtual void refreshContents();          // used when the NC contents needs udpated
 
-    QString m_title;
-    QIcon m_icon;
-    bool m_callable = false;
-    QWidget *m_widget;
-    QWidget *m_frameWidget;
-    QPushButton *m_iconButton;
-    QPushButton *m_moveButton;
-    QLabel *m_titleLabel;
-    Style m_style = Style::Preview;
+    private:
+
+        QString m_title;
+        QIcon m_icon;
+        bool m_callable = false;
+        QWidget *m_widget;
+        QWidget *m_frameWidget;
+        QPushButton *m_iconButton;
+        QPushButton *m_moveButton;
+        QLabel *m_titleLabel;
+        Style m_style = Style::Preview;
 };
 
 #endif // NBASEWIDGET_H

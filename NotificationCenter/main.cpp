@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 
     shared_ptr<NcMessage> msg = NotificationCenter::createMessage();
     msg->setTitle("hello")
+        .setIcon(QIcon::fromTheme("edit-undo"))
         .setContent("hello world");
     NotificationCenter::notify(msg);
     NotificationCenter::notify(msg);

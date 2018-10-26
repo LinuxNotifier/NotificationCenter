@@ -30,7 +30,7 @@ set(FORMS mainwindow.ui
     )
 set(RESOURCES resources.qrc
     )
-file(GLOB_RECURSE WIDGETS "widgets/*")
+file(GLOB WIDGETS "widgets/*")
 
 add_library(${${PROJECT_NAME}_LIBRARY} STATIC ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES} ${WIDGETS})
 target_link_libraries(${${PROJECT_NAME}_LIBRARY} ${Qt})

@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     NotificationCenter &nc = NotificationCenter::instance();
     connect(&NotificationCenter::instance(), SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SLOT(onNewMessage(shared_ptr<NcMessage>)));
     connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
-    connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
+    connect(&nc, SIGNAL(messageClosed(const QString)), this, SLOT(onMessageClosed(const QString)));
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 
     connect(&nc, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(shared_ptr<QPluginLoader>)));
@@ -246,27 +246,70 @@ void MainWindow::initUi()
 
 void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
 {
-    // TODO
+    // TODO: beautify the widget UI
     qDebug() << "received a new message:" << message->title();
 
-    NcNotificationWidget *ncw = new NcNotificationWidget;
-    ncw->addMessage(message);
-    ncw->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    m_notificationsLayout->insertWidget(0, ncw);
-    ncw->setMaximumHeight(100);
-    QWidget *frameWidget = ncw->frameWidget();
+    NcNotificationWidget *widget = new NcNotificationWidget;
+    QWidget *messageWidget = new QWidget(widget);
+    QLabel *contentLabel = new QLabel(messageWidget);
+    contentLabel->setText(message->content());
+
+    messageWidget->setWindowTitle(message->title());
+    messageWidget->setWindowIcon(message->icon());
+    widget->setWidget(messageWidget);
+    showNotification(widget);
+
+    m_msgId2Widget[message->messageId()] = widget;
+    m_widget2MsgId[widget] = message->messageId();
+}
+
+void MainWindow::onNewNotification(NcNotificationWidget *widget)
+{
+    qDebug() << "received notification" << widget;
+    showNotification(widget);
+}
+
+void MainWindow::showNotification(NcNotificationWidget *widget)
+{
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_notificationsLayout->insertWidget(0, widget);
+    widget->setMaximumHeight(100);
+    QWidget *frameWidget = widget->frameWidget();
     qDebug() << "parent of frameWidget: " << frameWidget->parent();
     frameWidget->installEventFilter(this);
-    // ncw->installEventFilter(this);
-    connect(ncw, SIGNAL(closed()), this, SLOT(messageClosed(QString)));
-
-
+    // TODO: enable widget to expand whatever part of this widget is clicked
+    // widget->installEventFilter(this);
+    connect(widget, SIGNAL(closed()), this, SLOT(onNotificationClosed()));
 }
 
 void MainWindow::onMessageExpired(const QString messageId)
 {
-    // TODO
     qDebug() << "received a message expired" << messageId;
+    onMessageClosed(messageId);
+}
+
+void MainWindow::onNotificationClosed()
+{
+    qDebug() << sender() << "closed";
+    NcNotificationWidget *widget = static_cast<NcNotificationWidget *>(sender());
+    // this notification widget is created by MainWindow::newMessage(shared_ptr<NcNotificationWidget> message)
+    if (m_widget2MsgId.contains(widget)) {
+        /* this will cause it receiving a messageClosed signal again,
+            but it doesn't matter */
+        emit messageClosed(m_widget2MsgId[widget]);
+    }
+    m_notificationsLayout->removeWidget(widget);
+    sender()->deleteLater();
+}
+
+void MainWindow::onMessageClosed(const QString messageId)
+{
+    if (m_msgId2Widget.contains(messageId)) {
+        qDebug() << messageId << "closed";
+        NcNotificationWidget *widget = m_msgId2Widget[messageId];
+        m_notificationsLayout->removeWidget(widget);
+        widget->deleteLater();
+    }
 }
 
 void MainWindow::onModeChanged(bool quiet)
