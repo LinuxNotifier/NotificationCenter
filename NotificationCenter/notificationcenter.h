@@ -9,6 +9,7 @@ using namespace std;
 class PluginInterface;
 class NcMessage;
 class NotificationCenterPrivate;
+class NcNotificationWidget;
 class MainWindow;
 class MessageManager;
 class PluginManager;
@@ -20,6 +21,7 @@ class NotificationCenter : public QObject
 
     signals:
         void newMessage(shared_ptr<NcMessage> message);
+        void newNotification(NcNotificationWidget *widget);
         void messageExpired(const QString messageId);
         void messageClosed(const QString messageId);
 
@@ -42,6 +44,8 @@ class NotificationCenter : public QObject
 
         static shared_ptr<NcMessage> createMessage();
         static bool notify(shared_ptr<NcMessage> message);
+        // NOTE: the following method always returns true
+        static bool notify(NcNotificationWidget *widget);
 
         static bool quietMode();
         static void setQuietMode(bool quiet = true);

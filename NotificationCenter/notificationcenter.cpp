@@ -1,5 +1,6 @@
 #include "notificationcenter.h"
 #include "notificationcenter_p.h"
+#include "ncnotificationwidget.h"
 #include "plugininterface.h"
 #include "messagemanager.h"
 #include "pluginmanager.h"
@@ -47,7 +48,7 @@ QString NotificationCenter::version()
 
 void NotificationCenter::setView(MainWindow *view)
 {
-    connect(view, SIGNAL(messageClosed(const QString)), this, SIGNAL(messageExpired(const QString)));
+    connect(view, SIGNAL(messageClosed(const QString)), this, SIGNAL(messageClosed(const QString)));
 
 }
 
@@ -85,6 +86,12 @@ bool NotificationCenter::notify(shared_ptr<NcMessage> message)
     return true;
 }
 
+bool NotificationCenter::notify(NcNotificationWidget *widget)
+{
+
+    emit instance().newNotification(widget);
+    return true;
+}
 bool NotificationCenter::quietMode()
 {
     return instance().d_ptr->m_quietMode;
