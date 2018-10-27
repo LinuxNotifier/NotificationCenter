@@ -112,10 +112,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::focusChanged(QWidget *old, QWidget *now)
 {
-#ifndef DEBUG
+// #ifndef DEBUG
     if (!now)                   // losing focus
         hide();
-#endif
+// #endif
 }
 
 void MainWindow::show()

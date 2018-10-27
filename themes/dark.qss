@@ -33,15 +33,15 @@ QTabBar::tab:selected {
 
 QTabWidget::pane {
     top: 15px;
+    border: 0px;
+    margin: 0px;
+    padding-top: 9px;
     border-top: 1px solid grey;
     subcontrol-position: top 10px;
         background: transparent;
         background-color: rgbs(255, 255, 255, 0);
         /* background-color: red; */
 
-    border: 0px;
-    margin: 0px;
-    padding: 0px;
 }
 
 QWidget#MainWindow {
