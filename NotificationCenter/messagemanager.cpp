@@ -24,7 +24,8 @@ MessageManager::MessageManager(NotificationCenter *parent) :
     initMessageTable();
     // FIXME: duplicate message if new message is inserted before loading
     // messages when program starts up
-    QTimer::singleShot(1000, this, &MessageManager::loadMessagees);
+    // QTimer::singleShot(1000, this, &MessageManager::loadMessages);
+    loadMessages();
 }
 
 MessageManager::~MessageManager()
@@ -56,7 +57,7 @@ void MessageManager::initMessageTable()
         m_valid = true;
 }
 
-void MessageManager::loadMessagees()
+void MessageManager::loadMessages()
 {
     MessageList msgList = selectAllMessages();
     for (const shared_ptr<NcMessage> msg : msgList) {

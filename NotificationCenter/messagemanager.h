@@ -40,7 +40,7 @@ class MessageManager : public QObject
 
     private:
         void initMessageTable();
-        void loadMessagees();
+        void loadMessages();
 
         bool insertMessage(shared_ptr<NcMessage> message);
         bool insertMessage(const QString& messageId, const QString& title,
