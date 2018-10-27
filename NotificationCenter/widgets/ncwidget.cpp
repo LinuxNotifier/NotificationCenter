@@ -11,6 +11,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QStyleOption>
+#include <QSize>
 
 NcWidget::NcWidget(QWidget *parent) :
     QWidget(parent),
@@ -44,6 +45,7 @@ NcWidget::NcWidget(QWidget *parent) :
     QSizePolicy sp_retain = sizePolicy();
     sp_retain.setRetainSizeWhenHidden(true);
     setSizePolicy(sp_retain);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
@@ -69,7 +71,20 @@ NcWidget::NcWidget(QWidget *parent) :
     qDebug() << "the later layout is " << layout();
     printf("**[13]**\n");
 
+    // setMaskWidth(10);
 
+
+}
+
+int NcWidget::maskWidth() const
+{
+    return m_maskWidth;
+}
+
+void NcWidget::setMaskWidth(int maskWidget)
+{
+    m_maskWidth = maskWidget;
+    setMask(QRegion(QRect(0, 0, m_maskWidth, height())));
 }
 
 bool NcWidget::isCallable()
@@ -111,15 +126,18 @@ NcWidget::~NcWidget()
 
 void NcWidget::closeEvent(QCloseEvent *event)
 {
-    QPropertyAnimation *closeAnime = new QPropertyAnimation(this, "maximumWidth");
+
+    // TODO: don't use new
+    QPropertyAnimation *closeAnime = new QPropertyAnimation(this, "maskWidth");
     closeAnime->setParent(this);          // for auto-delete
     // FIXME: it seems the anime playing is delayed, when the anime is in half,
     // this widget is removed (finished() signal emitted).
     // closeAnime->setDuration(150);
-    closeAnime->setDuration(500);
+    closeAnime->setDuration(200);
     closeAnime->setStartValue(width());
     closeAnime->setEndValue(0);
-
+    closeAnime->setEasingCurve(QEasingCurve::InSine);
+    closeAnime->start(QAbstractAnimation::DeleteWhenStopped);
     // TODO: reduce opacity along with 
 
     connect(closeAnime, SIGNAL(finished()), this, SIGNAL(closed()));
@@ -129,6 +147,7 @@ void NcWidget::closeEvent(QCloseEvent *event)
     // qDebug() << "emit newNotification signal";
     // emit newNotification(s);
     event->ignore();
+    // closeAnime->deleteLater();
 }
 
 void NcWidget::setWidget(QWidget *widget)
@@ -167,6 +186,14 @@ void NcWidget::setStyle(Style style)
         setMaximumHeight(100);
     else if (m_style == Style::Extended)
         setMaximumHeight(QWIDGETSIZE_MAX);
+#if DEBUG
+    // setFixedHeight(400);
+    qDebug() << "sizeHint of widget:" << sizeHint();
+    qDebug() << "size of widget:" << size();
+    qDebug() << "sizeHint of messageWidget:" << m_widget->sizeHint();
+    qDebug() << "size of messageWidget:" << m_widget->size();
+#endif
+
 }
 
 void NcWidget::toggleStyle()
@@ -190,6 +217,13 @@ void NcWidget::toggleStyle()
 QWidget* NcWidget::frameWidget()
 {
     return m_frameWidget;
+}
+
+QSize NcWidget::sizeHint() const
+{
+    // return QSize(100, 200);
+    return m_widget->sizeHint();
+    // return size();
 }
 
 void NcWidget::setWindowIcon(const QIcon& icon)

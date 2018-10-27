@@ -11,6 +11,7 @@ class QHBoxLayout;
 class QCloseEvent;
 class QPushButton;
 class QLabel;
+class QSize;
 
 /**
  * Base class for Notification widget, like desktop popup, notification widget, plugin widget.
@@ -21,6 +22,7 @@ class QLabel;
 class NcWidget : public QWidget
 {
     Q_OBJECT
+        Q_PROPERTY(int maskWidth READ maskWidth WRITE setMaskWidth DESIGNABLE true);
 
     public:
         enum class Style {
@@ -33,6 +35,9 @@ class NcWidget : public QWidget
         explicit NcWidget(QWidget *parent=nullptr);
         virtual ~NcWidget();
 
+        int maskWidth() const;
+        void setMaskWidth(int);
+
         inline bool isCallable();
         void setCallable(bool callable=true);
         void setWidget(QWidget *widget);
@@ -43,6 +48,8 @@ class NcWidget : public QWidget
         Style getStyle();
         void setStyle(Style style);
         void toggleStyle();
+
+        QSize sizeHint() const override;
 
         void setWindowIcon(const QIcon& icon);
         void setWindowTitle(const QString& title);
@@ -79,6 +86,8 @@ class NcWidget : public QWidget
         QPushButton *m_moveButton;
         QLabel *m_titleLabel;
         Style m_style = Style::Preview;
+
+        int m_maskWidth;
 };
 
 #endif // NBASEWIDGET_H
