@@ -24,8 +24,8 @@ MessageManager::MessageManager(NotificationCenter *parent) :
     initMessageTable();
     // FIXME: duplicate message if new message is inserted before loading
     // messages when program starts up
-    // QTimer::singleShot(1000, this, &MessageManager::loadMessages);
-    loadMessages();
+    QTimer::singleShot(1000, this, &MessageManager::loadMessages);
+    // loadMessages();
 }
 
 MessageManager::~MessageManager()

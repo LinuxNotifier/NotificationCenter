@@ -112,17 +112,21 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::focusChanged(QWidget *old, QWidget *now)
 {
+#ifndef DEBUG
     if (!now)                   // losing focus
         hide();
+#endif
 }
 
 void MainWindow::show()
 {
     QPropertyAnimation *showAnimation = new QPropertyAnimation(this, "pos", this);
-    showAnimation->setDuration(200);
+    // showAnimation->setDuration(200);
+    showAnimation->setDuration(500);
     showAnimation->setStartValue(m_geometry.topRight());
     showAnimation->setEndValue(m_geometry.topLeft());
-    showAnimation->setEasingCurve(QEasingCurve::InSine);
+    // showAnimation->setEasingCurve(QEasingCurve::InSine);
+    showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
     showAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 
     QWidget::show();
@@ -131,7 +135,7 @@ void MainWindow::show()
 void MainWindow::hide()
 {
     QPropertyAnimation *hideAnimation = new QPropertyAnimation(this, "pos", this);
-    hideAnimation->setDuration(200);
+    hideAnimation->setDuration(500);
     hideAnimation->setStartValue(pos());
     hideAnimation->setEndValue(m_geometry.topRight());
     hideAnimation->setEasingCurve(QEasingCurve::InSine);
@@ -144,6 +148,18 @@ void MainWindow::hide()
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
+    // TODO: listen clearEvent, and set maximumHeight decrease peacefully.
+    if (event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        QWidget *widget = static_cast<QWidget *>(watched);
+        qDebug() << widget << " was clicked";
+        if (mouseEvent->buttons() & Qt::LeftButton) {
+            NcNotificationWidget * notificationWidget = static_cast<NcNotificationWidget *>(widget->parent());
+            if (notificationWidget)
+                notificationWidget->toggleStyle();
+        }
+    }
+
     return QWidget::eventFilter(watched, event);
 }
 
@@ -199,17 +215,30 @@ void MainWindow::setupSystemTrayIcon()
 
 void MainWindow::initUi()
 {
+    // FIXME: scroll is very jumpy, maybe listen mouseEvent, and set scrollbar index
+    // TODO: change the margin of notification layout, 已經跟那絛橫線連在一起了
+
+    // MainWindow
+    setContentsMargins(NOTIFICATIONCENTER_MARGIN, 9, NOTIFICATIONCENTER_MARGIN, 0);
+    ui->verticalLayout->setContentsMargins(0, 0, 0, 0);
+
     m_todayTabLayout = new QVBoxLayout(ui->todayTab);
     ui->todayTab->setLayout(m_todayTabLayout);
+    m_todayTabLayout->setAlignment(Qt::AlignTop);
     m_todayTabLayout->setContentsMargins(0, 0, 0, 0);
+    m_todayTabLayout->setSpacing(0);
 
-    // FIXME: scroll is very jumpy
-    QScrollArea *scrollArea = new QScrollArea;
+    // Today tab
+    QScrollArea *scrollArea = new QScrollArea(ui->todayTab);
     m_todayTabLayout->addWidget(scrollArea);
     scrollArea->setWidgetResizable(true);
     scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea->setContentsMargins(0, 0, 0, 0);
+
     QWidget *pluginWidget = new QWidget(scrollArea);
     scrollArea->setWidget(pluginWidget);
+    scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    pluginWidget->setContentsMargins(0, 0, 0, 0);
     m_pluginsLayout = new QVBoxLayout(pluginWidget);
     pluginWidget->setLayout(m_pluginsLayout);
     m_pluginsLayout->setAlignment(Qt::AlignTop);
@@ -217,9 +246,7 @@ void MainWindow::initUi()
     m_pluginsLayout->setSpacing(10);
     
 
-
-
-    // TODO: change the margin of notification layout, 已經跟那絛橫線連在一起了
+    // Notifications tab
     m_notificationsTabLayout = new QVBoxLayout(ui->notificationsTab);
     ui->notificationsTab->setLayout(m_notificationsTabLayout);
     m_notificationsTabLayout->setAlignment(Qt::AlignTop);
@@ -227,21 +254,24 @@ void MainWindow::initUi()
     m_notificationsTabLayout->setSpacing(10);
     // m_notificationsTabLayout->addStretch();
 
-    QScrollArea *notificationScrollArea = new QScrollArea;
-    auto *scrollBar = notificationScrollArea->verticalScrollBar();
-    scrollBar->setSingleStep(1);
+    QScrollArea *notificationScrollArea = new QScrollArea(ui->notificationsTab);
+    // auto *scrollBar = notificationScrollArea->verticalScrollBar();
+    // scrollBar->setSingleStep(1);
     m_notificationsTabLayout->addWidget(notificationScrollArea);
     notificationScrollArea->setWidgetResizable(true);
     notificationScrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    QWidget *notificationWidget = new QWidget(notificationScrollArea);
-    notificationScrollArea->setWidget(notificationWidget);
-    m_notificationsLayout = new QVBoxLayout(notificationWidget);
+    notificationScrollArea->setContentsMargins(0, 0, 0, 0);
+
+    QWidget *notificationsWidget = new QWidget(notificationScrollArea);
+    notificationScrollArea->setWidget(notificationsWidget);
+    notificationsWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    notificationsWidget->setContentsMargins(0, 0, 0, 0);
+    m_notificationsLayout = new QVBoxLayout(notificationsWidget);
+    notificationsWidget->setLayout(m_notificationsLayout);
     m_notificationsLayout->setAlignment(Qt::AlignTop);
     m_notificationsLayout->setContentsMargins(0, 0, 0, 0);
     m_notificationsLayout->setSpacing(10);
     m_notificationsLayout->addStretch();
-    notificationWidget->setLayout(m_notificationsLayout);
-    notificationWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
 void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
@@ -249,16 +279,35 @@ void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
     // TODO: beautify the widget UI
     qDebug() << "received a new message:" << message->title();
 
-    NcNotificationWidget *widget = new NcNotificationWidget;
-    QWidget *messageWidget = new QWidget(widget);
-    QLabel *contentLabel = new QLabel(messageWidget);
-    contentLabel->setText(message->content());
+    NcNotificationWidget *widget = new NcNotificationWidget(this);
 
+    QWidget *messageWidget = new QWidget(widget);
+    messageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    messageWidget->setContentsMargins(0, 0, 0, 0);
     messageWidget->setWindowTitle(message->title());
     messageWidget->setWindowIcon(message->icon());
+
+    QVBoxLayout *messgeLayout = new QVBoxLayout(messageWidget);
+    messageWidget->setLayout(messgeLayout);
+    messgeLayout->setContentsMargins(4, 0, 4, 0);
+    messgeLayout->setAlignment(Qt::AlignTop);
+    messgeLayout->setSpacing(0);
+
+    QLabel *contentLabel = new QLabel(messageWidget);
+    messgeLayout->addWidget(contentLabel);
+    contentLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    contentLabel->setContentsMargins(0, 0, 0, 0);
+    contentLabel->setTextFormat(Qt::RichText);
+    contentLabel->setWordWrap(true);
+    contentLabel->setStyleSheet("padding: 0px; margin: 0px; border: 0px;");
+    // Note: use QString::toHtmlEscaped() if you don't want set plain text
+    contentLabel->setText(message->content());
+
     widget->setWidget(messageWidget);
     showNotification(widget);
 
+    /* this won't be overridden since the messageId should be unique,
+        and every NcMessage cannot be notified twice */
     m_msgId2Widget[message->messageId()] = widget;
     m_widget2MsgId[widget] = message->messageId();
 }
@@ -273,9 +322,10 @@ void MainWindow::showNotification(NcNotificationWidget *widget)
 {
     widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_notificationsLayout->insertWidget(0, widget);
-    widget->setMaximumHeight(100);
+    widget->setFixedWidth(NOTIFICATIONCENTER_WIDTH - 2 * NOTIFICATIONCENTER_MARGIN);
+    widget->setStyle(NcWidget::Style::Preview);
+
     QWidget *frameWidget = widget->frameWidget();
-    qDebug() << "parent of frameWidget: " << frameWidget->parent();
     frameWidget->installEventFilter(this);
     // TODO: enable widget to expand whatever part of this widget is clicked
     // widget->installEventFilter(this);
@@ -297,7 +347,11 @@ void MainWindow::onNotificationClosed()
         /* this will cause it receiving a messageClosed signal again,
             but it doesn't matter */
         emit messageClosed(m_widget2MsgId[widget]);
+        QString messageId = m_widget2MsgId[widget];
+        m_msgId2Widget.remove(messageId);
+        m_widget2MsgId.remove(widget);
     }
+
     m_notificationsLayout->removeWidget(widget);
     sender()->deleteLater();
 }

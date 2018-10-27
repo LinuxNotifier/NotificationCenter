@@ -32,6 +32,12 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(__NOTIFICATIONCENTER_VERSION__);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
+    // get icon filename
+    // QIcon icon(":/images/notificationcenter_icon.png");
+    // qDebug() << "name of icon:" << icon.name();
+    // icon = QIcon::fromTheme(":dit-undo");
+    // qDebug() << "name of icon:" << icon.name();
+
     QSettings settings;
     qDebug() << settings.fileName();
     if (!QFile(settings.fileName()).exists())
@@ -55,8 +61,12 @@ int main(int argc, char *argv[])
     shared_ptr<NcMessage> msg = NotificationCenter::createMessage();
     msg->setTitle("hello")
         .setIcon(QIcon::fromTheme("edit-undo"))
-        .setContent("hello world");
-    NotificationCenter::notify(msg);
+        // .setContent("<b>Hi</b>\n" + QString("#include <QtCore>").toHtmlEscaped());
+        // .setContent("<html><head/><body><p>sfdsdfff<img src=\":/images/notificationcenter_icon.png\"/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p>helo, world</p></body></html>");
+        // .setContent("<html><head/><body><p>sfdsdfff<img src=\":/images/notificationcenter_icon.png\" height=\"16\" width=\"16\"/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p>helo, world</p></body></html>");
+        .setContent("<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1");
+        // .setContent("<b>Hi</b>, how are you doing?");
+        // .setContent("<b>hello</b> world\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello, this is a test message, you should ignore it. Hey, how are you? I'm fine. How are you? Today's weather is wonderful, how do you think? Yes, it's really wonderful.");
     NotificationCenter::notify(msg);
 
 

@@ -15,7 +15,7 @@ NcNotificationWidget::NcNotificationWidget(QWidget *parent) :
 
     // TODO: change to close icon
     m_closeButton = new QPushButton(this);
-    m_closeButton->setIcon(QIcon(":/images/ncnotificationwidget_close_button.png"));
+    m_closeButton->setIcon(QIcon(":/images/ncnotificationwidget_clear_message.png"));
     m_closeButton->resize(16, 16);
     m_closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     // m_frameLayout->addWidget(m_closeButton, Qt::AlignLeft);

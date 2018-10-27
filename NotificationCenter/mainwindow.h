@@ -27,6 +27,7 @@ class MainWindow;
 }
 
 #define NOTIFICATIONCENTER_WIDTH 343
+#define NOTIFICATIONCENTER_MARGIN 6
 
 class MainWindow : public QWidget
 {
@@ -51,6 +52,9 @@ class MainWindow : public QWidget
         void onMessageClosed(const QString messageId);
         void onMessageExpired(const QString messageId);
         void onNewNotification(NcNotificationWidget *widget);
+        // this slot is called actually not when notification widget
+        // is closed, but the user clicked the close button. It give
+        // us time to deal with the close animation.
         void onNotificationClosed();
         void onModeChanged(bool quiet);
 

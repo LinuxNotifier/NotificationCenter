@@ -49,20 +49,12 @@ class NcWidget : public QWidget
         void setStyle(Style style);
         void toggleStyle();
 
-        QSize sizeHint() const override;
-
         void setWindowIcon(const QIcon& icon);
         void setWindowTitle(const QString& title);
-        // // FIXME: figure out will the icon since it's reference
-        // void setIcon(const QIcon& icon);
-        // void setTitle(const QString& title);
 
     protected:
         void closeEvent(QCloseEvent *event) override;
         void paintEvent(QPaintEvent *event) override;
-
-        // inline QHBoxLayout* frameLayout();     // used for custom title bar
-        // inline QVBoxLayout* mainLayout();
 
         QHBoxLayout *m_frameLayout;
         QVBoxLayout *m_mainLayout;
@@ -75,6 +67,9 @@ class NcWidget : public QWidget
         virtual void onStartUpApp();
         virtual void refreshContents();          // used when the NC contents needs udpated
 
+    private slots:
+        void onCloseAnimationFinished();
+
     private:
 
         QString m_title;
@@ -83,8 +78,7 @@ class NcWidget : public QWidget
         QWidget *m_widget;
         QWidget *m_frameWidget;
         QPushButton *m_iconButton;
-        QPushButton *m_moveButton;
-        QLabel *m_titleLabel;
+        QPushButton *m_titleButton;
         Style m_style = Style::Preview;
 
         int m_maskWidth;

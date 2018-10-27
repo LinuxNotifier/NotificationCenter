@@ -12,67 +12,59 @@
 #include <QPainter>
 #include <QStyleOption>
 #include <QSize>
+#include <QSequentialAnimationGroup>
 
 NcWidget::NcWidget(QWidget *parent) :
     QWidget(parent),
     m_widget(nullptr),
     m_frameWidget(new QWidget(this)),
     m_iconButton(new QPushButton(this)),
-    m_titleLabel(new QLabel(this)),
+    m_titleButton(new QPushButton(this)),
     m_mainLayout(new QVBoxLayout),
     m_frameLayout(new QHBoxLayout)
 
 {
     connect(this, SIGNAL(startUpApp()), this, SLOT(onStartUpApp()));
-    // XXX: WARNING this will prevent it from receiving closeEvent!!
-    // installEventFilter(this);
+
     setWindowFlags(Qt::FramelessWindowHint | windowFlags());
 
-    setAttribute(Qt::WA_DeleteOnClose, true);
-
-    setMinimumHeight(WIDGET_MINIMUM_HEIGHT);
-    setMaximumHeight(WIDGET_MAXIMUM_HEIGHT_IN_PREVIEW);
-
-
-    m_iconButton->resize(10, 10);
+    m_iconButton->resize(ICON_SIZE, ICON_SIZE);
     m_iconButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    // m_iconButton->setAlignment(Qt::AlignVCenter);
 
-    // m_titleLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    // m_frameLayout->setAlignment(Qt::AlignVCenter);
+    m_titleButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    m_frameLayout->setAlignment(Qt::AlignVCenter);
 
 
+    // keep layout of title label when icon button is invisible
     // FIXME: don't know whether it does work yet.
     QSizePolicy sp_retain = sizePolicy();
     sp_retain.setRetainSizeWhenHidden(true);
+    qDebug() << "size policy:" << sp_retain;
     setSizePolicy(sp_retain);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
+    // setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     // setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
+    m_mainLayout->setAlignment(Qt::AlignTop);
+    m_mainLayout->setContentsMargins(0, 0, 0, 0);
+    m_mainLayout->setSpacing(10);
+
+    setContentsMargins(0, 0, 0, 0);
+    setLayout(m_mainLayout);
+    m_mainLayout->setContentsMargins(0, 0, 0, 0);
+    m_mainLayout->addWidget(m_frameWidget);
     m_frameLayout->setContentsMargins(0, 0, 0, 0);
     m_frameLayout->addWidget(m_iconButton, Qt::AlignLeft);
-    m_frameLayout->addWidget(m_titleLabel, Qt::AlignLeft | Qt::AlignVCenter);
+    m_frameLayout->addWidget(m_titleButton, Qt::AlignLeft | Qt::AlignVCenter);
     m_frameLayout->addStretch();
     m_frameWidget->setLayout(m_frameLayout);
     m_frameWidget->setStyleSheet("QWidget {border-width: 1px; background-color: grey;}");
     m_frameWidget->setFixedHeight(20);
     setStyleSheet("QWidget {border-width: 1px; background-color: green; border-color: red;}");
+}
 
-    // TODO: try to remove unneccessary m_frameWidget,
-    // see https://forum.qt.io/topic/88586/adding-widgets-dynamically-to-layout-causes-to-them-to-be-misplaced/25
-    m_mainLayout->addWidget(m_frameWidget);
-    // m_frameWidget->hide();
-
-    // m_mainLayout->addLayout(m_frameLayout, Qt::AlignTop);
-    qDebug() <<"count of widgets after add frame layout: " << m_mainLayout->count();
-    qDebug() << "the original layout is " << layout();
-    // FIXME: alreay has a layout, but where?
-    setLayout(m_mainLayout);
-    qDebug() << "the later layout is " << layout();
-    printf("**[13]**\n");
-
-    // setMaskWidth(10);
-
+NcWidget::~NcWidget()
+{
 
 }
 
@@ -96,11 +88,13 @@ void NcWidget::setCallable(bool callable)
 {
     m_callable = callable;
     if (m_callable) {
-        // TODO: set button clickable
+        // TODO: set label clickable (maybe use QPushButton instead of QLabel)
         connect(m_iconButton, SIGNAL(clicked(bool)), this, SLOT(onStartUpApp()));
+        connect(m_titleButton, SIGNAL(clicked(bool)), this, SLOT(onStartUpApp()));
     }
     else {
         disconnect(m_iconButton, SIGNAL(clicked(bool)), this, SLOT(onStartUpApp()));
+        disconnect(m_titleButton, SIGNAL(clicked(bool)), this, SLOT(onStartUpApp()));
     }
 }
 
@@ -119,48 +113,68 @@ void NcWidget::refreshContents()
 
 }
 
-NcWidget::~NcWidget()
-{
-
-}
-
 void NcWidget::closeEvent(QCloseEvent *event)
 {
+    // setStyleSheet("background: transparent; color: transparent;");
+    // setAttribute(Qt::WA_TranslucentBackground);
+    // setVisible(false);
+    // event->ignore();
+    // return;
 
-    // TODO: don't use new
+    QSequentialAnimationGroup *animationGroup = new QSequentialAnimationGroup(this);
+
     QPropertyAnimation *closeAnime = new QPropertyAnimation(this, "maskWidth");
     closeAnime->setParent(this);          // for auto-delete
     // FIXME: it seems the anime playing is delayed, when the anime is in half,
     // this widget is removed (finished() signal emitted).
-    // closeAnime->setDuration(150);
     closeAnime->setDuration(200);
     closeAnime->setStartValue(width());
     closeAnime->setEndValue(0);
-    closeAnime->setEasingCurve(QEasingCurve::InSine);
-    closeAnime->start(QAbstractAnimation::DeleteWhenStopped);
-    // TODO: reduce opacity along with 
+    closeAnime->setEasingCurve(QEasingCurve::InOutQuad);
+    connect(closeAnime, SIGNAL(finished()), this, SLOT(onCloseAnimationFinished()));
 
-    connect(closeAnime, SIGNAL(finished()), this, SIGNAL(closed()));
-    closeAnime->start();
+    QPropertyAnimation *removeAnimation = new QPropertyAnimation(this, "maximumHeight");
+    removeAnimation->setParent(this);
+    removeAnimation->setDuration(500);
+    removeAnimation->setStartValue(height());
+    removeAnimation->setEndValue(0);
+    removeAnimation->setEasingCurve(QEasingCurve::InOutQuad);
 
-    QString s("delete widget");
-    // qDebug() << "emit newNotification signal";
-    // emit newNotification(s);
-    event->ignore();
-    // closeAnime->deleteLater();
+    animationGroup->addAnimation(closeAnime);
+    // // widget->setVisible(false);
+    animationGroup->addAnimation(removeAnimation);
+
+    connect(animationGroup, SIGNAL(finished()), this, SIGNAL(closed()));
+    animationGroup->start(QAbstractAnimation::DeleteWhenStopped);
+
+    event->ignore();        // don't close widget
+    // hide();
+    // setVisible(false);
+    setWindowOpacity(0);
+}
+
+void NcWidget::onCloseAnimationFinished()
+{
+    // sender()->
+    NcWidget *widget = static_cast<NcWidget *>(sender());
+    qDebug()  << "widget" << widget << "closed";
+    widget->setVisible(false);
+    // widget->hide();
 }
 
 void NcWidget::setWidget(QWidget *widget)
 {
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(widget);
     m_widget = widget;
-    m_widget->setMinimumHeight(40);
     m_widget->setParent(this);
-    qDebug() << "count of mainlayout: " << m_mainLayout->count();
-    // m_mainLayout->insertWidget(m_mainLayout->count(), m_widget);
-    m_mainLayout->addWidget(m_widget);
-    // FIXME: 
-    setWindowIcon(m_widget->windowIcon());
-    setWindowTitle(m_widget->windowTitle());
+    // m_mainLayout->addWidget(m_widget);
+    m_mainLayout->addLayout(layout);
+    if (!m_widget->windowIcon().isNull())
+        setWindowIcon(m_widget->windowIcon());
+    if (!m_widget->windowTitle().isNull())
+        setWindowTitle(m_widget->windowTitle());
 }
 
 void NcWidget::paintEvent(QPaintEvent *event)
@@ -169,6 +183,10 @@ void NcWidget::paintEvent(QPaintEvent *event)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    // QPainter p(this);
+    // p.setPen(Qt::transparent);
+    // p.setFont(QFont("Arial", 30));
+    // p.drawText(rect(), Qt::AlignTop, "Qt");
 }
 
 NcWidget::Style NcWidget::getStyle()
@@ -178,61 +196,44 @@ NcWidget::Style NcWidget::getStyle()
 
 void NcWidget::setStyle(Style style)
 {
-    if (m_style == style)
-        return;
-
     m_style = style;
     if (m_style == Style::Preview)
         setMaximumHeight(100);
     else if (m_style == Style::Extended)
         setMaximumHeight(QWIDGETSIZE_MAX);
-#if DEBUG
-    // setFixedHeight(400);
-    qDebug() << "sizeHint of widget:" << sizeHint();
-    qDebug() << "size of widget:" << size();
-    qDebug() << "sizeHint of messageWidget:" << m_widget->sizeHint();
-    qDebug() << "size of messageWidget:" << m_widget->size();
-#endif
-
 }
 
 void NcWidget::toggleStyle()
 {
-    if (m_style == Style::Preview)
-        setStyle(Style::Extended);
-    else
-        setStyle(Style::Preview);
+    qDebug() << size();
+    QPropertyAnimation *scaleAnimation = new QPropertyAnimation(this, "maximumHeight");
+    scaleAnimation->setParent(this);
+    scaleAnimation->setDuration(500);
+    if (m_style == Style::Preview) {
+        scaleAnimation->setStartValue(100);
+        // FIXME: some widget would have height greater than 400
+        scaleAnimation->setEndValue(400);
+        m_style = Style::Extended;
+    }
+    else {
+        scaleAnimation->setStartValue(height());
+        scaleAnimation->setEndValue(100);
+        m_style = Style::Preview;
+    }
+    scaleAnimation->setEasingCurve(QEasingCurve::InOutQuad);
+    scaleAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 }
-
-// QHBoxLayout* NcWidget::frameLayout()
-// {
-//     return m_frameLayout;
-// }
-//
-// QVBoxLayout* NcWidget::mainLayout()
-// {
-//     return m_mainLayout;
-// }
 
 QWidget* NcWidget::frameWidget()
 {
     return m_frameWidget;
 }
 
-QSize NcWidget::sizeHint() const
-{
-    // return QSize(100, 200);
-    return m_widget->sizeHint();
-    // return size();
-}
-
 void NcWidget::setWindowIcon(const QIcon& icon)
 {
-    // m_icon = icon;
-    // m_iconButton->setIcon(m_icon);
-    // m_iconButton->show();
 
     // TODO: more detailed distinction between with/without icon
+    m_icon = icon;
     if (!m_icon.isNull()) {
         m_iconButton->setIcon(m_icon);
     }
@@ -244,5 +245,5 @@ void NcWidget::setWindowIcon(const QIcon& icon)
 void NcWidget::setWindowTitle(const QString& title)
 {
     m_title = title;
-    m_titleLabel->setText(m_title);
+    m_titleButton->setText(m_title);
 }
