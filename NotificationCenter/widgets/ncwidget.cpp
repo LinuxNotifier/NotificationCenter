@@ -40,7 +40,6 @@ NcWidget::NcWidget(QWidget *parent) :
     // FIXME: don't know whether it does work yet.
     QSizePolicy sp_retain = sizePolicy();
     sp_retain.setRetainSizeWhenHidden(true);
-    qDebug() << "size policy:" << sp_retain;
     setSizePolicy(sp_retain);
     // setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     // setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -58,9 +57,11 @@ NcWidget::NcWidget(QWidget *parent) :
     m_frameLayout->addWidget(m_titleButton, Qt::AlignLeft | Qt::AlignVCenter);
     m_frameLayout->addStretch();
     m_frameWidget->setLayout(m_frameLayout);
-    m_frameWidget->setStyleSheet("QWidget {border-width: 1px; background-color: grey;}");
+    m_frameWidget->setObjectName("frameWidget");
     m_frameWidget->setFixedHeight(20);
-    setStyleSheet("QWidget {border-width: 1px; background-color: green; border-color: red;}");
+
+    // test code
+    setCallable(true);
 }
 
 NcWidget::~NcWidget()
@@ -141,15 +142,12 @@ void NcWidget::closeEvent(QCloseEvent *event)
     removeAnimation->setEasingCurve(QEasingCurve::InOutQuad);
 
     animationGroup->addAnimation(closeAnime);
-    // // widget->setVisible(false);
     animationGroup->addAnimation(removeAnimation);
 
     connect(animationGroup, SIGNAL(finished()), this, SIGNAL(closed()));
     animationGroup->start(QAbstractAnimation::DeleteWhenStopped);
 
     event->ignore();        // don't close widget
-    // hide();
-    // setVisible(false);
     setWindowOpacity(0);
 }
 
@@ -164,13 +162,9 @@ void NcWidget::onCloseAnimationFinished()
 
 void NcWidget::setWidget(QWidget *widget)
 {
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(widget);
     m_widget = widget;
     m_widget->setParent(this);
-    // m_mainLayout->addWidget(m_widget);
-    m_mainLayout->addLayout(layout);
+    m_mainLayout->addWidget(m_widget);
     if (!m_widget->windowIcon().isNull())
         setWindowIcon(m_widget->windowIcon());
     if (!m_widget->windowTitle().isNull())
@@ -183,10 +177,6 @@ void NcWidget::paintEvent(QPaintEvent *event)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-    // QPainter p(this);
-    // p.setPen(Qt::transparent);
-    // p.setFont(QFont("Arial", 30));
-    // p.drawText(rect(), Qt::AlignTop, "Qt");
 }
 
 NcWidget::Style NcWidget::getStyle()

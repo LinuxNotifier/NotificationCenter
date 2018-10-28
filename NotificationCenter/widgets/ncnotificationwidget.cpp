@@ -3,6 +3,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QIcon>
+#include <QDebug>
 
 NcNotificationWidget::NcNotificationWidget(QWidget *parent) :
     NcWidget(parent)

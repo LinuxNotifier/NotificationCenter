@@ -16,16 +16,22 @@ DateTimeWidget::DateTimeWidget(QWidget *parent) :
 {
     setWindowFlags(Qt::FramelessWindowHint | windowFlags());
     m_dateLabel->setText(m_dateTime.date().toString(Qt::SystemLocaleLongDate));
-    m_timeLabel->setText(m_dateTime.time().toString("HH:mm:ss"));
+    // m_timeLabel->setText(m_dateTime.time().toString("HH:mm:ss"));
+    m_timeLabel->setText(m_dateTime.time().toString("HH:mm"));
 
     QFont timeFont = m_timeLabel->font();
     timeFont.setPixelSize(46);
     timeFont.setWeight(QFont::Light);
     m_timeLabel->setFont(timeFont);
+    m_timeLabel->setAlignment(Qt::AlignRight);
 
     m_dateLabel->setWordWrap(true);
+    m_dateLabel->setAlignment(Qt::AlignRight);
 
     m_layout = new QVBoxLayout(this);
+    setLayout(m_layout);
+    // m_layout->setContentsMargins(0, 10, 9, 0);
+    setContentsMargins(9, 4, 9, 4);
     m_layout->setSpacing(0);
     m_layout->setMargin(0);
     m_layout->addStretch();
@@ -33,12 +39,7 @@ DateTimeWidget::DateTimeWidget(QWidget *parent) :
     m_layout->addWidget(m_dateLabel);
     m_layout->addStretch();
 
-    // this->resize(200, 700);
-    QString _c("QFrame { \
-        background-color: transparent; \
-    }");
-    setStyleSheet(_c);
-   // setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(m_timer, SIGNAL(timeout()), this, SLOT(updateDateTime()));
 
@@ -59,7 +60,7 @@ void DateTimeWidget::updateDateTime()
 {
     m_dateTime = QDateTime::currentDateTime();
     m_dateLabel->setText(m_dateTime.date().toString(Qt::SystemLocaleLongDate));
-    m_timeLabel->setText(m_dateTime.time().toString("HH:mm:ss"));
+    m_timeLabel->setText(m_dateTime.time().toString("HH:mm"));
 }
 
 void DateTimeWidget::startTimer()

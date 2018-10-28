@@ -48,6 +48,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&nc, SIGNAL(pluginDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
 
+
+    DateTimeWidget *m_dateTimeWidget = new DateTimeWidget;
+    m_dateTimeWidget->setFixedWidth(NOTIFICATIONCENTER_WIDTH - 2 * NOTIFICATIONCENTER_MARGIN);
+    m_dateTimeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_pluginsLayout->addWidget(m_dateTimeWidget, Qt::AlignTop);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -130,6 +137,7 @@ void MainWindow::show()
     showAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 
     QWidget::show();
+    // TODO: set focus
 }
 
 void MainWindow::hide()
@@ -299,7 +307,6 @@ void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
     contentLabel->setContentsMargins(0, 0, 0, 0);
     contentLabel->setTextFormat(Qt::RichText);
     contentLabel->setWordWrap(true);
-    contentLabel->setStyleSheet("padding: 0px; margin: 0px; border: 0px;");
     // Note: use QString::toHtmlEscaped() if you don't want set plain text
     contentLabel->setText(message->content());
 
