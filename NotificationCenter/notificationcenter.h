@@ -47,6 +47,8 @@ class NotificationCenter : public QObject
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
 
+        // TODO
+        // static QString themeName();
         static bool quietMode();
         static void setQuietMode(bool quiet = true);
         static void toggleQuietMode();

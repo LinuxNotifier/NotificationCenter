@@ -10,7 +10,7 @@
 DateTimeWidget::DateTimeWidget(QWidget *parent) :
     QFrame(parent),
     m_dateTime(QDateTime::currentDateTime()),
-    m_timer(new QTimer),
+    m_timer(new QTimer(this)),
     m_dateLabel(new QLabel(this)),
     m_timeLabel(new QLabel(this))
 {
@@ -18,6 +18,28 @@ DateTimeWidget::DateTimeWidget(QWidget *parent) :
     m_dateLabel->setText(m_dateTime.date().toString(Qt::SystemLocaleLongDate));
     // m_timeLabel->setText(m_dateTime.time().toString("HH:mm:ss"));
     m_timeLabel->setText(m_dateTime.time().toString("HH:mm"));
+
+
+
+
+
+
+    qDebug() << m_dateTime.date().toString(Qt::TextDate);
+    qDebug() << m_dateTime.date().toString(Qt::ISODate);
+    qDebug() << m_dateTime.date().toString(Qt::ISODateWithMs);
+    qDebug() << m_dateTime.date().toString(Qt::SystemLocaleShortDate);
+    qDebug() << m_dateTime.date().toString(Qt::SystemLocaleLongDate);
+    qDebug() << m_dateTime.date().toString(Qt::DefaultLocaleShortDate);
+    qDebug() << m_dateTime.date().toString(Qt::DefaultLocaleLongDate);
+    qDebug() << m_dateTime.date().toString(Qt::RFC2822Date);
+
+
+
+
+
+
+
+
 
     QFont timeFont = m_timeLabel->font();
     timeFont.setPixelSize(46);
@@ -31,7 +53,7 @@ DateTimeWidget::DateTimeWidget(QWidget *parent) :
     m_layout = new QVBoxLayout(this);
     setLayout(m_layout);
     // m_layout->setContentsMargins(0, 10, 9, 0);
-    setContentsMargins(9, 4, 9, 4);
+    setContentsMargins(9, 4, 20, 4);
     m_layout->setSpacing(0);
     m_layout->setMargin(0);
     m_layout->addStretch();

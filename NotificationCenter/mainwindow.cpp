@@ -1,7 +1,8 @@
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 #include "ncnotificationwidget.h"
 #include "datetimewidget.h"
-#include "ui_mainwindow.h"
+#include "ncpluginwidget.h"
 #include "ncmessage.h"
 #include "notificationcenter.h"
 #include "plugininterface.h"
@@ -22,10 +23,33 @@
 #include <QScrollBar>
 #include <QIcon>
 #include <QPluginLoader>
+#include <QScreen>
+#include <QGraphicsEffect>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsScene> 
+
+QPixmap blur_render(QPixmap src, int extent = 5)
+{
+    if(src.isNull()) return QPixmap();   //No need to do anything else!
+    QGraphicsScene scene;
+    QGraphicsPixmapItem item;
+    QGraphicsBlurEffect effect;
+    effect.setBlurRadius(extent);
+    item.setPixmap(src);
+    item.setGraphicsEffect(&effect);
+    scene.addItem(&item);
+    QPixmap res(src.size()+QSize(extent*2, extent*2));
+    res.fill(Qt::transparent);
+    QPainter ptr(&res);
+    scene.render(&ptr, QRectF(), QRectF( -extent, -extent, src.width()+extent*2, src.height()+extent*2 ) );
+    scene.removeItem(&item);
+    return res.copy(extent, extent, src.width() + extent, src.height() + extent);
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_backgroundScene(new QLabel)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | windowFlags());
@@ -33,8 +57,12 @@ MainWindow::MainWindow(QWidget *parent) :
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     setupGeometry();
+    m_backgroundScene->setWindowFlags(windowFlags());
+    setParent(m_backgroundScene);
+    move(0, 0);
+
     connect(qApp->desktop(), &QDesktopWidget::resized, this, &MainWindow::setupGeometry);
-    loadTheme("dark");
+    loadTheme("dark2");
     setupSystemTrayIcon();
     initUi();
 
@@ -54,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dateTimeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_pluginsLayout->addWidget(m_dateTimeWidget, Qt::AlignTop);
 
-
+    // m_backgroundScene->show();
 }
 
 MainWindow::~MainWindow()
@@ -64,6 +92,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupGeometry()
 {
+    m_backgroundScene->setVisible(false);
+
     int menuBarHeight = 0;
     int width = m_notificationCenterWidth;;
     const QRect &screenGeometry = QApplication::desktop()->screenGeometry();
@@ -89,6 +119,11 @@ void MainWindow::setupGeometry()
     setFixedWidth(width);
     setFixedHeight(height);
     m_geometry.setRect(screenGeometry.width() - width, menuBarHeight, width, height);
+
+    m_backgroundScene->setGeometry(m_geometry);
+    m_backgroundScene->setFixedWidth(m_geometry.width());
+    m_backgroundScene->setFixedHeight(m_geometry.height());
+    m_backgroundScene->setVisible(true);
 }
 
 void MainWindow::paintEvent(QPaintEvent *)
@@ -120,37 +155,46 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::focusChanged(QWidget *old, QWidget *now)
 {
 // #ifndef DEBUG
-    if (!now)                   // losing focus
+    if (!now) {                   // losing focus
         hide();
+    }
 // #endif
 }
 
 void MainWindow::show()
 {
-    QPropertyAnimation *showAnimation = new QPropertyAnimation(this, "pos", this);
-    // showAnimation->setDuration(200);
+    // TODO: set focus
+    // FIXME: background moving with MainWindow:
+    // QWidget : QLabel (background image) : MainWindow
+    // when moving QWidget, we also move QLabel in QWidget
+    // FIXME: the border gets very bright!!
+    QPixmap screen = QApplication::primaryScreen()->grabWindow(0);
+    m_backgroundPixmap = blur_render(screen, 60).copy(m_geometry);
+    m_backgroundScene->setPixmap(m_backgroundPixmap);
+    m_backgroundScene->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QPropertyAnimation *showAnimation = new QPropertyAnimation(m_backgroundScene, "pos", this);
     showAnimation->setDuration(500);
     showAnimation->setStartValue(m_geometry.topRight());
     showAnimation->setEndValue(m_geometry.topLeft());
-    // showAnimation->setEasingCurve(QEasingCurve::InSine);
     showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
     showAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 
+    m_backgroundScene->show();
     QWidget::show();
-    // TODO: set focus
 }
 
 void MainWindow::hide()
 {
-    QPropertyAnimation *hideAnimation = new QPropertyAnimation(this, "pos", this);
+    QPropertyAnimation *hideAnimation = new QPropertyAnimation(m_backgroundScene, "pos", this);
     hideAnimation->setDuration(500);
-    hideAnimation->setStartValue(pos());
+    hideAnimation->setStartValue(m_backgroundScene->pos());
     hideAnimation->setEndValue(m_geometry.topRight());
     hideAnimation->setEasingCurve(QEasingCurve::InSine);
     hideAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 
     connect(hideAnimation, &QPropertyAnimation::finished, this, [this] () {
-            QWidget::hide();
+            this->m_backgroundScene->hide();
     });
 }
 
@@ -158,8 +202,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     // TODO: listen clearEvent, and set maximumHeight decrease peacefully.
     if (event->type() == QEvent::MouseButtonPress) {
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-        QWidget *widget = static_cast<QWidget *>(watched);
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        QWidget *widget = qobject_cast<QWidget*>(watched);
         qDebug() << widget << " was clicked";
         if (mouseEvent->buttons() & Qt::LeftButton) {
             NcNotificationWidget * notificationWidget = static_cast<NcNotificationWidget *>(widget->parent());
@@ -292,7 +336,7 @@ void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
     QWidget *messageWidget = new QWidget(widget);
     messageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     messageWidget->setContentsMargins(0, 0, 0, 0);
-    messageWidget->setWindowTitle(message->title());
+    messageWidget->setWindowTitle(message->title() + " -- " + message->createdTime());
     messageWidget->setWindowIcon(message->icon());
 
     QVBoxLayout *messgeLayout = new QVBoxLayout(messageWidget);
@@ -307,6 +351,16 @@ void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
     contentLabel->setContentsMargins(0, 0, 0, 0);
     contentLabel->setTextFormat(Qt::RichText);
     contentLabel->setWordWrap(true);
+
+    // contentLabel->setStyleSheet("color: rgb(152, 152, 157)");
+    QFont timeFont = contentLabel->font();
+    timeFont.setPixelSize(17);
+    // timeFont.setWeight(QFont::Light);
+    timeFont.setWeight(QFont::Normal);
+    contentLabel->setFont(timeFont);
+
+
+
     // Note: use QString::toHtmlEscaped() if you don't want set plain text
     contentLabel->setText(message->content());
 
@@ -347,6 +401,8 @@ void MainWindow::onMessageExpired(const QString messageId)
 
 void MainWindow::onNotificationClosed()
 {
+    // FIXME: the widgets are unstable when removing a widget
+    // maybe I need to implement without QVBoxLayout
     qDebug() << sender() << "closed";
     NcNotificationWidget *widget = static_cast<NcNotificationWidget *>(sender());
     // this notification widget is created by MainWindow::newMessage(shared_ptr<NcNotificationWidget> message)
@@ -378,9 +434,31 @@ void MainWindow::onModeChanged(bool quiet)
     qDebug() << "mode changed:" << quiet;
 }
 
-void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> plugin)
+void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
 {
-    qDebug() << "got new plugin" << plugin->fileName();
+    qDebug() << "got new plugin" << pluginLoader->fileName();
+
+    PluginInterface *interface = qobject_cast<PluginInterface*>(pluginLoader->instance());
+    if (!interface) {
+        qWarning() << pluginLoader->errorString();
+        pluginLoader->unload();
+        pluginLoader->deleteLater();
+        return;
+    }
+#if DEBUG
+    qDebug() << "get plugin interface: " << interface;
+#endif
+
+    interface->initialize(&NotificationCenter::instance());
+    QWidget *w = interface->centralWidget();
+    if (w) {
+        qDebug() << "title: " << w->windowTitle();
+        NcPluginWidget *pluginWidget = new NcPluginWidget(this);
+        pluginWidget->setWidget(w);
+        pluginWidget->setMaximumHeight(300);
+        m_pluginsLayout->addWidget(pluginWidget);
+    }
+
 }
 
 void MainWindow::onPluginDeleted(const QString pluginId)

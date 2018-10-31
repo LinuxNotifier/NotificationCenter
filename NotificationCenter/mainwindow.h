@@ -5,6 +5,7 @@
 #include <QRect>
 #include <memory>
 #include <QHash>
+#include <QPixmap>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ class QRect;
 class QSystemTrayIcon;
 class NcMessage;
 class QString;
+class QLabel;
 
 typedef QHash<QString, NcNotificationWidget*> MsgId2Widget;
 typedef QHash<NcNotificationWidget*, QString> Widget2MsgId;
@@ -92,6 +94,9 @@ class MainWindow : public QWidget
         QVBoxLayout *m_pluginsLayout;
         QVBoxLayout *m_notificationsTabLayout;
         QVBoxLayout *m_notificationsLayout;
+
+        QPixmap m_backgroundPixmap;
+        QLabel *m_backgroundScene;
 
         MsgId2Widget m_msgId2Widget;
         Widget2MsgId m_widget2MsgId;

@@ -59,6 +59,7 @@ NcWidget::NcWidget(QWidget *parent) :
     m_frameWidget->setLayout(m_frameLayout);
     m_frameWidget->setObjectName("frameWidget");
     m_frameWidget->setFixedHeight(20);
+    // m_frameWidget->setFixedHeight(24);
 
     // test code
     setCallable(true);
@@ -195,7 +196,7 @@ void NcWidget::setStyle(Style style)
 
 void NcWidget::toggleStyle()
 {
-    qDebug() << size();
+    // TODO: use QTimer to increase maximumHeight to keep speed
     QPropertyAnimation *scaleAnimation = new QPropertyAnimation(this, "maximumHeight");
     scaleAnimation->setParent(this);
     scaleAnimation->setDuration(500);

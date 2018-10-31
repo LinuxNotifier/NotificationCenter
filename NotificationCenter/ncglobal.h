@@ -11,7 +11,7 @@
 // #define __NOTIFICATIONCENTER_VERSION__ "ver 0.5.0"
 // #define __INTERFACE_VERSION__ "ver 0.5.0"
 
-#define ICON_SIZE 16
+#define ICON_SIZE 24
 
 #define BORDER_RADIUS 5px
 #define WIDGET_MINIMUM_HEIGHT 40
