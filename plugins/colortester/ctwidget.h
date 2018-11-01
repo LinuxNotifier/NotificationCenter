@@ -13,7 +13,9 @@ class CtWidget;
 class QSlider;
 class QLabel;
 
+
 typedef QHash<QSlider*, QLabel*> SliderLabelMap;
+typedef QHash<QWidget*, QString> StyleSheetMap;
 
 class CtWidget : public QWidget
 {
@@ -37,6 +39,7 @@ class CtWidget : public QWidget
         SliderLabelMap m_bgMap;
         QRgb m_fgRgba;
         QRgb m_bgRgba;
+        StyleSheetMap m_styleSheetMap;
 };
 
 #endif // CTWIDGET_H

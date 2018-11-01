@@ -3,6 +3,7 @@
 #include <QColor>
 #include <QPalette>
 #include <QDebug>
+#include <QRegExp>
 
 CtWidget::CtWidget(QWidget *parent) :
     QWidget(parent),
@@ -33,7 +34,6 @@ CtWidget::CtWidget(QWidget *parent) :
 
 CtWidget::~CtWidget()
 {
-    qDebug() << "!!!!! in ColorTester destructor";
     delete ui;
 }
 
@@ -41,79 +41,75 @@ void CtWidget::setTestingWidget(QWidget *widget)
 {
     // TODO: highlighten the border of the widget for a period
     m_testingWidget = widget;
-    qDebug() << m_testingWidget;
-    QColor color = widget->palette().color(QPalette::Background);
-    m_bgRgba = widget->palette().color(QPalette::Background).rgba();
-    ui->bgRedSlider->setValue(qRed(m_bgRgba));
-    ui->bgGreenSlider->setValue(qGreen(m_bgRgba));
-    ui->bgBlueSlider->setValue(qBlue(m_bgRgba));
-    ui->bgAlphaSlider->setValue(qAlpha(m_bgRgba));
+    QString ss = m_testingWidget->styleSheet();
+    if (!m_styleSheetMap.contains(m_testingWidget))
+        m_styleSheetMap[m_testingWidget] = ss;
 
-    m_fgRgba = widget->palette().color(QPalette::Foreground).rgba();
-    ui->fgRedSlider->setValue(qRed(m_fgRgba));
-    ui->fgGreenSlider->setValue(qGreen(m_fgRgba));
-    ui->fgBlueSlider->setValue(qBlue(m_fgRgba));
-    ui->fgAlphaSlider->setValue(qAlpha(m_fgRgba));
+    QRegExp bgRegExp("background-color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
+    if (bgRegExp.indexIn(ss) != -1) {
+        int bgRed = bgRegExp.cap(1).toInt();
+        int bgGreen = bgRegExp.cap(2).toInt();
+        int bgBlue = bgRegExp.cap(3).toInt();
+        int bgAlpha = bgRegExp.cap(4).toInt();
+        ui->bgRedSlider->setValue(bgRed);
+        ui->bgGreenSlider->setValue(bgGreen);
+        ui->bgBlueSlider->setValue(bgBlue);
+        ui->bgAlphaSlider->setValue(bgAlpha);
+    }
+    QRegExp fgRegExp("color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
+    if (fgRegExp.indexIn(ss) != -1) {
+        int fgRed = fgRegExp.cap(1).toInt();
+        int fgGreen = fgRegExp.cap(2).toInt();
+        int fgBlue = fgRegExp.cap(3).toInt();
+        int fgAlpha = fgRegExp.cap(4).toInt();
+        ui->fgRedSlider->setValue(fgRed);
+        ui->fgGreenSlider->setValue(fgGreen);
+        ui->fgBlueSlider->setValue(fgBlue);
+        ui->fgAlphaSlider->setValue(fgAlpha);
+    }
 }
 
 void CtWidget::onValueChanged(int value)
 {
     QSlider *slider = qobject_cast<QSlider*>(sender());
     if (m_bgMap.contains(slider))
-    {
         m_bgMap[slider]->setText(QString::number(value));
-    //     if (m_testingWidget) {
-    // qDebug() << m_testingWidget;
-    //         int red = ui->bgRed->text().toInt();
-    //         int green = ui->bgGreen->text().toInt();
-    //         int blue = ui->bgBlue->text().toInt();
-    //         int alpha = ui->bgAlpha->text().toInt();
-    //         m_testingWidget->setStyleSheet(QString("background-color: rgba(%1, %2, %3, %4);").arg(red).arg(green).arg(blue).arg(alpha));
-    //         // QColor color(red, green, blue, alpha);
-    //         // QPalette palette = m_testingWidget->palette();
-    //         // palette.setColor(QPalette::Background, color);
-    //         // m_testingWidget->setPalette(palette);
-    //     }
-    }
     else if (m_fgMap.contains(slider))
-    {
         m_fgMap[slider]->setText(QString::number(value));
-    //     if (m_testingWidget) {
-    // qDebug() << m_testingWidget;
-    //         int red = ui->fgRed->text().toInt();
-    //         int green = ui->fgGreen->text().toInt();
-    //         int blue = ui->fgBlue->text().toInt();
-    //         int alpha = ui->fgAlpha->text().toInt();
-    //         m_testingWidget->setStyleSheet(QString("color: rgba(%1, %2, %3, %4);").arg(red).arg(green).arg(blue).arg(alpha));
-    //         // QColor color(red, green, blue, alpha);
-    //         // QPalette palette = m_testingWidget->palette();
-    //         // palette.setColor(QPalette::Foreground, color);
-    //         // m_testingWidget->setPalette(palette);
-    //     }
-    }
+
     int bgRed = ui->bgRed->text().toInt();
     int bgGreen = ui->bgGreen->text().toInt();
     int bgBlue = ui->bgBlue->text().toInt();
     int bgAlpha = ui->bgAlpha->text().toInt();
-    // m_testingWidget->setStyleSheet(QString("background-color: rgba(%1, %2, %3, %4);").arg(red).arg(green).arg(blue).arg(alpha));
     int fgRed = ui->fgRed->text().toInt();
     int fgGreen = ui->fgGreen->text().toInt();
     int fgBlue = ui->fgBlue->text().toInt();
     int fgAlpha = ui->fgAlpha->text().toInt();
-    m_testingWidget->setStyleSheet(QString("background-color: rgba(%1, %2, %3, %4); color: rgba(%5, %6, %7, %8);").arg(bgRed).arg(bgGreen).arg(bgBlue).arg(bgAlpha).arg(fgRed).arg(fgGreen).arg(fgBlue).arg(fgAlpha));
+    QString ss = m_testingWidget->styleSheet();
+
+    QRegExp bgRegExp("background-color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
+    if (bgRegExp.indexIn(ss) != -1)
+        ss.replace(bgRegExp, QString("background-color: rgba(%1, %2, %3, %4);").arg(bgRed).arg(bgGreen).arg(bgBlue).arg(bgAlpha));
+    else
+        ss.append(QString(" background-color: rgba(%1, %2, %3, %4);").arg(bgRed).arg(bgGreen).arg(bgBlue).arg(bgAlpha));
+
+
+    // FIXME: properly match "color" but not "background-color"
+    QRegExp fgRegExp(" color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
+    int index = fgRegExp.indexIn(ss);
+    if (index != -1) {
+        ss.replace(fgRegExp, QString(" color: rgba(%1, %2, %3, %4);").arg(fgRed).arg(fgGreen).arg(fgBlue).arg(fgAlpha));
+        
+    }
+    else
+        ss.append(QString(" color: rgba(%1, %2, %3, %4);").arg(fgRed).arg(fgGreen).arg(fgBlue).arg(fgAlpha));
+
+    qDebug() << ss;
+    m_testingWidget->setStyleSheet(ss);
 }
 
 void CtWidget::onReset()
 {
-    if (m_testingWidget) {
-        ui->bgRedSlider->setValue(qRed(m_bgRgba));
-        ui->bgGreenSlider->setValue(qGreen(m_bgRgba));
-        ui->bgBlueSlider->setValue(qBlue(m_bgRgba));
-        ui->bgAlphaSlider->setValue(qAlpha(m_bgRgba));
-
-        ui->fgRedSlider->setValue(qRed(m_fgRgba));
-        ui->fgGreenSlider->setValue(qGreen(m_fgRgba));
-        ui->fgBlueSlider->setValue(qBlue(m_fgRgba));
-        ui->fgAlphaSlider->setValue(qAlpha(m_fgRgba));
-    }
+    if (m_testingWidget && m_styleSheetMap.contains(m_testingWidget))
+        m_testingWidget->setStyleSheet(m_styleSheetMap[m_testingWidget]);
 }

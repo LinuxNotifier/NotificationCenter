@@ -282,6 +282,7 @@ void MainWindow::initUi()
 
     // Today tab
     QScrollArea *scrollArea = new QScrollArea(ui->todayTab);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_todayTabLayout->addWidget(scrollArea);
     scrollArea->setWidgetResizable(true);
     scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -307,6 +308,7 @@ void MainWindow::initUi()
     // m_notificationsTabLayout->addStretch();
 
     QScrollArea *notificationScrollArea = new QScrollArea(ui->notificationsTab);
+    notificationScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     // auto *scrollBar = notificationScrollArea->verticalScrollBar();
     // scrollBar->setSingleStep(1);
     m_notificationsTabLayout->addWidget(notificationScrollArea);
