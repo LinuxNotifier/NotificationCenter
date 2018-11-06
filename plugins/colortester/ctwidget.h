@@ -22,6 +22,8 @@ class CtWidget : public QWidget
     Q_OBJECT
 
     private slots:
+        // TODO: don't use valueChanged signal, it's too frequently changed,
+        // we need a signal when the mouse released
         void onValueChanged(int value);
         void onReset();
 

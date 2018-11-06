@@ -2,7 +2,6 @@
 #include "ui_colortester.h"
 #include <QColor>
 #include <QPalette>
-#include <QDebug>
 #include <QRegExp>
 
 CtWidget::CtWidget(QWidget *parent) :
@@ -85,27 +84,28 @@ void CtWidget::onValueChanged(int value)
     int fgGreen = ui->fgGreen->text().toInt();
     int fgBlue = ui->fgBlue->text().toInt();
     int fgAlpha = ui->fgAlpha->text().toInt();
-    QString ss = m_testingWidget->styleSheet();
+    if (m_testingWidget) {
+        QString ss = m_testingWidget->styleSheet();
 
-    QRegExp bgRegExp("background-color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
-    if (bgRegExp.indexIn(ss) != -1)
-        ss.replace(bgRegExp, QString("background-color: rgba(%1, %2, %3, %4);").arg(bgRed).arg(bgGreen).arg(bgBlue).arg(bgAlpha));
-    else
-        ss.append(QString(" background-color: rgba(%1, %2, %3, %4);").arg(bgRed).arg(bgGreen).arg(bgBlue).arg(bgAlpha));
+        QRegExp bgRegExp("background-color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
+        if (bgRegExp.indexIn(ss) != -1)
+            ss.replace(bgRegExp, QString("background-color: rgba(%1, %2, %3, %4);").arg(bgRed).arg(bgGreen).arg(bgBlue).arg(bgAlpha));
+        else
+            ss.append(QString(" background-color: rgba(%1, %2, %3, %4);").arg(bgRed).arg(bgGreen).arg(bgBlue).arg(bgAlpha));
 
 
-    // FIXME: properly match "color" but not "background-color"
-    QRegExp fgRegExp(" color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
-    int index = fgRegExp.indexIn(ss);
-    if (index != -1) {
-        ss.replace(fgRegExp, QString(" color: rgba(%1, %2, %3, %4);").arg(fgRed).arg(fgGreen).arg(fgBlue).arg(fgAlpha));
-        
+        // FIXME: properly match "color" but not "background-color"
+        QRegExp fgRegExp(" color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
+        int index = fgRegExp.indexIn(ss);
+        if (index != -1) {
+            ss.replace(fgRegExp, QString(" color: rgba(%1, %2, %3, %4);").arg(fgRed).arg(fgGreen).arg(fgBlue).arg(fgAlpha));
+            
+        }
+        else
+            ss.append(QString(" color: rgba(%1, %2, %3, %4);").arg(fgRed).arg(fgGreen).arg(fgBlue).arg(fgAlpha));
+
+        m_testingWidget->setStyleSheet(ss);
     }
-    else
-        ss.append(QString(" color: rgba(%1, %2, %3, %4);").arg(fgRed).arg(fgGreen).arg(fgBlue).arg(fgAlpha));
-
-    qDebug() << ss;
-    m_testingWidget->setStyleSheet(ss);
 }
 
 void CtWidget::onReset()
