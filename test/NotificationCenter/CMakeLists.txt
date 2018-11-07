@@ -10,5 +10,5 @@ add_executable(${TARGET} test_main.cpp
     test_pluginmanager.cpp
     test_ncwidget.cpp
     test_mainwindow.cpp)
-target_link_libraries(${TARGET} ${${PROJECT_NAME}_LIBRARY})
+target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE})
 qt5_use_modules(${TARGET} ${QT})

@@ -43,7 +43,7 @@ class PluginManager : public QObject
 
         // bool insertPlugin()
 
-        NcDatabase &m_ncDb;
+        NcDatabase *m_ncDb;
         PluginMap m_pluginMap;
         bool m_valid = false;
     

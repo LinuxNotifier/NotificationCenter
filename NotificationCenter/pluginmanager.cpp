@@ -25,7 +25,7 @@ PluginManager::~PluginManager()
 
 void PluginManager::initPluginTable()
 {
-    QSqlQuery query(m_ncDb.internalDatabase());
+    QSqlQuery query(m_ncDb->internalDatabase());
     if (!query.exec("CREATE TABLE IF NOT EXISTS plugins "
                 "(plugin_id TEXT PRIMARY KEY NOT NULL, "
                 "name TEXT, "

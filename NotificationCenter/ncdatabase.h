@@ -24,7 +24,7 @@ class NcDatabase : public QObject
 {
     Q_OBJECT
     public:
-        static NcDatabase& instance();
+        static NcDatabase* instance();
         QString dbName() const;
         inline bool isValid() const {
             return d_ptr->m_valid;

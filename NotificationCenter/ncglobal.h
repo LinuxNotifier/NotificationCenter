@@ -14,6 +14,8 @@
 #define ICON_SIZE 24
 
 #define BORDER_RADIUS 5px
+
+// TOOD: change to const int
 #define WIDGET_MINIMUM_HEIGHT 40
 #define WIDGET_MAXIMUM_HEIGHT_IN_PREVIEW 200
 

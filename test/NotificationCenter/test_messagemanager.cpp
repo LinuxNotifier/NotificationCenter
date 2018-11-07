@@ -16,12 +16,12 @@ TEST_CASE("test MessageManager", "[message], [database]") {
     char *argv[] = {(char *)"./test_main"};
     QApplication app(argc, argv);
 
-    NotificationCenter &nc = NotificationCenter::instance();
+    NotificationCenter *nc = NotificationCenter::instance();
 
-    MessageManager msgManager(&nc);
-    nc.setMessageModel(&msgManager);
-    NcDatabase &ncDb = NcDatabase::instance();
-    QSqlQuery query(ncDb.internalDatabase());
+    MessageManager msgManager(nc);
+    nc->setMessageModel(&msgManager);
+    NcDatabase *ncDb = NcDatabase::instance();
+    QSqlQuery query(ncDb->internalDatabase());
     query.exec("DELETE FROM messages");
     query.exec("SELECT * FROM messages");
     QSqlRecord record = query.record();

@@ -66,14 +66,14 @@ MainWindow::MainWindow(QWidget *parent) :
     setupSystemTrayIcon();
     initUi();
 
-    NotificationCenter &nc = NotificationCenter::instance();
-    connect(&NotificationCenter::instance(), SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SLOT(onNewMessage(shared_ptr<NcMessage>)));
-    connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
-    connect(&nc, SIGNAL(messageClosed(const QString)), this, SLOT(onMessageClosed(const QString)));
-    connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
+    NotificationCenter *nc = NotificationCenter::instance();
+    connect(NotificationCenter::instance(), SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SLOT(onNewMessage(shared_ptr<NcMessage>)));
+    connect(nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
+    connect(nc, SIGNAL(messageClosed(const QString)), this, SLOT(onMessageClosed(const QString)));
+    connect(nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 
-    connect(&nc, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(shared_ptr<QPluginLoader>)));
-    connect(&nc, SIGNAL(pluginDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
+    connect(nc, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(shared_ptr<QPluginLoader>)));
+    connect(nc, SIGNAL(pluginDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
 
 
@@ -451,7 +451,7 @@ void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
     qDebug() << "get plugin interface: " << interface;
 #endif
 
-    interface->initialize(&NotificationCenter::instance());
+    interface->initialize(NotificationCenter::instance());
     QWidget *w = interface->centralWidget();
     if (w) {
         qDebug() << "title: " << w->windowTitle();

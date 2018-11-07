@@ -36,10 +36,10 @@ NcDatabase::~NcDatabase()
     
 }
 
-NcDatabase& NcDatabase::instance()
+NcDatabase* NcDatabase::instance()
 {
-    static NcDatabase ncDb(&NotificationCenter::instance());
-    return ncDb;
+    static NcDatabase ncDb(NotificationCenter::instance());
+    return &ncDb;
 }
 
 QString NcDatabase::dbName() const

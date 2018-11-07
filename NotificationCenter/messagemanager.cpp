@@ -35,7 +35,7 @@ MessageManager::~MessageManager()
 
 void MessageManager::initMessageTable()
 {
-    QSqlQuery query(m_ncDb.internalDatabase());
+    QSqlQuery query(m_ncDb->internalDatabase());
     if (!query.exec("CREATE TABLE IF NOT EXISTS messages "
                 "(message_id TEXT PRIMARY KEY NOT NULL, "
                 "title TEXT, "
@@ -107,7 +107,7 @@ bool MessageManager::insertMessage(const QString& messageId, const QString& titl
         const QString& created_time, int priority, int duration,
         const QString& notificationId, const QString& applicationId)
 {
-    QSqlQuery query(m_ncDb.internalDatabase());
+    QSqlQuery query(m_ncDb->internalDatabase());
     query.prepare("INSERT INTO messages "
             "(message_id, "
             "title, "
@@ -191,7 +191,7 @@ bool MessageManager::alterMessage(const QString& messageId, const QString& title
 
 bool MessageManager::deleteMessage(const QString& messageId)
 {
-    QSqlQuery query(m_ncDb.internalDatabase());
+    QSqlQuery query(m_ncDb->internalDatabase());
     query.prepare("DELETE FROM messages WHERE message_id = :message_id");
     query.bindValue(":message_id", messageId);
     bool result = query.exec();
@@ -202,7 +202,7 @@ bool MessageManager::deleteMessage(const QString& messageId)
 
 shared_ptr<NcMessage> MessageManager::selectMessage(const QString& messageId)
 {
-    QSqlQuery query(m_ncDb.internalDatabase());
+    QSqlQuery query(m_ncDb->internalDatabase());
     query.prepare("SELECT * FROM messages WHERE message_id = :message_id");
     query.bindValue(":message_id", messageId);
     shared_ptr<NcMessage> message = NotificationCenter::createMessage();
@@ -240,7 +240,7 @@ shared_ptr<NcMessage> MessageManager::selectMessage(const QString& messageId)
 MessageList MessageManager::selectAllMessages()
 {
     MessageList messageList;
-    QSqlQuery query(m_ncDb.internalDatabase());
+    QSqlQuery query(m_ncDb->internalDatabase());
     if (!query.exec("SELECT message_id FROM messages ORDER BY created_time")) {
         qCritical() << query.lastError();
         return messageList;

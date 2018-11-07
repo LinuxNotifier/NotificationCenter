@@ -45,16 +45,16 @@ int main(int argc, char *argv[])
 
     setLanguage(settings.value("language", "zh_TW").toString());
 
-    NotificationCenter &nc = NotificationCenter::instance();
+    NotificationCenter *nc = NotificationCenter::instance();
 
     MainWindow w;
-    nc.setView(&w);
+    nc->setView(&w);
 
-    MessageManager msgManager(&nc);
-    nc.setMessageModel(&msgManager);
+    MessageManager msgManager(nc);
+    nc->setMessageModel(&msgManager);
 
-    PluginManager pluginManager(&nc);
-    nc.setPluginModel(&pluginManager);
+    PluginManager pluginManager(nc);
+    nc->setPluginModel(&pluginManager);
 
     w.show();
 

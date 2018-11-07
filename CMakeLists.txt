@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(NotificationCenter)
-set(${PROJECT_NAME}_LIBRARY NC)
+set(${PROJECT_NAME}_CORE NCCore)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++14 -Wno-reorder")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG -rdynamic")

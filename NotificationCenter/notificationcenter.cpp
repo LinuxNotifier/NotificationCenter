@@ -27,7 +27,7 @@ NotificationCenter::NotificationCenter(QObject *parent) :
     QObject(parent),
     d_ptr(new NotificationCenterPrivate(this))
 {
-    // instance().d_ptr->m_ncVersion = __NOTIFICATIONCENTER_VERSION__;
+    // instance()->d_ptr->m_ncVersion = __NOTIFICATIONCENTER_VERSION__;
 }
 
 NotificationCenter::~NotificationCenter()
@@ -35,15 +35,15 @@ NotificationCenter::~NotificationCenter()
 
 }
 
-NotificationCenter& NotificationCenter::instance(QObject *parent)
+NotificationCenter* NotificationCenter::instance(QObject *parent)
 {
     static NotificationCenter instance(parent);
-    return instance;
+    return &instance;
 }
 
 QString NotificationCenter::version()
 {
-    return instance().d_ptr->m_ncVersion;
+    return instance()->d_ptr->m_ncVersion;
 }
 
 void NotificationCenter::setView(MainWindow *view)
@@ -80,7 +80,7 @@ bool NotificationCenter::notify(shared_ptr<NcMessage> message)
     message->setCreatedTime(QDateTime::currentDateTime().toString());
     message->setValid();
     // we need the result of inserting a message, so didn't implement it with signals
-    bool inserted = instance().d_ptr->m_messageManager->insertMessage(message);
+    bool inserted = instance()->d_ptr->m_messageManager->insertMessage(message);
     if (!inserted)
         return false;
     return true;
@@ -89,22 +89,22 @@ bool NotificationCenter::notify(shared_ptr<NcMessage> message)
 bool NotificationCenter::notify(NcNotificationWidget *widget)
 {
 
-    emit instance().newNotification(widget);
+    emit instance()->newNotification(widget);
     return true;
 }
 bool NotificationCenter::quietMode()
 {
-    return instance().d_ptr->m_quietMode;
+    return instance()->d_ptr->m_quietMode;
 }
 
 void NotificationCenter::setQuietMode(bool quiet)
 {
-    instance().d_ptr->m_quietMode = quiet;
-    emit instance().modeChanged(quiet);
+    instance()->d_ptr->m_quietMode = quiet;
+    emit instance()->modeChanged(quiet);
 }
 
 void NotificationCenter::toggleQuietMode()
 {
-    NotificationCenter &nc = instance();
-    nc.d_ptr->m_quietMode = !nc.d_ptr->m_quietMode;
+    NotificationCenter *nc = instance();
+    nc->d_ptr->m_quietMode = !nc->d_ptr->m_quietMode;
 }

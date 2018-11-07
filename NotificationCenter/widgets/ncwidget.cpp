@@ -235,6 +235,7 @@ void NcWidget::setWindowIcon(const QIcon& icon)
 
 void NcWidget::setWindowTitle(const QString& title)
 {
+    // TODO: bold font
     m_title = title;
     m_titleButton->setText(m_title);
 }

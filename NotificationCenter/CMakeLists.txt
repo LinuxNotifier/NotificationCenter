@@ -36,13 +36,13 @@ set(RESOURCES resources.qrc
     )
 file(GLOB WIDGETS "widgets/*")
 
-add_library(${${PROJECT_NAME}_LIBRARY} STATIC ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES} ${WIDGETS})
-target_link_libraries(${${PROJECT_NAME}_LIBRARY} ${Qt})
-qt5_use_modules(${${PROJECT_NAME}_LIBRARY} ${QT})
+add_library(${${PROJECT_NAME}_CORE} STATIC ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES} ${WIDGETS})
+target_link_libraries(${${PROJECT_NAME}_CORE} ${Qt})
+qt5_use_modules(${${PROJECT_NAME}_CORE} ${QT})
 
 add_executable(${TARGET} main.cpp ${RESOURCES})
-# target_link_libraries(${TARGET} ${${PROJECT_NAME}_LIBRARY})
-target_link_libraries(${TARGET} ${${PROJECT_NAME}_LIBRARY} ${OpenCV_LIBS})
+# target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE})
+target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE} ${OpenCV_LIBS})
 # to auto-generate *.qm files
 # add_dependencies(${TARGET} translations)
 

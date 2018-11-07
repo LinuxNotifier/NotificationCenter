@@ -34,7 +34,7 @@ class NotificationCenter : public QObject
         void pluginDeleted(const QString pluginId);
 
     public:
-        static NotificationCenter& instance(QObject *parent = nullptr);
+        static NotificationCenter* instance(QObject *parent = nullptr);
 
         static QString version();
 

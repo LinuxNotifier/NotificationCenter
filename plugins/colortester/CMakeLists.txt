@@ -11,5 +11,5 @@ add_library(${TARGET} SHARED colortester.json
     ctwidget.cpp
     colortester.h
     colortester.cpp)
-target_link_libraries(${TARGET} ${${PROJECT_NAME}_LIBRARY})
+target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE})
 qt5_use_modules(${TARGET} ${QT})
