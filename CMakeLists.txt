@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 project(NotificationCenter)
 set(${PROJECT_NAME}_CORE NCCore)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++14 -Wno-reorder")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG -rdynamic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++14 -Wno-reorder -rdynamic")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O4")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(notdir $(abspath $<))\"'")
 

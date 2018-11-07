@@ -34,6 +34,7 @@ class NotificationCenter : public QObject
         void pluginDeleted(const QString pluginId);
 
     public:
+        ~NotificationCenter();
         static NotificationCenter* instance(QObject *parent = nullptr);
 
         static QString version();
@@ -56,7 +57,6 @@ class NotificationCenter : public QObject
 
     private:
         explicit NotificationCenter(QObject *parent = nullptr);
-        ~NotificationCenter();
         Q_DISABLE_COPY(NotificationCenter);
 
         shared_ptr<NotificationCenterPrivate> d_ptr;

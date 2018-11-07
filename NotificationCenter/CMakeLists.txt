@@ -36,7 +36,8 @@ set(RESOURCES resources.qrc
     )
 file(GLOB WIDGETS "widgets/*")
 
-add_library(${${PROJECT_NAME}_CORE} STATIC ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES} ${WIDGETS})
+# add_library(${${PROJECT_NAME}_CORE} STATIC ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES} ${WIDGETS})
+add_library(${${PROJECT_NAME}_CORE} SHARED ${SOURCES} ${HEADERS} ${FORMS} ${RESOURCES} ${WIDGETS})
 target_link_libraries(${${PROJECT_NAME}_CORE} ${Qt})
 qt5_use_modules(${${PROJECT_NAME}_CORE} ${QT})
 
