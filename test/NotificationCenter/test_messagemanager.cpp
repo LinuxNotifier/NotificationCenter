@@ -16,12 +16,12 @@ TEST_CASE("test MessageManager", "[message], [database]") {
     char *argv[] = {(char *)"./test_main"};
     QApplication app(argc, argv);
 
-    NotificationCenter *nc = NotificationCenter::instance();
+    NotificationCenter &nc = NotificationCenter::instance();
 
-    MessageManager msgManager(nc);
-    nc->setMessageModel(&msgManager);
-    NcDatabase *ncDb = NcDatabase::instance();
-    QSqlQuery query(ncDb->internalDatabase());
+    MessageManager msgManager(&nc);
+    nc.setMessageModel(&msgManager);
+    NcDatabase &ncDb = NcDatabase::instance();
+    QSqlQuery query(ncDb.internalDatabase());
     query.exec("DELETE FROM messages");
     query.exec("SELECT * FROM messages");
     QSqlRecord record = query.record();
@@ -47,7 +47,7 @@ TEST_CASE("test MessageManager", "[message], [database]") {
                 QDateTime::currentDateTime().toString(), 1, 10,
                 QUuid::createUuid().toString(), QUuid::createUuid().toString()
                 ));
-    shared_ptr<NcMessage> msg = NotificationCenter::createMessage();
+    shared_ptr<NcMessage> msg = NotificationCenter::createSharedMessage();
     msg->setTitle("title111")
         .setContent("content111");
     NotificationCenter::notify(msg);

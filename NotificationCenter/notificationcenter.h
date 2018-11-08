@@ -35,7 +35,7 @@ class NotificationCenter : public QObject
 
     public:
         ~NotificationCenter();
-        static NotificationCenter* instance(QObject *parent = nullptr);
+        static NotificationCenter& instance(QObject *parent = nullptr);
 
         static QString version();
 
@@ -43,8 +43,11 @@ class NotificationCenter : public QObject
         void setMessageModel(MessageManager *messageManager);
         void setPluginModel(PluginManager *pluginManager);
 
-        static shared_ptr<NcMessage> createMessage();
+        static NcMessage createMessage();
+        static shared_ptr<NcMessage> createSharedMessage();
+        static shared_ptr<NcMessage> createSharedMessage(const NcMessage& message);
         static bool notify(shared_ptr<NcMessage> message);
+        static bool notify(const NcMessage& message);
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
 

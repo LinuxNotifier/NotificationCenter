@@ -10,11 +10,11 @@ TEST_CASE("test NotificationCenter", "[notificationcenter]") {
     int argc = 1;
     char *argv[] = {(char *)"./test_main"};
     QApplication app(argc, argv);
-    NotificationCenter *nc = NotificationCenter::instance();
-    MessageManager msgManager(nc);
-    nc->setMessageModel(&msgManager);
-    shared_ptr<NcMessage> msg = NotificationCenter::createMessage();
-    msg->setTitle("hello")
+    NotificationCenter &nc = NotificationCenter::instance();
+    MessageManager msgManager(&nc);
+    nc.setMessageModel(&msgManager);
+    NcMessage msg = NotificationCenter::createMessage();
+    msg.setTitle("hello")
         .setContent("hello world");
     REQUIRE(NotificationCenter::notify(msg));
     REQUIRE(!NotificationCenter::notify(msg));

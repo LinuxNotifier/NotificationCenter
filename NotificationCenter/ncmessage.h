@@ -17,8 +17,7 @@ class NcMessage;
 
 typedef QList<shared_ptr<NcMessage> > MessageList;
 typedef QHash<QString, shared_ptr<NcMessage> > MessageMap;
-// TODO: use QSharedPointer for consistence
-typedef std::shared_ptr<NcMessage> NcMessagePointer;
+typedef std::shared_ptr<NcMessage> NcMessageSharedPointer;
 
 /**
  * This class encapsulates a message that transfered among the NotificationCenter
@@ -69,6 +68,7 @@ class NcMessage
             Default = UntilConfirmation | UntilShutdown,
         };
 
+        NcMessage();
         ~NcMessage();
 
         QString createdTime() const;
@@ -95,9 +95,6 @@ class NcMessage
         bool isValid() const;
 
     private:
-        NcMessage();
-        Q_DISABLE_COPY(NcMessage)
-
         NcMessage& setCreatedTime(const QString& createdTime);
         NcMessage& setMessageId(const QString& messageId);
         NcMessage& setNotificationId(const QString& notificationId);

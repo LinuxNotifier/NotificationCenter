@@ -15,8 +15,8 @@ TEST_CASE("test NcDatabase", "[database]") {
     int argc = 1;
     char *argv[] = {(char *)"./test_main"};
     QApplication app(argc, argv);
-    NcDatabase *ncDb = NcDatabase::instance();
-    QSqlQuery query(ncDb->internalDatabase());
+    NcDatabase &ncDb = NcDatabase::instance();
+    QSqlQuery query(ncDb.internalDatabase());
     query.exec("DELETE FROM messages");
     query.exec("SELECT * FROM messages");
     QSqlRecord record = query.record();

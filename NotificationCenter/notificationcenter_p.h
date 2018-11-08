@@ -19,11 +19,11 @@ class NotificationCenterPrivate
         explicit NotificationCenterPrivate(NotificationCenter *q_ptr);
         Q_DISABLE_COPY(NotificationCenterPrivate)
 
-        MessageManager *m_messageManager;
-        PluginManager *m_pluginManager;
+        MessageManager *m_messageManager = nullptr;
+        PluginManager *m_pluginManager = nullptr;
         bool m_quietMode = false;
         const QString m_ncVersion;
-        NotificationCenter *q_ptr;
+        NotificationCenter *q_ptr = nullptr;
 };
 
 #endif // NOTIFICATIONCENTER_P_H

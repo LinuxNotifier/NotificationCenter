@@ -10,9 +10,9 @@ TEST_CASE("test PluginManager", "[plugin], [database]") {
     char *argv[] = {(char *)"./test_main"};
     QApplication app(argc, argv);
 
-    NotificationCenter *nc = NotificationCenter::instance();
-    PluginManager pluginManager(nc);
-    nc->setPluginModel(&pluginManager);
+    NotificationCenter &nc = NotificationCenter::instance();
+    PluginManager pluginManager(&nc);
+    nc.setPluginModel(&pluginManager);
     pluginManager.onPluginDisabled("hello");
     pluginManager.onPluginRemoved("hello");
     pluginManager.initPluginTable();

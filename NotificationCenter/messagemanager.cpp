@@ -18,7 +18,7 @@
 
 MessageManager::MessageManager(NotificationCenter *parent) :
     QObject(parent),
-    m_ncDb(NcDatabase::instance())
+    m_ncDb(&NcDatabase::instance())
 {
     connect(parent, SIGNAL(messageClosed(const QString)), this, SLOT(messageClosed(const QString)));
     initMessageTable();
@@ -205,7 +205,7 @@ shared_ptr<NcMessage> MessageManager::selectMessage(const QString& messageId)
     QSqlQuery query(m_ncDb->internalDatabase());
     query.prepare("SELECT * FROM messages WHERE message_id = :message_id");
     query.bindValue(":message_id", messageId);
-    shared_ptr<NcMessage> message = NotificationCenter::createMessage();
+    shared_ptr<NcMessage> message = NotificationCenter::createSharedMessage();
     if (query.exec() && query.first())
     {
         message->setMessageId(query.value(0).toString())

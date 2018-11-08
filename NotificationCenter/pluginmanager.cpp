@@ -9,7 +9,7 @@
 
 PluginManager::PluginManager(NotificationCenter *parent) :
     QObject(parent),
-    m_ncDb(NcDatabase::instance())
+    m_ncDb(&NcDatabase::instance())
 {
     connect(parent, SIGNAL(pluginEnabled(const QString)), this, SLOT(onPluginEnabled(const QString)));
     connect(parent, SIGNAL(pluginDisabled(const QString)), this, SLOT(onPluginDisabled(const QString)));

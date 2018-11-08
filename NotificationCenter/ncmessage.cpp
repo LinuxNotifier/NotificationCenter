@@ -27,7 +27,9 @@ NcMessage::NcMessage() :
 
 NcMessage::~NcMessage()
 {
-
+#if DEBUG
+    qDebug() << "NcMessage:" << messageId() << "destroyed";
+#endif
 }
 
 QString NcMessage::createdTime() const
