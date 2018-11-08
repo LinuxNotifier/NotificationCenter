@@ -60,7 +60,7 @@ class MainWindow : public QWidget
         void onNotificationClosed();
         void onModeChanged(bool quiet);
 
-        void onNewPlugin(shared_ptr<QPluginLoader> plugin);
+        void onNewPlugin(shared_ptr<QPluginLoader> pluginLoader);
         void onPluginDeleted(const QString pluginId);
 
     public:
@@ -85,18 +85,18 @@ class MainWindow : public QWidget
         void setupSystemTrayIcon();
         void initUi();
 
-        Ui::MainWindow *ui;
+        Ui::MainWindow *ui = nullptr;
         QRect m_geometry;
         const int m_notificationCenterWidth = NOTIFICATIONCENTER_WIDTH;
-        QSystemTrayIcon *m_systemTrayIcon;
+        QSystemTrayIcon *m_systemTrayIcon = nullptr;
 
-        QVBoxLayout *m_todayTabLayout;
-        QVBoxLayout *m_pluginsLayout;
-        QVBoxLayout *m_notificationsTabLayout;
-        QVBoxLayout *m_notificationsLayout;
+        QVBoxLayout *m_todayTabLayout = nullptr;
+        QVBoxLayout *m_pluginsLayout = nullptr;
+        QVBoxLayout *m_notificationsTabLayout = nullptr;
+        QVBoxLayout *m_notificationsLayout = nullptr;
 
         QPixmap m_backgroundPixmap;
-        QLabel *m_backgroundScene;
+        QLabel *m_backgroundScene = nullptr;
 
         MsgId2Widget m_msgId2Widget;
         Widget2MsgId m_widget2MsgId;

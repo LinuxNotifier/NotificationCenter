@@ -61,7 +61,7 @@ DateTimeWidget::DateTimeWidget(QWidget *parent) :
     m_layout->addWidget(m_dateLabel);
     m_layout->addStretch();
 
-   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(m_timer, SIGNAL(timeout()), this, SLOT(updateDateTime()));
 

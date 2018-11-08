@@ -60,11 +60,21 @@ void NotificationCenter::setMessageModel(MessageManager *messageManager)
     connect(d_ptr->m_messageManager, SIGNAL(messageExpired(const QString)), this, SIGNAL(messageExpired(const QString)));
 }
 
+MessageManager* NotificationCenter::messageModel()
+{
+    return d_ptr->m_messageManager;
+}
+
 void NotificationCenter::setPluginModel(PluginManager *pluginManager)
 {
     d_ptr->m_pluginManager = pluginManager;
     connect(d_ptr->m_pluginManager, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)));
     connect(d_ptr->m_pluginManager, SIGNAL(pluginDeleted(const QString)), this, SIGNAL(pluginDeleted(const QString)));
+}
+
+PluginManager* NotificationCenter::pluginModel()
+{
+    return d_ptr->m_pluginManager;
 }
 
 NcMessage NotificationCenter::createMessage()

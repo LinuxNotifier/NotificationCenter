@@ -20,7 +20,7 @@ class NcDatabasePrivate
 
         QString m_dbName;
 
-        NcDatabase *q_ptr;
+        NcDatabase *q_ptr = nullptr;
 };
 
 #endif // NCDATABASE_P_H

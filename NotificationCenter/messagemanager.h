@@ -60,7 +60,7 @@ class MessageManager : public QObject
         shared_ptr<NcMessage> selectMessage(const QString& messageId);
         MessageList selectAllMessages();
 
-        NcDatabase *m_ncDb;
+        NcDatabase *m_ncDb = nullptr;
         MessageMap m_messageMap;
         bool m_valid = false;
 };

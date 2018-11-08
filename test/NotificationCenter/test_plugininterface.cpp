@@ -16,6 +16,12 @@ TestPlugin::~TestPlugin()
     qDebug() << "deconstruct testplugin";
 }
 
+QJsonObject TestPlugin::metadata() const
+{
+    QJsonObject json;
+    return json;
+}
+
 void TestPlugin::initialize(NotificationCenter *nc)
 {
     

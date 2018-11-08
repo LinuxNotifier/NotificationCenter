@@ -13,7 +13,6 @@ class QVBoxLayout;
 
 
 //class DateTimeWidget : public QWidget
-// TODO: singleton
 class DateTimeWidget : public QFrame
 {
     Q_OBJECT

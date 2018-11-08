@@ -78,7 +78,7 @@ void PluginManager::loadPlugins()
         qDebug() << QString("plugin %1 loaded").arg(pluginLoader->fileName());
         qDebug() << interface->interfaceVersion();
 #endif
-        m_pluginMap[pluginLoader->fileName()] = pluginLoader;
+        m_pluginLoaderMap[pluginLoader->fileName()] = pluginLoader;
         emit newPlugin(shared_ptr<QPluginLoader>(pluginLoader));
     }
 }

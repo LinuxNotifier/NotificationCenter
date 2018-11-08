@@ -21,6 +21,7 @@ class ColorTester : public QObject, public PluginInterface
 
         bool eventFilter(QObject *watched, QEvent *event) override;
 
+        QJsonObject metadata() const override;
         void initialize(NotificationCenter *nc) override;
         QWidget* centralWidget() override;
         QWidget* settingsWidget() override;

@@ -24,6 +24,13 @@ ColorTester::~ColorTester()
     
 }
 
+QJsonObject ColorTester::metadata() const
+{
+    QJsonObject json;
+    return json;
+}
+
+
 void ColorTester::initialize(NotificationCenter *nc)
 {
     m_lastClickTime = new QTime;

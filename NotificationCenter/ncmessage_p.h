@@ -27,16 +27,16 @@ class NcMessagePrivate
         QString m_preview;
         QString m_content;
 
-        QString m_createdTime;
-        NcMessage::Priority m_priority = NcMessage::Priority::Normal;
-        NcMessage::Action m_action = NcMessage::Action::Create;
-        int m_duration;
-        bool valid = false;
-
         // NOTE: modify NcMessage::Duration::Default doc when changed
         static const int default_duration = 10;
 
-        NcMessage *q_ptr;
+        QString m_createdTime;
+        NcMessage::Priority m_priority = NcMessage::Priority::Normal;
+        NcMessage::Action m_action = NcMessage::Action::Create;
+        int m_duration = default_duration;
+        bool valid = false;
+
+        NcMessage *q_ptr = nullptr;
 };
 
 #endif // NCMESSAGE_P_H

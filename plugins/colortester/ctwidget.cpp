@@ -112,4 +112,15 @@ void CtWidget::onReset()
 {
     if (m_testingWidget && m_styleSheetMap.contains(m_testingWidget))
         m_testingWidget->setStyleSheet(m_styleSheetMap[m_testingWidget]);
+    else {
+        ui->fgRedSlider->setValue(0);
+        ui->fgGreenSlider->setValue(0);
+        ui->fgBlueSlider->setValue(0);
+        ui->fgAlphaSlider->setValue(0);
+
+        ui->bgRedSlider->setValue(0);
+        ui->bgGreenSlider->setValue(0);
+        ui->bgBlueSlider->setValue(0);
+        ui->bgAlphaSlider->setValue(0);
+    }
 }

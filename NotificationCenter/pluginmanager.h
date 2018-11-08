@@ -12,7 +12,8 @@ class NcDatabase;
 class PluginInterface;
 class QPluginLoader;
 
-typedef QHash<QString, QPluginLoader*> PluginMap;
+typedef QHash<QString, QPluginLoader*> PluginLoaderMap;
+typedef QHash<QString, PluginInterface*> PluginMap;
 
 class PluginManager : public QObject
 {
@@ -21,7 +22,8 @@ class PluginManager : public QObject
     friend class NotificationCenter;
 
     signals:
-        void newPlugin(shared_ptr<QPluginLoader> plugin);
+        void newPlugin(shared_ptr<QPluginLoader> pluginLoader);
+        void newPlugin(shared_ptr<PluginInterface> plugin);
         void pluginDeleted(const QString pluginId);
 
     private slots:
@@ -43,8 +45,9 @@ class PluginManager : public QObject
 
         // bool insertPlugin()
 
-        NcDatabase *m_ncDb;
-        PluginMap m_pluginMap;
+        NcDatabase *m_ncDb = nullptr;
+        PluginLoaderMap m_pluginLoaderMap;
+        PluginLoaderMap m_pluginMap;
         bool m_valid = false;
     
 };
