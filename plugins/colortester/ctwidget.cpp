@@ -55,7 +55,7 @@ void CtWidget::setTestingWidget(QWidget *widget)
         ui->bgBlueSlider->setValue(bgBlue);
         ui->bgAlphaSlider->setValue(bgAlpha);
     }
-    QRegExp fgRegExp("color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
+    QRegExp fgRegExp(" color: rgba\\((\\d+), (\\d+), (\\d+), (\\d+)\\);?");
     if (fgRegExp.indexIn(ss) != -1) {
         int fgRed = fgRegExp.cap(1).toInt();
         int fgGreen = fgRegExp.cap(2).toInt();
