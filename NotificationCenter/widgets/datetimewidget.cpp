@@ -8,7 +8,7 @@
 #include <QPainter>
 
 DateTimeWidget::DateTimeWidget(QWidget *parent) :
-    QFrame(parent),
+    QWidget(parent),
     m_dateTime(QDateTime::currentDateTime()),
     m_timer(new QTimer(this)),
     m_dateLabel(new QLabel(this)),

@@ -9,15 +9,13 @@ class QWidget;
 
 #define PluginInterface_IID "org.linuxnotifier.NotificationCenter"
 
-typedef QHash<QString, QString> PluginMetadata;
-
 class PluginInterface
 {
     public:
         virtual ~PluginInterface() {};
 
-        virtual QJsonObject metadata() const = 0;
         virtual void initialize(NotificationCenter *nc) = 0;
+        virtual QJsonObject metadata() const = 0;
         // this widget will be showed on NotificationCenter
         // return nullptr when no widget
         virtual QWidget* centralWidget() = 0;

@@ -3,6 +3,8 @@
 #include "ncglobal.h"
 #include "ncdebug.h"
 #include <QWidget>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 TestPlugin::TestPlugin()
 {
@@ -19,9 +21,21 @@ void TestPlugin::initialize(NotificationCenter *nc)
     
 }
 
+QJsonObject TestPlugin::metadata() const
+{
+    QJsonObject json;
+    return json;
+}
+
 QWidget* TestPlugin::centralWidget()
 {
-    return new QWidget;
+    QWidget *w = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout(w);
+    QPushButton *pb = new QPushButton(w);
+    layout->addWidget(pb);
+    w->setWindowTitle("test plugin");
+    pb->setText("test button");
+    return w;
 }
 
 QWidget* TestPlugin::settingsWidget()

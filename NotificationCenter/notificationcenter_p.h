@@ -19,6 +19,7 @@ class NotificationCenterPrivate
         explicit NotificationCenterPrivate(NotificationCenter *q_ptr);
         Q_DISABLE_COPY(NotificationCenterPrivate)
 
+        MainWindow *m_view = nullptr;
         MessageManager *m_messageManager = nullptr;
         PluginManager *m_pluginManager = nullptr;
         bool m_quietMode = false;

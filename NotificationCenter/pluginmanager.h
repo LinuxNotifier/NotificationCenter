@@ -12,8 +12,10 @@ class NcDatabase;
 class PluginInterface;
 class QPluginLoader;
 
-typedef QHash<QString, QPluginLoader*> PluginLoaderMap;
-typedef QHash<QString, PluginInterface*> PluginMap;
+// typedef QHash<QString, QPluginLoader*> PluginLoaderMap;
+// typedef QHash<QString, PluginInterface*> PluginMap;
+typedef QHash<QString, shared_ptr<QPluginLoader> > PluginLoaderMap;
+typedef QHash<QString, shared_ptr<PluginInterface> > PluginMap;
 
 class PluginManager : public QObject
 {
@@ -27,6 +29,8 @@ class PluginManager : public QObject
         void pluginDeleted(const QString pluginId);
 
     private slots:
+        void onNewPlugin(shared_ptr<QPluginLoader> pluginLoader);
+        void onNewPlugin(shared_ptr<PluginInterface> plugin);
         void onPluginEnabled(const QString pluginId);
         void onPluginDisabled(const QString pluginId);
         void onPluginRemoved(const QString pluginId);
@@ -42,6 +46,7 @@ class PluginManager : public QObject
     private:
         void initPluginTable();
         void loadPlugins();
+        void loadPythonPlugins();
 
         // bool insertPlugin()
 

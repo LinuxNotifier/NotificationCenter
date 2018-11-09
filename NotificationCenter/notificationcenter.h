@@ -28,6 +28,7 @@ class NotificationCenter : public QObject
         void modeChanged(bool quiet);
 
         void newPlugin(shared_ptr<QPluginLoader> pluginLoader);
+        void newPlugin(shared_ptr<PluginInterface> plugin);
         void pluginEnabled(const QString pluginId);
         void pluginDisabled(const QString pluginId);
         void pluginRemoved(const QString pluginId);
@@ -41,9 +42,7 @@ class NotificationCenter : public QObject
 
         void setView(MainWindow *view);
         void setMessageModel(MessageManager *messageManager);
-        MessageManager* messageModel();
         void setPluginModel(PluginManager *pluginManager);
-        PluginManager* pluginModel();
 
         static NcMessage createMessage();
         static shared_ptr<NcMessage> createSharedMessage();
@@ -52,6 +51,8 @@ class NotificationCenter : public QObject
         static bool notify(const NcMessage& message);
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
+
+        static void addPlugin(PluginInterface *plugin);
 
         // TODO
         // static QString themeName();

@@ -61,6 +61,7 @@ class MainWindow : public QWidget
         void onModeChanged(bool quiet);
 
         void onNewPlugin(shared_ptr<QPluginLoader> pluginLoader);
+        void onNewPlugin(shared_ptr<PluginInterface> plugin);
         void onPluginDeleted(const QString pluginId);
 
     public:

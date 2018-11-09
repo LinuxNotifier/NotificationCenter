@@ -4,34 +4,31 @@
 #include <QLabel>
 #include <QDateTime>
 #include <QWidget>
-#include <QFrame>
 #include <QPaintEvent>
 
 class QTimer;
 class QLabel;
 class QVBoxLayout;
 
-
-//class DateTimeWidget : public QWidget
-class DateTimeWidget : public QFrame
+class DateTimeWidget : public QWidget
 {
     Q_OBJECT
-public:
-    DateTimeWidget(QWidget *parent=nullptr);
-    ~DateTimeWidget();
+    public:
+        DateTimeWidget(QWidget *parent=nullptr);
+        ~DateTimeWidget();
 
-protected:
+    protected:
 
-private slots:
-    void updateDateTime();
-    void startTimer();
+    private slots:
+        void updateDateTime();
+        void startTimer();
 
-private:
-    QDateTime m_dateTime;
-    QTimer *m_timer;
-    QLabel *m_dateLabel;
-    QLabel *m_timeLabel;
-    QVBoxLayout *m_layout;
+    private:
+        QDateTime m_dateTime;
+        QTimer *m_timer;
+        QLabel *m_dateLabel;
+        QLabel *m_timeLabel;
+        QVBoxLayout *m_layout;
 };
 
 #endif // DATETIMELABEL_H

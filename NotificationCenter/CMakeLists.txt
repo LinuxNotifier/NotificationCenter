@@ -43,7 +43,8 @@ qt5_use_modules(${${PROJECT_NAME}_CORE} ${QT})
 
 add_executable(${TARGET} main.cpp ${RESOURCES})
 # target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE})
-target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE} ${OpenCV_LIBS})
+target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE} ${OpenCV_LIBS} ${PYTHON_LIBRARIES})
+
 # to auto-generate *.qm files
 # add_dependencies(${TARGET} translations)
 

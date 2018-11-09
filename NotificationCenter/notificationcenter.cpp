@@ -10,7 +10,6 @@
 #include "ncglobal.h"
 #include <memory>
 #include <QDateTime>
-#include <stdio.h>
 
 NotificationCenterPrivate::NotificationCenterPrivate(NotificationCenter *q_ptr) :
     q_ptr(q_ptr),
@@ -49,8 +48,8 @@ QString NotificationCenter::version()
 
 void NotificationCenter::setView(MainWindow *view)
 {
-    connect(view, SIGNAL(messageClosed(const QString)), this, SIGNAL(messageClosed(const QString)));
-
+    d_ptr->m_view = view;
+    connect(d_ptr->m_view, SIGNAL(messageClosed(const QString)), this, SIGNAL(messageClosed(const QString)));
 }
 
 void NotificationCenter::setMessageModel(MessageManager *messageManager)
@@ -60,21 +59,11 @@ void NotificationCenter::setMessageModel(MessageManager *messageManager)
     connect(d_ptr->m_messageManager, SIGNAL(messageExpired(const QString)), this, SIGNAL(messageExpired(const QString)));
 }
 
-MessageManager* NotificationCenter::messageModel()
-{
-    return d_ptr->m_messageManager;
-}
-
 void NotificationCenter::setPluginModel(PluginManager *pluginManager)
 {
     d_ptr->m_pluginManager = pluginManager;
     connect(d_ptr->m_pluginManager, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)));
     connect(d_ptr->m_pluginManager, SIGNAL(pluginDeleted(const QString)), this, SIGNAL(pluginDeleted(const QString)));
-}
-
-PluginManager* NotificationCenter::pluginModel()
-{
-    return d_ptr->m_pluginManager;
 }
 
 NcMessage NotificationCenter::createMessage()
@@ -106,20 +95,17 @@ bool NotificationCenter::notify(shared_ptr<NcMessage> message)
     if (message->isValid())          // already notified
         return false;
 
+    // TODO: set messageId here, return messageId
     message->setCreatedTime(QDateTime::currentDateTime().toString());
     message->setValid();
     MessageManager *msgMgr = instance().d_ptr->m_messageManager;
     if (msgMgr) {
-        printf("addr of msgMgr: %p\n", msgMgr);
         // we need the result of inserting a message, so didn't implement it with signals
         bool inserted = instance().d_ptr->m_messageManager->insertMessage(message);
         if (inserted)
             return true;
     }
     return false;
-    // if (!inserted)
-    //     return false;
-    // return true;
 }
 
 bool NotificationCenter::notify(NcNotificationWidget *widget)
@@ -128,6 +114,12 @@ bool NotificationCenter::notify(NcNotificationWidget *widget)
     emit instance().newNotification(widget);
     return true;
 }
+
+void NotificationCenter::addPlugin(PluginInterface *plugin)
+{
+    emit instance().newPlugin(shared_ptr<PluginInterface>(plugin));
+}
+
 bool NotificationCenter::quietMode()
 {
     return instance().d_ptr->m_quietMode;

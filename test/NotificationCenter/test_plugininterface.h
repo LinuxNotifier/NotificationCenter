@@ -17,8 +17,8 @@ class TestPlugin : public QObject, public PluginInterface
         TestPlugin();
         ~TestPlugin() override;
 
-        QJsonObject metadata() const override;
         void initialize(NotificationCenter *nc) override;
+        QJsonObject metadata() const override;
         QWidget* centralWidget() override;
         QWidget* settingsWidget() override;
         QString interfaceVersion() const override;

@@ -73,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 
     connect(&nc, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(shared_ptr<QPluginLoader>)));
+    connect(&nc, SIGNAL(newPlugin(shared_ptr<PluginInterface>)), this, SLOT(onNewPlugin(shared_ptr<PluginInterface>)));
     connect(&nc, SIGNAL(pluginDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
 
@@ -460,7 +461,23 @@ void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
         pluginWidget->setMaximumHeight(300);
         m_pluginsLayout->addWidget(pluginWidget);
     }
+}
 
+void MainWindow::onNewPlugin(shared_ptr<PluginInterface> plugin)
+{
+    // qDebug() << "got new plugin" << pluginLoader->fileName();
+#if DEBUG
+    qDebug() << "get plugin plugin: " << plugin.get();
+#endif
+    plugin->initialize(&NotificationCenter::instance());
+    QWidget *w = plugin->centralWidget();
+    if (w) {
+        qDebug() << "title: " << w->windowTitle();
+        NcPluginWidget *pluginWidget = new NcPluginWidget(this);
+        pluginWidget->setWidget(w);
+        pluginWidget->setMaximumHeight(300);
+        m_pluginsLayout->addWidget(pluginWidget);
+    }
 }
 
 void MainWindow::onPluginDeleted(const QString pluginId)

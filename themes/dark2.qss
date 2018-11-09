@@ -87,6 +87,13 @@ NcNotificationWidget {
     background-color: green;
 }
 
+/* NcPluginWidget { */
+/*     background-color: rgba(155, 154, 90, 172); */
+/*     color: rgba(0, 0, 0, 255); */
+/*     margin: 0px; */
+/*     padding: 40px; */
+/* } */
+
 DateTimeWidget {
     background: transparent;
 }
