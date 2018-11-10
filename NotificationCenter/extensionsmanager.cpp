@@ -1,7 +1,6 @@
-#include <Python.h> // this should be put in first line
-#include "pluginmanager.h"
+#include "extensionsmanager.h"
 #include "notificationcenter.h"
-#include "plugininterface.h"
+#include "extensioninterface.h"
 #include "ncdatabase.h"
 #include <QSqlQuery>
 #include <QSqlDatabase>
@@ -17,7 +16,6 @@ PluginManager::PluginManager(NotificationCenter *parent) :
     connect(parent, SIGNAL(pluginRemoved(const QString)), this, SLOT(onPluginRemoved(const QString)));
     initPluginTable();
     QTimer::singleShot(1000, this, &PluginManager::loadPlugins);
-    QTimer::singleShot(1000, this, &PluginManager::loadPythonPlugins);
 }
 
 PluginManager::~PluginManager()
@@ -67,53 +65,9 @@ void PluginManager::loadPlugins()
 #if DEBUG
         qDebug() << "loading plugin: " << pluginLoader->metaData();
 #endif
-
-        // PluginInterface *interface = qobject_cast<PluginInterface*>(pluginLoader->instance());
-        // if (!interface)
-        // {
-        //     qWarning() << pluginLoader->errorString();
-        //     pluginLoader->unload();
-        //     pluginLoader->deleteLater();
-        //     return;
-        // }
-#if DEBUG
-        qDebug() << QString("plugin %1 loaded").arg(pluginLoader->fileName());
-        // qDebug() << interface->interfaceVersion();
-#endif
         // m_pluginLoaderMap[pluginLoader->fileName()] = pluginLoader;
         emit newPlugin(shared_ptr<QPluginLoader>(pluginLoader));
     }
-}
-
-void PluginManager::loadPythonPlugins()
-{
-    PyRun_SimpleString("import os\n"
-                       "import sys\n"
-                       "import importlib\n"
-                       "from PyQt5.QtWidgets import qApp\n"
-                       "plugins_path = os.path.join(qApp.applicationDirPath(), 'plugins', 'python')\n"
-                       "sys.path.insert(0, plugins_path)\n"
-                       "modules_path = os.path.join(qApp.applicationDirPath(), 'modules')\n"
-                       "sys.path.insert(0, modules_path)\n"
-                       "from PyNc import NotificationCenter as NC\n"
-
-                       "for package in os.listdir(plugins_path):\n"
-                       "    plugin_file = os.path.join(plugins_path, package, 'plugin.py')\n"
-                       "    if os.path.isfile(plugin_file):\n"
-                       "        module = importlib.import_module(package + '.plugin')\n"
-                       "        plugin = module.Plugin()\n"
-                       "        NC.instance().addPlugin(plugin)\n"
-                       "del os\n"
-                       "del sys\n"
-                       "del importlib\n"
-                       "del qApp\n"
-                       "del plugins_path\n"
-                       "del modules_path\n"
-                       "del NC\n"
-                       "del package\n"
-                       "del plugin_file\n"
-                       "del module\n"
-                       );
 }
 
 void PluginManager::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
@@ -122,7 +76,7 @@ void PluginManager::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
         m_pluginLoaderMap[pluginLoader->fileName()] = pluginLoader;
 }
 
-void PluginManager::onNewPlugin(shared_ptr<PluginInterface> plugin)
+void PluginManager::onNewPlugin(shared_ptr<ExtensionInterface> plugin)
 {
     // if (!m_pluginMap.contains(plugin)) 
     //     m_pluginMap[pluginLoader->fileName()] = plugin;

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class PluginInterface;
+class ExtensionInterface;
 class NcNotificationWidget;
 class QPluginLoader;
 class QFocusEvent;
@@ -61,7 +61,7 @@ class MainWindow : public QWidget
         void onModeChanged(bool quiet);
 
         void onNewPlugin(shared_ptr<QPluginLoader> pluginLoader);
-        void onNewPlugin(shared_ptr<PluginInterface> plugin);
+        void onNewPlugin(shared_ptr<ExtensionInterface> plugin);
         void onPluginDeleted(const QString pluginId);
 
     public:

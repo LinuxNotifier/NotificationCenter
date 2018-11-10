@@ -1,7 +1,7 @@
 #ifndef ColorTester_PLUGIN_H
 #define ColorTester_PLUGIN_H
 
-#include "plugininterface.h"
+#include "extensioninterface.h"
 #include <QObject>
 
 class QWidget;
@@ -9,23 +9,22 @@ class CtWidget;
 class NotificationCenter;
 class QEvent;
 
-class ColorTester : public QObject, public PluginInterface
+class ColorTester : public QObject, public ExtensionInterface
 {
     Q_OBJECT
-    Q_INTERFACES(PluginInterface)
-    Q_PLUGIN_METADATA(IID PluginInterface_IID FILE "colortester.json")
+    Q_INTERFACES(ExtensionInterface)
+    Q_PLUGIN_METADATA(IID ExtensionInterface_IID FILE "colortester.json")
 
     public:
         ColorTester(QObject *parent = nullptr);
-        ~ColorTester();
+        ~ColorTester() override;
 
         bool eventFilter(QObject *watched, QEvent *event) override;
 
-        void initialize(NotificationCenter *nc) override;
+        bool initialize(NotificationCenter *nc) override;
         QJsonObject metadata() const override;
         QWidget* centralWidget() override;
         QWidget* settingsWidget() override;
-        QString interfaceVersion() const override;
 
     private:
         CtWidget *m_widget = nullptr;

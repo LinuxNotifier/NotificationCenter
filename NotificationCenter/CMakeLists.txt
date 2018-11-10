@@ -18,8 +18,8 @@ set(HEADERS mainwindow.h
     ncmessage.h
     ncmessage_p.h
     messagemanager.h
-    pluginmanager.h
-    plugininterface.h
+    extensionsmanager.h
+    extensioninterface.h
     )
 # set(${PROJECT_NAME}_SOURCES main.cpp
 set(SOURCES mainwindow.cpp
@@ -28,7 +28,7 @@ set(SOURCES mainwindow.cpp
     ncdatabase.cpp
     ncmessage.cpp
     messagemanager.cpp
-    pluginmanager.cpp
+    extensionsmanager.cpp
     )
 set(FORMS mainwindow.ui
     )
@@ -43,7 +43,7 @@ qt5_use_modules(${${PROJECT_NAME}_CORE} ${QT})
 
 add_executable(${TARGET} main.cpp ${RESOURCES})
 # target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE})
-target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE} ${OpenCV_LIBS} ${PYTHON_LIBRARIES})
+target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE} ${OpenCV_LIBS})
 
 # to auto-generate *.qm files
 # add_dependencies(${TARGET} translations)

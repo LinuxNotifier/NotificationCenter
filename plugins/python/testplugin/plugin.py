@@ -18,9 +18,9 @@ widget.setWindowTitle("plugin from Python")
 # widget.show()
 
 
-class Plugin(PyNc.PluginInterface):
+class Plugin(PyNc.ExtensionInterface):
     def initialize(self, nc):
-        pass
+        return True
 
     def metadata(self):
         # return PyQt5.QtCore.QJsonObject()
@@ -35,9 +35,6 @@ class Plugin(PyNc.PluginInterface):
 
     def settingsWidget(self):
         return QWidget()
-
-    def interfaceVersion(self):
-        return "v0.2.1"
 
 
 def run():

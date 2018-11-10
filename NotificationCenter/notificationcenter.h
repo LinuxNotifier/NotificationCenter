@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class PluginInterface;
+class ExtensionInterface;
 class NcMessage;
 class NotificationCenterPrivate;
 class NcNotificationWidget;
@@ -28,7 +28,7 @@ class NotificationCenter : public QObject
         void modeChanged(bool quiet);
 
         void newPlugin(shared_ptr<QPluginLoader> pluginLoader);
-        void newPlugin(shared_ptr<PluginInterface> plugin);
+        void newPlugin(shared_ptr<ExtensionInterface> plugin);
         void pluginEnabled(const QString pluginId);
         void pluginDisabled(const QString pluginId);
         void pluginRemoved(const QString pluginId);
@@ -52,7 +52,7 @@ class NotificationCenter : public QObject
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
 
-        static void addPlugin(PluginInterface *plugin);
+        static void addPlugin(ExtensionInterface *plugin);
 
         // TODO
         // static QString themeName();

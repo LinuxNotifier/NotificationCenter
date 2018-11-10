@@ -1,8 +1,7 @@
-#include <Python.h>
 #include "mainwindow.h"
 #include "notificationcenter.h"
 #include "messagemanager.h"
-#include "pluginmanager.h"
+#include "extensionsmanager.h"
 #include "ncmessage.h"
 #include "ncdebug.h"
 #include "ncglobal.h"
@@ -31,24 +30,6 @@ int main(int argc, char *argv[])
     app.setApplicationName("NotificationCenter");
     app.setApplicationVersion(__NOTIFICATIONCENTER_VERSION__);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
-
-    Py_Initialize();
-    wchar_t **python_argv = (wchar_t**)malloc((argc)* sizeof(wchar_t*));
-    for (int i = 0; i < argc; i++) {
-        python_argv[i] = Py_DecodeLocale(argv[i], NULL);
-    }
-    PySys_SetArgv(argc, python_argv);
-
-    wchar_t *path = Py_DecodeLocale((qApp->applicationDirPath() + "/plugins/python").toLatin1().data(), NULL);
-    Py_SetPath(path);
-    wchar_t *program_name = Py_DecodeLocale("NotificationCenter", NULL);
-    Py_SetProgramName(program_name);
-    for (int i = 0; i < argc; i++) {
-        PyMem_RawFree(python_argv[i]);
-    }
-    PyMem_RawFree(path);
-    PyMem_RawFree(program_name);
-    // Py_Finalize();
 
     // get icon filename
     // QIcon icon(":/images/notificationcenter_icon.png");

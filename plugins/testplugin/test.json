@@ -1,3 +1,5 @@
-{"name": "test plugin",
+{"ExtensionType": "Plugin",
+    "InterfaceVersion": "v 0.2.0",
+    "name": "test plugin",
     "homepage": "https://github.com/LinuxNotifier/NotificationCenter"
 }

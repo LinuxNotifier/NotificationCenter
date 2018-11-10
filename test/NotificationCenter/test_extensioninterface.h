@@ -1,5 +1,5 @@
-#ifndef TESTPLUGIN_H
-#define TESTPLUGIN_H
+#ifndef TEST_EXTENSIONINTERFACE_H
+#define TEST_EXTENSIONINTERFACE_H
 
 #include "extensioninterface.h"
 #include <QObject>
@@ -23,4 +23,4 @@ class TestPlugin : public QObject, public ExtensionInterface
         QWidget* settingsWidget() override;
 };
 
-#endif // TESTPLUGIN_H
+#endif // TEST_EXTENSIONINTERFACE_H

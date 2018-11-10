@@ -24,11 +24,12 @@ ColorTester::~ColorTester()
     
 }
 
-void ColorTester::initialize(NotificationCenter *nc)
+bool ColorTester::initialize(NotificationCenter *nc)
 {
     m_lastClickTime = new QTime;
     m_lastClickTime->start();
     qApp->installEventFilter(this);
+    return true;
 }
 
 QJsonObject ColorTester::metadata() const
@@ -48,11 +49,6 @@ QWidget* ColorTester::centralWidget()
 QWidget* ColorTester::settingsWidget()
 {
     return new QWidget;
-}
-
-QString ColorTester::interfaceVersion() const
-{
-    return __INTERFACE_VERSION__;
 }
 
 bool ColorTester::eventFilter(QObject *watched, QEvent *event)

@@ -50,6 +50,8 @@ add_custom_target(translations DEPENDS ${${PROJECT_NAME}_QM_FILES}
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/languages")
 
 file(COPY plugins DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/NotificationCenter)
+# file(GLOB_RECURSE EXTENSIONS "${CMAKE_CURRENT_BINARY_DIR}/plugins/*.so" "${CMAKE_CURRENT_BINARY_DIR}/modules/*.so")
+# file(COPY ${EXTENSIONS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/NotificationCenter/extensions/)
 file(COPY themes DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/NotificationCenter)
 # file(COPY ${${PROJECT_NAME}_QM_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/NotificationCenter/languages)
 

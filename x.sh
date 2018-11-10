@@ -8,5 +8,6 @@ cmake -DCMAKE_BUILD_TYPE=Debug .. -DCMAKE_INSTALL_PREFIX=/tmp/NotificationCenter
 mkdir NotificationCenter/languages -p
 cp *.qm NotificationCenter/languages
 export LD_LIBRARY_PATH="/home/zhiping/Applications/Qt/5.10.1/gcc_64/lib/l;/home/zhiping/Projects/QtProjects/Notifier/modules/dbus;$LD_LIBRARY_PATH"
-make -j3 && cp plugins/*/*.so NotificationCenter/plugins/ && ./NotificationCenter/NotificationCenter
+# make -j3 && cp plugins/*/*.so NotificationCenter/plugins/ && cp modules/python3/libpython.so NotificationCenter/plugins && ./NotificationCenter/NotificationCenter
+make -j3 && cp plugins/*/*.so NotificationCenter/plugins/ && cp modules/python3/libpymodule.so NotificationCenter/plugins && ./NotificationCenter/NotificationCenter
 # make translations

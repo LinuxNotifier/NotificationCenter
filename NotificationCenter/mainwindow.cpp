@@ -5,7 +5,7 @@
 #include "ncpluginwidget.h"
 #include "ncmessage.h"
 #include "notificationcenter.h"
-#include "plugininterface.h"
+#include "extensioninterface.h"
 #include "ncdebug.h"
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -73,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 
     connect(&nc, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(shared_ptr<QPluginLoader>)));
-    connect(&nc, SIGNAL(newPlugin(shared_ptr<PluginInterface>)), this, SLOT(onNewPlugin(shared_ptr<PluginInterface>)));
+    connect(&nc, SIGNAL(newPlugin(shared_ptr<ExtensionInterface>)), this, SLOT(onNewPlugin(shared_ptr<ExtensionInterface>)));
     connect(&nc, SIGNAL(pluginDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
 
@@ -441,43 +441,51 @@ void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
 {
     qDebug() << "got new plugin" << pluginLoader->fileName();
 
-    PluginInterface *interface = qobject_cast<PluginInterface*>(pluginLoader->instance());
+    ExtensionInterface *interface = qobject_cast<ExtensionInterface*>(pluginLoader->instance());
     if (!interface) {
         qWarning() << pluginLoader->errorString();
         pluginLoader->unload();
-        pluginLoader->deleteLater();
+        // pluginLoader->deleteLater();
         return;
     }
 #if DEBUG
     qDebug() << "get plugin interface: " << interface;
 #endif
 
-    interface->initialize(&NotificationCenter::instance());
-    QWidget *w = interface->centralWidget();
-    if (w) {
-        qDebug() << "title: " << w->windowTitle();
-        NcPluginWidget *pluginWidget = new NcPluginWidget(this);
-        pluginWidget->setWidget(w);
-        pluginWidget->setMaximumHeight(300);
-        m_pluginsLayout->addWidget(pluginWidget);
+    bool appliable = interface->initialize(&NotificationCenter::instance());
+    if (appliable) {
+        QWidget *w = interface->centralWidget();
+        if (w) {
+            qDebug() << "title: " << w->windowTitle();
+            NcPluginWidget *pluginWidget = new NcPluginWidget(this);
+            pluginWidget->setWidget(w);
+            pluginWidget->setMaximumHeight(300);
+            m_pluginsLayout->addWidget(pluginWidget);
+        }
     }
+    else
+        qDebug() << "not appliable";
 }
 
-void MainWindow::onNewPlugin(shared_ptr<PluginInterface> plugin)
+void MainWindow::onNewPlugin(shared_ptr<ExtensionInterface> plugin)
 {
     // qDebug() << "got new plugin" << pluginLoader->fileName();
 #if DEBUG
     qDebug() << "get plugin plugin: " << plugin.get();
 #endif
-    plugin->initialize(&NotificationCenter::instance());
+    bool appliable = plugin->initialize(&NotificationCenter::instance());
+    if (appliable) {
     QWidget *w = plugin->centralWidget();
-    if (w) {
-        qDebug() << "title: " << w->windowTitle();
-        NcPluginWidget *pluginWidget = new NcPluginWidget(this);
-        pluginWidget->setWidget(w);
-        pluginWidget->setMaximumHeight(300);
-        m_pluginsLayout->addWidget(pluginWidget);
+        if (w) {
+            qDebug() << "title: " << w->windowTitle();
+            NcPluginWidget *pluginWidget = new NcPluginWidget(this);
+            pluginWidget->setWidget(w);
+            pluginWidget->setMaximumHeight(300);
+            m_pluginsLayout->addWidget(pluginWidget);
+        }
     }
+    else
+        qDebug() << "not appliable";
 }
 
 void MainWindow::onPluginDeleted(const QString pluginId)

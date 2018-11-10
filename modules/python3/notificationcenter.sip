@@ -35,7 +35,7 @@ class NotificationCenter {
         /*  */
         /* void modeChanged(bool quiet); */
         /*  */
-        /* void newPlugin(shared_ptr<PluginInterface> plugin); */
+        /* void newPlugin(shared_ptr<ExtensionInterface> plugin); */
         /* void pluginEnabled(const QString pluginId); */
         /* void pluginDisabled(const QString pluginId); */
         /* void pluginRemoved(const QString pluginId); */
@@ -70,7 +70,7 @@ class NotificationCenter {
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
 
-        void addPlugin(PluginInterface *plugin);
+        void addPlugin(ExtensionInterface *plugin);
 
         // static QString themeName();
         static bool quietMode();

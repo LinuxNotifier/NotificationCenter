@@ -9,13 +9,13 @@ using namespace std;
 
 class NotificationCenter;
 class NcDatabase;
-class PluginInterface;
+class ExtensionInterface;
 class QPluginLoader;
 
 // typedef QHash<QString, QPluginLoader*> PluginLoaderMap;
-// typedef QHash<QString, PluginInterface*> PluginMap;
+// typedef QHash<QString, ExtensionInterface*> PluginMap;
 typedef QHash<QString, shared_ptr<QPluginLoader> > PluginLoaderMap;
-typedef QHash<QString, shared_ptr<PluginInterface> > PluginMap;
+typedef QHash<QString, shared_ptr<ExtensionInterface> > PluginMap;
 
 class PluginManager : public QObject
 {
@@ -25,12 +25,12 @@ class PluginManager : public QObject
 
     signals:
         void newPlugin(shared_ptr<QPluginLoader> pluginLoader);
-        void newPlugin(shared_ptr<PluginInterface> plugin);
+        void newPlugin(shared_ptr<ExtensionInterface> plugin);
         void pluginDeleted(const QString pluginId);
 
     private slots:
         void onNewPlugin(shared_ptr<QPluginLoader> pluginLoader);
-        void onNewPlugin(shared_ptr<PluginInterface> plugin);
+        void onNewPlugin(shared_ptr<ExtensionInterface> plugin);
         void onPluginEnabled(const QString pluginId);
         void onPluginDisabled(const QString pluginId);
         void onPluginRemoved(const QString pluginId);
@@ -46,8 +46,6 @@ class PluginManager : public QObject
     private:
         void initPluginTable();
         void loadPlugins();
-        void loadPythonPlugins();
-
         // bool insertPlugin()
 
         NcDatabase *m_ncDb = nullptr;

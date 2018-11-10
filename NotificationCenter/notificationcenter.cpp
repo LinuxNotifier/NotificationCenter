@@ -1,9 +1,9 @@
 #include "notificationcenter.h"
 #include "notificationcenter_p.h"
 #include "ncnotificationwidget.h"
-#include "plugininterface.h"
+#include "extensioninterface.h"
 #include "messagemanager.h"
-#include "pluginmanager.h"
+#include "extensionsmanager.h"
 #include "ncmessage.h"
 #include "mainwindow.h"
 #include "ncdebug.h"
@@ -115,9 +115,9 @@ bool NotificationCenter::notify(NcNotificationWidget *widget)
     return true;
 }
 
-void NotificationCenter::addPlugin(PluginInterface *plugin)
+void NotificationCenter::addPlugin(ExtensionInterface *plugin)
 {
-    emit instance().newPlugin(shared_ptr<PluginInterface>(plugin));
+    emit instance().newPlugin(shared_ptr<ExtensionInterface>(plugin));
 }
 
 bool NotificationCenter::quietMode()

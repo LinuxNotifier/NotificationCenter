@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(TARGET pymodule)
+
 # find_package(PythonLibrary)
 # include(PythonMacros)
 # find_package(SIP)
@@ -18,3 +20,12 @@ add_custom_target(${${PROJECT_NAME}_Py} ALL
     DEPENDS "*.sip"
     )
 add_dependencies(${${PROJECT_NAME}_Py} ${${PROJECT_NAME}_CORE})
+
+add_library(${TARGET} SHARED python.json
+    python.h
+    python.cpp
+    )
+# target_link_libraries(${${PROJECT_NAME}_Py} ${${PROJECT_NAME}_CORE})
+# qt5_use_modules(${${PROJECT_NAME}_Py} ${QT})
+target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE} ${PYTHON_LIBRARIES})
+qt5_use_modules(${TARGET} ${QT})

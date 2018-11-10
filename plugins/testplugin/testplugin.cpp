@@ -6,7 +6,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-TestPlugin::TestPlugin()
+TestPlugin::TestPlugin() :
+    QObject()
 {
     qDebug() << "construct testplugin";
 }
@@ -16,9 +17,9 @@ TestPlugin::~TestPlugin()
     qDebug() << "deconstruct testplugin";
 }
 
-void TestPlugin::initialize(NotificationCenter *nc)
+bool TestPlugin::initialize(NotificationCenter *nc)
 {
-    
+    return true;
 }
 
 QJsonObject TestPlugin::metadata() const
@@ -41,9 +42,4 @@ QWidget* TestPlugin::centralWidget()
 QWidget* TestPlugin::settingsWidget()
 {
     return new QWidget;
-}
-
-QString TestPlugin::interfaceVersion() const
-{
-    return __INTERFACE_VERSION__;
 }
