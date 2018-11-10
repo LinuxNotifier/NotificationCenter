@@ -2,20 +2,6 @@ import sip
 import PyNc
 from PyNc import NotificationCenter as NC
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout
-# from PyQt5.QtCore import QJsonObject
-# from PyQt5.QtGui import *
-import sys
-
-
-print(sys.argv)
-widget = QWidget()
-layout = QVBoxLayout(widget)
-pb = QPushButton(widget)
-layout.addWidget(pb)
-pb.setText("haha")
-pb.setParent(widget)
-widget.setWindowTitle("plugin from Python")
-# widget.show()
 
 
 class Plugin(PyNc.ExtensionInterface):
@@ -28,10 +14,16 @@ class Plugin(PyNc.ExtensionInterface):
         return {}
 
     def centralWidget(self):
-        # FIXME: the object will be garbage cycled
-        # widget = QWidget()
-        # widget.setWindowTitle("plugin from Python")
-        return widget
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        pb = QPushButton(widget)
+        layout.addWidget(pb)
+        pb.setText("haha")
+        pb.setParent(widget)
+        widget.setWindowTitle("plugin from Python")
+        # widget.show()
+        self.widget = widget
+        return self.widget
 
     def settingsWidget(self):
         return QWidget()
@@ -42,6 +34,7 @@ def run():
     msg = PyNc.NcMessage()
     print(msg.messageId())
     nc = NC.instance()
+    # mainwin = PyNc.MainWindow()
     # nc.setView(mainwin)
     print(sip.unwrapinstance(nc.view()))
     print('notifying message')
@@ -56,5 +49,4 @@ def run():
 
 if __name__ == '__main__':
     app = QApplication([])
-    # mainwin = PyNc.MainWindow()
     run()
