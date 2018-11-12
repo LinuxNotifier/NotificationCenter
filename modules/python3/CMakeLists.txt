@@ -14,6 +14,7 @@ add_custom_target(${${PROJECT_NAME}_Py} ALL
     COMMAND cp ${PROJECT_BINARY_DIR}/NotificationCenter/libNCCore.so ./
     COMMAND bash ./prepare.sh
     # COMMAND python3 configure.py
+    # TODO: pass lib path to Makefile
     COMMAND $(MAKE)
     COMMAND mkdir ${PROJECT_BINARY_DIR}/NotificationCenter/modules -p
     COMMAND cp PyNc.so ${PROJECT_BINARY_DIR}/NotificationCenter/modules

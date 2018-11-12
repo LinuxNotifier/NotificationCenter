@@ -1,7 +1,8 @@
-#ifndef PLUGININTERFACE_H
-#define PLUGININTERFACE_H
+#ifndef EXTENSIONINTERFACE_H
+#define EXTENSIONINTERFACE_H
 
 #include <QtCore>
+#include "ncdebug.h"
 
 class PluginInfo;
 class NotificationCenter;
@@ -16,8 +17,9 @@ class ExtensionInterface
         //     Module,
         //     Plugin,
         // };
+        ExtensionInterface();
+        virtual ~ExtensionInterface();
 
-        virtual ~ExtensionInterface() {};
 
         // return True if this extension can be applied, otherwise return false
         virtual bool initialize(NotificationCenter *nc) = 0;
@@ -25,16 +27,12 @@ class ExtensionInterface
         virtual QJsonObject metadata() const = 0;
         // this widget will be showed on NotificationCenter
         // return nullptr when no widget
-        virtual QWidget* centralWidget() {
-            return nullptr;
-        };
+        virtual QWidget* centralWidget();
         // this widget is showed for settings
         // return nullptr when no widget
-        virtual QWidget* settingsWidget() {
-            return nullptr;
-        };
+        virtual QWidget* settingsWidget();
 };
 
 Q_DECLARE_INTERFACE(ExtensionInterface, ExtensionInterface_IID)
 
-#endif // PLUGININTERFACE_H
+#endif // EXTENSIONINTERFACE_H

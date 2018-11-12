@@ -2,7 +2,6 @@
 class ExtensionInterface { 
     %TypeHeaderCode
         #include "extensioninterface.h"
-        #include <QDebug>
     %End
     public:
         virtual bool initialize(NotificationCenter *nc) = 0;

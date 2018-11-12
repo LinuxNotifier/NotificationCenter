@@ -7,12 +7,13 @@
 %Import QtGui/QtGuimod.sip
 %Import QtWidgets/QtWidgetsmod.sip
 %Include ncmessage.sip
-%Include plugininterface.sip
+%Include extensioninterface.sip
 
 class NcNotificationWidget;
 class MainWindow;
 
-class NotificationCenter {
+class NotificationCenter : public QObject
+{
     %TypeHeaderCode
         #include "notificationcenter.h"
         /* #include "ncmessage.h" */
@@ -70,7 +71,8 @@ class NotificationCenter {
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
 
-        void addPlugin(ExtensionInterface *plugin);
+        // FIXME: prevent QObject from garbage collection
+        void addPlugin(ExtensionInterface *plugin /Transfer/);
 
         // static QString themeName();
         static bool quietMode();

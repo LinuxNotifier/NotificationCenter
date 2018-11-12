@@ -2,6 +2,9 @@ tags
 tags.temp
 tags.lock
 build
+__pycache__
+
+secret.py
 
 # cmake files
 CMakeCache.txt

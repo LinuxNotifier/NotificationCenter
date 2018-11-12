@@ -68,7 +68,6 @@ int main(int argc, char *argv[])
         // .setContent("<b>hello</b> world\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello, this is a test message, you should ignore it. Hey, how are you? I'm fine. How are you? Today's weather is wonderful, how do you think? Yes, it's really wonderful.");
     // NotificationCenter::notify(msg);
 
-
     return app.exec();
 }
 

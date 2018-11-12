@@ -439,7 +439,7 @@ void MainWindow::onModeChanged(bool quiet)
 
 void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
 {
-    qDebug() << "got new plugin" << pluginLoader->fileName();
+    qDebug() << "got plugin loader" << pluginLoader->fileName();
 
     ExtensionInterface *interface = qobject_cast<ExtensionInterface*>(pluginLoader->instance());
     if (!interface) {
@@ -455,6 +455,7 @@ void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
     bool appliable = interface->initialize(&NotificationCenter::instance());
     if (appliable) {
         QWidget *w = interface->centralWidget();
+        // TODO: try cast to NcPluginWidget. if succeeded, don't create NcPluginWidget for it
         if (w) {
             qDebug() << "title: " << w->windowTitle();
             NcPluginWidget *pluginWidget = new NcPluginWidget(this);
@@ -471,7 +472,8 @@ void MainWindow::onNewPlugin(shared_ptr<ExtensionInterface> plugin)
 {
     // qDebug() << "got new plugin" << pluginLoader->fileName();
 #if DEBUG
-    qDebug() << "get plugin plugin: " << plugin.get();
+    qDebug() << "get plugin interface: " << plugin.get();
+    qDebug() << "plugin metadata: " << plugin->metadata();
 #endif
     bool appliable = plugin->initialize(&NotificationCenter::instance());
     if (appliable) {

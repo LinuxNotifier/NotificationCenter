@@ -29,6 +29,7 @@ set(SOURCES mainwindow.cpp
     ncmessage.cpp
     messagemanager.cpp
     extensionsmanager.cpp
+    extensioninterface.cpp
     )
 set(FORMS mainwindow.ui
     )
