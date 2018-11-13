@@ -2,16 +2,9 @@ set(TARGET NotificationCenter)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# set(OpenCV_DIR "/home/zhiping/Projects/opencv/test_install/share/OpenCV")
-# find_package( OpenCV REQUIRED )
-# include_directories( ${OpenCV_INCLUDE_DIRS} )
-# # add_executable( DisplayImage DisplayImage.cpp )
-# # target_link_libraries( DisplayImage ${OpenCV_LIBS} )
-
 set(HEADERS mainwindow.h
     ncglobal.h
     ncdebug.h
-    # converter.h
     notificationcenter.h
     notificationcenter_p.h
     ncdatabase.h
@@ -45,7 +38,7 @@ qt5_use_modules(${${PROJECT_NAME}_CORE} ${QT})
 
 add_executable(${TARGET} main.cpp ${RESOURCES})
 # target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE})
-target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE} ${OpenCV_LIBS})
+target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE})
 
 # to auto-generate *.qm files
 # add_dependencies(${TARGET} translations)

@@ -20,6 +20,11 @@ macro(subdirlist result curdir)
     set(${result} ${dirlist})
 endmacro()
 
+set(pyqt_sip_dir "/home/zhiping/Projects/boost_practice/PyQt5_gpl-5.11.3/sip")
+set(sip_dir "/home/zhiping/Projects/boost_practice/hello-sip-pyqt5/sip_build")
+set(qt_dir "/home/zhiping/Applications/Qt/5.10.1/gcc_64")
+set(DCMAKE_PREFIX_PATH ${qt_dir})
+
 foreach(subdir ${SUBDIRS})
     file(COPY ${subdir} DESTINATION ${PROJECT_BINARY_DIR}/NotificationCenter/plugins/python)
 endforeach()
@@ -29,7 +34,7 @@ set(QT Core Gui Widgets Network DBus Sql X11Extras)
 find_package(Qt5 REQUIRED ${QT})
 find_package(Qt5LinguistTools)
 
-find_package(PythonLibs 3.5 REQUIRED)
+find_package(PythonLibs 3 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 find_package(X11 REQUIRED)

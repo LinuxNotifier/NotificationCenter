@@ -1,11 +1,20 @@
 import os
+import sys
 import sipconfig
 from PyQt5 import QtCore
 
 # You should modify to get exact directory paths to SIP, Qt
 home_dir = os.path.expanduser('~')
-sip_inc_dir = "/home/zhiping/Projects/boost_practice/PyQt5_gpl-5.11.3/sip"
-qt_inc_dir = home_dir + "/Applications/Qt/5.10.1/gcc_64/include"
+
+if len(sys.argv) < 4:
+    print("python3 configure.py <project-dir> <qt_dir> <sip_dir> <pyqt_sip_dir>")
+    sys.exit(1)
+project_dir = sys.argv[1]
+qt_dir = sys.argv[2]
+sip_dir = sys.argv[3]
+pyqt_sip_dir = sys.argv[4]
+
+qt_inc_dir = qt_dir + '/include'
 
 target_dir = os.getcwd()
 
@@ -20,8 +29,8 @@ config = sipconfig.Configuration()
 # module's specification files using the -I flag.
 print(QtCore.PYQT_CONFIGURATION["sip_flags"])
 os.system(" ".join([config.sip_bin, "-c", ".", "-b", build_file,
-                    "-I" + sip_inc_dir,
-                    "-I/home/zhiping/Projects/boost_practice/hello-sip-pyqt5/sip_build/include",
+                    "-I" + pyqt_sip_dir,
+                    "-I" + sip_dir + "/include",
                     QtCore.PYQT_CONFIGURATION["sip_flags"],
                     "notificationcenter.sip"]))
 
@@ -30,7 +39,7 @@ makefile = sipconfig.SIPModuleMakefile(config, build_file)
 # Add the library we are wrapping.  The name doesn't include any platform
 # specific prefixes or extensions (e.g. the "lib" prefix on UNIX, or the
 # ".dll" extension on Windows).
-extraFlags = "-std=c++11 -I%s -I%s/QtCore -I%s/QtGui -I%s -I%s/QtWidgets -I/home/zhiping/Projects/boost_practice/PyQt5_gpl-5.11.3/qpy/QtWidgets -I/home/zhiping/Projects/LinuxNotifier/NotificationCenter/NotificationCenter -I/home/zhiping/Projects/boost_practice/PyQt5_gpl-5.11.3/qpy/QtGui" % (qt_inc_dir, qt_inc_dir, qt_inc_dir, "/home/zhiping/Projects/boost_practice/hello-sip-pyqt5/sip_build/include", qt_inc_dir)
+extraFlags = "-std=c++11 -I%s -I%s/QtCore -I%s/QtGui -I%s -I%s/QtWidgets -I%s/qpy/QtWidgets -I%s/NotificationCenter -Ii%s/qpy/QtGui" % (qt_inc_dir, qt_inc_dir, qt_inc_dir, sip_dir + '/include', qt_inc_dir, pyqt_sip_dir, project_dir, pyqt_sip_dir)
 makefile.extra_cflags = [extraFlags]
 makefile.extra_cxxflags = [extraFlags]
 makefile.extra_lflags = ["-Wl,-R" + target_dir]

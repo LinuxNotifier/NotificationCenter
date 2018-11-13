@@ -1,1 +1,3 @@
-add_subdirectory(python3)
+if(${PYTHONLIBS_FOUND})
+    add_subdirectory(python3)
+endif()

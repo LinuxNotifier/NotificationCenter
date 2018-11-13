@@ -21,6 +21,7 @@ bool Python::initialize(NotificationCenter *nc)
     QStringList argv = QCoreApplication::arguments();
     int argc = argv.length();
 
+    // FIXME: don't use specific version
     // fix undefined symbol: https://bugs.python.org/issue4434
     if (!dlopen("libpython3.5m.so", RTLD_LAZY | RTLD_GLOBAL))
 		qCritical() << "failed to load libpython3.5m.so";

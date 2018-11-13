@@ -64,9 +64,6 @@ class Authencator(QObject):
 
     @pyqtSlot()
     def start(self):
-        print('running in start')
-        webbrowser.open('http://www.douban.com')
-        print('opened a browser')
         state = ''.join(random.sample(string.ascii_letters + string.digits, 10))
         authorization_url = "https://todoist.com/oauth/authorize?client_id={}&scope={}&state={}".format(client_id, scope, state)
 
