@@ -72,7 +72,7 @@ class NotificationCenter : public QObject
         static bool notify(NcNotificationWidget *widget);
 
         // FIXME: prevent QObject from garbage collection
-        void addPlugin(ExtensionInterface *plugin /Transfer/);
+        void addPlugin(ExtensionInterface *plugin /Transfer/) /ReleaseGIL/;
 
         // static QString themeName();
         static bool quietMode();

@@ -7,29 +7,13 @@ from urllib import parse as urlparse
 import requests
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, QCoreApplication
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout
 import webbrowser
 import random
 import string
 import todoist
-
-
-def test():
-    # both prints will be executed
-    print("**[11]**")
-    webbrowser.open('http://www.douban.com')
-    print("**[12]**")
-
-
-class Test(QObject):
-    def start(self):
-        # only the first line will be executed in python threadin.Thread
-        # so we can only see the [13] is printed, that a weird bug.
-        print("**[13]**")
-        webbrowser.open('http://www.douban.com')
-        print("**[14]**")
 
 
 class OThread(QThread):
@@ -78,11 +62,16 @@ class Authencator(QObject):
         super().__init__()
         self.authenticated[str].connect(self.on_authenticated)
 
+    @pyqtSlot()
     def start(self):
+        print('running in start')
+        webbrowser.open('http://www.douban.com')
+        print('opened a browser')
         state = ''.join(random.sample(string.ascii_letters + string.digits, 10))
         authorization_url = "https://todoist.com/oauth/authorize?client_id={}&scope={}&state={}".format(client_id, scope, state)
 
         webbrowser.open(authorization_url)
+        QCoreApplication.processEvents()
 
         if self.httpd is None:
             self.httpd = OAuthServer(self, (self.hostname, self.port), OAuthHandler)
@@ -118,25 +107,21 @@ class PluginWidget(QWidget):
 
         self.pb = pb
         self.layout = layout
+        self.thread = None
+        self.auth = None
 
     @pyqtSlot()
     def start_authenticate(self):
-        self.auth = Authencator()
+        if self.thread is None:
+            self.thread = QThread()
+            self.auth = Authencator()
         self.auth.finished[todoist.TodoistAPI].connect(self.auth_finished)
-        # threading.Thread(target=self.auth.start).start()
-        # self.thread = threading.Thread(target=self.auth.start)
-        # self.thread.start()
-        # self.auth.start()
-        # self.thread2 = threading.Thread(target=test).start()
-        # self.Test = Test()
-        # self.thread3 = threading.Thread(target=self.Test.start).start()
-        # self.thread = OThread(self.auth.start)
-        # self.thread.start()
         # NOTE: we have to use QThread: https://stackoverflow.com/questions/1595649/threading-in-a-pyqt-application-use-qt-threads-or-python-threads and http://blog.qt.io/blog/2010/06/17/youre-doing-it-wrong/
-        self.thread = QThread()
+        # the right way to use QThread: https://wiki.qt.io/QThreads_general_usage
+        # also set self.thread = thread to prevent python garbage collection
         self.auth.moveToThread(self.thread)
+        self.thread.started.connect(self.auth.start)
         self.thread.start()
-        self.auth.start()
 
     @pyqtSlot(todoist.TodoistAPI)
     def auth_finished(self, api):
@@ -150,8 +135,7 @@ class PluginWidget(QWidget):
             self.auth.stop()
 
 
-# class Plugin:
-# class Plugin(PyNc.ExtensionInterface, QObject):
+# WARNING: DO NOT sub-class QObject
 class Plugin(PyNc.ExtensionInterface):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
