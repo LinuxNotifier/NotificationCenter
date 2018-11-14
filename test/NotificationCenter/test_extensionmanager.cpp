@@ -1,5 +1,5 @@
 #include "ncglobal.h"
-#include "extensionsmanager.h"
+#include "extensionmanager.h"
 #include "notificationcenter.h"
 #include <QApplication>
 #include <Catch2/catch.hpp>

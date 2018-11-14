@@ -11,7 +11,7 @@ set(HEADERS mainwindow.h
     ncmessage.h
     ncmessage_p.h
     messagemanager.h
-    extensionsmanager.h
+    extensionmanager.h
     extensioninterface.h
     )
 # set(${PROJECT_NAME}_SOURCES main.cpp
@@ -21,7 +21,7 @@ set(SOURCES mainwindow.cpp
     ncdatabase.cpp
     ncmessage.cpp
     messagemanager.cpp
-    extensionsmanager.cpp
+    extensionmanager.cpp
     extensioninterface.cpp
     )
 set(FORMS mainwindow.ui

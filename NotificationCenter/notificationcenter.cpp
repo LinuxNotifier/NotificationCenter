@@ -3,7 +3,7 @@
 #include "ncnotificationwidget.h"
 #include "extensioninterface.h"
 #include "messagemanager.h"
-#include "extensionsmanager.h"
+#include "extensionmanager.h"
 #include "ncmessage.h"
 #include "mainwindow.h"
 #include "ncdebug.h"
@@ -66,27 +66,9 @@ void NotificationCenter::setPluginModel(PluginManager *pluginManager)
     connect(d_ptr->m_pluginManager, SIGNAL(pluginDeleted(const QString)), this, SIGNAL(pluginDeleted(const QString)));
 }
 
-NcMessage NotificationCenter::createMessage()
-{
-    NcMessage msg;
-    return msg;
-}
-
-shared_ptr<NcMessage> NotificationCenter::createSharedMessage()
-{
-    shared_ptr<NcMessage> msg(new NcMessage);
-    return msg;
-}
-
-shared_ptr<NcMessage> NotificationCenter::createSharedMessage(const NcMessage& message)
+bool NotificationCenter::notify(const NcMessage &message)
 {
     shared_ptr<NcMessage> msg(new NcMessage(message));
-    return msg;
-}
-
-bool NotificationCenter::notify(const NcMessage& message)
-{
-    shared_ptr<NcMessage> msg(createSharedMessage(message));
     return notify(msg);
 }
 

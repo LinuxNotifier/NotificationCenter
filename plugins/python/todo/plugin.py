@@ -1,6 +1,6 @@
 import PyNc
 from .secret import client_id, client_secret, scope
-# from PyNc import NotificationCenter as NC
+from PyNc import NotificationCenter as NC
 import time
 import json
 from urllib import parse as urlparse
@@ -138,6 +138,9 @@ class Plugin(PyNc.ExtensionInterface):
         super().__init__(*args, **kwargs)
 
     def initialize(self, nc):
+        msg = PyNc.NcMessage()
+        msg.setTitle("hello from python")
+        NC.notify(msg)
         return True
 
     def metadata(self):

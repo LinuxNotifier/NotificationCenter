@@ -48,19 +48,18 @@ class NotificationCenter : public QObject
 
         static QString version();
 
-        static NcMessage createMessage();
-            %MethodCode
-                Py_BEGIN_ALLOW_THREADS
+        /* static NcMessage createMessage(); */
+        /*     %MethodCode */
+        /*         Py_BEGIN_ALLOW_THREADS */
             /*     // FIXME: keep reference when the object is alive */
             /*     std::shared_ptr<NcMessage> ptr = *(new std::shared_ptr<NcMessage>(NotificationCenter::createSharedMessage())); */
             /*     sipRes = ptr.get(); */
-                    sipRes = new NcMessage;
-                Py_END_ALLOW_THREADS
-            %End
+            /*         sipRes = new NcMessage; */
+            /*     Py_END_ALLOW_THREADS */
+            /* %End */
 
-        /* static bool notify(shared_ptr<NcMessage> message); */
-
-        static bool notify(const NcMessage& message);
+        static bool notify(const NcMessage& message /Transfer/);
+        /* static bool notify(NcMessage *message /Transfer/); */
         /*     %MethodCode */
         /*         Py_BEGIN_ALLOW_THREADS */
         /*         std::shared_ptr<NcMessage> ptr(a0); */

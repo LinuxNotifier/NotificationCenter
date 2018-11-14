@@ -205,7 +205,8 @@ shared_ptr<NcMessage> MessageManager::selectMessage(const QString& messageId)
     QSqlQuery query(m_ncDb->internalDatabase());
     query.prepare("SELECT * FROM messages WHERE message_id = :message_id");
     query.bindValue(":message_id", messageId);
-    shared_ptr<NcMessage> message = NotificationCenter::createSharedMessage();
+    // shared_ptr<NcMessage> message = NotificationCenter::createSharedMessage();
+    shared_ptr<NcMessage> message(new NcMessage);
     if (query.exec() && query.first())
     {
         message->setMessageId(query.value(0).toString())

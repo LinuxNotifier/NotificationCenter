@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include "notificationcenter.h"
 #include "messagemanager.h"
-#include "extensionsmanager.h"
+#include "extensionmanager.h"
 #include "ncmessage.h"
 #include "ncdebug.h"
 #include "ncglobal.h"
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
     w.show();
 
-    shared_ptr<NcMessage> msg = NotificationCenter::createSharedMessage();
+    shared_ptr<NcMessage> msg(new NcMessage);
     msg->setTitle("hello")
         .setIcon(QIcon::fromTheme("edit-undo"))
         // .setContent("<b>Hi</b>\n" + QString("#include <QtCore>").toHtmlEscaped());
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
 
     // for some weird, still unknown reason, app.exec() must be executed in python
     // if we want to make it work with threading support in Python.
+    // TODO: check if python module is enabled
     int timeout = 10;
     while (timeout > 0) {
         QApplication::processEvents();

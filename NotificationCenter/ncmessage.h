@@ -57,7 +57,6 @@ class NcMessage
         };
         enum class Duration {
             /**
-             *
              * UntilConfirmation: keep this message until user manually close it even if
              * machine rebooted before
              * UntilShutdown: remove this message after this machine shutdown
@@ -95,6 +94,8 @@ class NcMessage
         bool isValid() const;
 
     private:
+        // Q_DISABLE_COPY(NcMessage);
+
         NcMessage& setCreatedTime(const QString& createdTime);
         NcMessage& setMessageId(const QString& messageId);
         NcMessage& setNotificationId(const QString& notificationId);

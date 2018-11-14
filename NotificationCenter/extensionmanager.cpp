@@ -1,4 +1,4 @@
-#include "extensionsmanager.h"
+#include "extensionmanager.h"
 #include "notificationcenter.h"
 #include "extensioninterface.h"
 #include "ncdatabase.h"

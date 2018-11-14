@@ -7,7 +7,7 @@ add_executable(${TARGET} test_main.cpp
     test_messagemanager.cpp
     test_extensioninterface.h
     test_extensioninterface.cpp
-    test_extensionsmanager.cpp
+    test_extensionmanager.cpp
     test_ncwidget.cpp
     test_mainwindow.cpp)
 target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE} ${PYTHON_LIBRARIES})

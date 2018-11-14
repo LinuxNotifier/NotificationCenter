@@ -44,11 +44,8 @@ class NotificationCenter : public QObject
         void setMessageModel(MessageManager *messageManager);
         void setPluginModel(PluginManager *pluginManager);
 
-        static NcMessage createMessage();
-        static shared_ptr<NcMessage> createSharedMessage();
-        static shared_ptr<NcMessage> createSharedMessage(const NcMessage& message);
         static bool notify(shared_ptr<NcMessage> message);
-        static bool notify(const NcMessage& message);
+        static bool notify(const NcMessage &message);
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
 

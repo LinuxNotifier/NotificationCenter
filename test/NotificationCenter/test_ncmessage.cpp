@@ -9,7 +9,7 @@ TEST_CASE("test NcMessage", "[ncmessage], [message]") {
     int argc = 1;
     char *argv[] = {(char *)"./test_main"};
     QApplication app(argc, argv);
-    NcMessage msg = NotificationCenter::createMessage();
+    NcMessage msg;
     QIcon icon("test_icon");
     msg.setIcon(icon)
         .setTitle("test_title")
