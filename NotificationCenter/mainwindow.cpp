@@ -175,7 +175,7 @@ void MainWindow::show()
     m_backgroundScene->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QPropertyAnimation *showAnimation = new QPropertyAnimation(m_backgroundScene, "pos", this);
-    showAnimation->setDuration(500);
+    showAnimation->setDuration(250);
     showAnimation->setStartValue(m_geometry.topRight());
     showAnimation->setEndValue(m_geometry.topLeft());
     showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
@@ -188,7 +188,7 @@ void MainWindow::show()
 void MainWindow::hide()
 {
     QPropertyAnimation *hideAnimation = new QPropertyAnimation(m_backgroundScene, "pos", this);
-    hideAnimation->setDuration(500);
+    hideAnimation->setDuration(250);
     hideAnimation->setStartValue(m_backgroundScene->pos());
     hideAnimation->setEndValue(m_geometry.topRight());
     hideAnimation->setEasingCurve(QEasingCurve::InSine);
