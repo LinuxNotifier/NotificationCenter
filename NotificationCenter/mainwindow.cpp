@@ -67,14 +67,14 @@ MainWindow::MainWindow(QWidget *parent) :
     initUi();
 
     NotificationCenter &nc = NotificationCenter::instance();
-    connect(&NotificationCenter::instance(), SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SLOT(onNewMessage(shared_ptr<NcMessage>)));
+    connect(&NotificationCenter::instance(), SIGNAL(newMessage(std::shared_ptr<NcMessage>)), this, SLOT(onNewMessage(std::shared_ptr<NcMessage>)));
     connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
     connect(&nc, SIGNAL(messageClosed(const QString)), this, SLOT(onMessageClosed(const QString)));
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 
-    connect(&nc, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(shared_ptr<QPluginLoader>)));
-    connect(&nc, SIGNAL(newPlugin(shared_ptr<ExtensionInterface>)), this, SLOT(onNewPlugin(shared_ptr<ExtensionInterface>)));
-    connect(&nc, SIGNAL(pluginDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
+    connect(&nc, SIGNAL(newExtension(std::shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(std::shared_ptr<QPluginLoader>)));
+    connect(&nc, SIGNAL(newExtension(std::shared_ptr<ExtensionInterface>)), this, SLOT(onNewPlugin(std::shared_ptr<ExtensionInterface>)));
+    connect(&nc, SIGNAL(extensionDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
 
 
@@ -175,7 +175,7 @@ void MainWindow::show()
     m_backgroundScene->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QPropertyAnimation *showAnimation = new QPropertyAnimation(m_backgroundScene, "pos", this);
-    showAnimation->setDuration(250);
+    showAnimation->setDuration(500);
     showAnimation->setStartValue(m_geometry.topRight());
     showAnimation->setEndValue(m_geometry.topLeft());
     showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
@@ -188,7 +188,7 @@ void MainWindow::show()
 void MainWindow::hide()
 {
     QPropertyAnimation *hideAnimation = new QPropertyAnimation(m_backgroundScene, "pos", this);
-    hideAnimation->setDuration(250);
+    hideAnimation->setDuration(500);
     hideAnimation->setStartValue(m_backgroundScene->pos());
     hideAnimation->setEndValue(m_geometry.topRight());
     hideAnimation->setEasingCurve(QEasingCurve::InSine);
@@ -329,7 +329,7 @@ void MainWindow::initUi()
     m_notificationsLayout->addStretch();
 }
 
-void MainWindow::onNewMessage(shared_ptr<NcMessage> message)
+void MainWindow::onNewMessage(std::shared_ptr<NcMessage> message)
 {
     // TODO: beautify the widget UI
     qDebug() << "received a new message:" << message->title();
@@ -408,7 +408,7 @@ void MainWindow::onNotificationClosed()
     // maybe I need to implement without QVBoxLayout
     qDebug() << sender() << "closed";
     NcNotificationWidget *widget = static_cast<NcNotificationWidget *>(sender());
-    // this notification widget is created by MainWindow::newMessage(shared_ptr<NcNotificationWidget> message)
+    // this notification widget is created by MainWindow::newMessage(std::shared_ptr<NcNotificationWidget> message)
     if (m_widget2MsgId.contains(widget)) {
         /* this will cause it receiving a messageClosed signal again,
             but it doesn't matter */
@@ -437,7 +437,7 @@ void MainWindow::onModeChanged(bool quiet)
     qDebug() << "mode changed:" << quiet;
 }
 
-void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
+void MainWindow::onNewPlugin(std::shared_ptr<QPluginLoader> pluginLoader)
 {
     qDebug() << "got plugin loader" << pluginLoader->fileName();
 
@@ -468,13 +468,14 @@ void MainWindow::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
         qDebug() << "not appliable";
 }
 
-void MainWindow::onNewPlugin(shared_ptr<ExtensionInterface> plugin)
+void MainWindow::onNewPlugin(std::shared_ptr<ExtensionInterface> plugin)
 {
     // qDebug() << "got new plugin" << pluginLoader->fileName();
 #if DEBUG
     qDebug() << "get plugin interface: " << plugin.get();
     qDebug() << "plugin metadata: " << plugin->metadata();
 #endif
+    new std::shared_ptr<ExtensionInterface>(plugin); // keep plugin from freed
     bool appliable = plugin->initialize(&NotificationCenter::instance());
     if (appliable) {
     QWidget *w = plugin->centralWidget();

@@ -7,16 +7,14 @@
 #include <QHash>
 #include <memory>
 
-using namespace std;
-
 class NcMessagePrivate;
 class NotificationCenter;
 class NotificationCenterPrivate;
 class NcDatabase;
 class NcMessage;
 
-typedef QList<shared_ptr<NcMessage> > MessageList;
-typedef QHash<QString, shared_ptr<NcMessage> > MessageMap;
+typedef QList<std::shared_ptr<NcMessage> > MessageList;
+typedef QHash<QString, std::shared_ptr<NcMessage> > MessageMap;
 typedef std::shared_ptr<NcMessage> NcMessageSharedPointer;
 
 /**
@@ -102,7 +100,7 @@ class NcMessage
         NcMessage& setApplicationId(const QString& applicationId);
         NcMessage& setValid(bool valid = true);
 
-        shared_ptr<NcMessagePrivate> d_ptr;
+        std::shared_ptr<NcMessagePrivate> d_ptr;
 };
 
 #endif // NCMESSAGE_H   

@@ -15,8 +15,6 @@
 #include <QSettings>
 #include <QFile>
 
-using namespace std;
-
 void initSettings();
 bool setLanguage(const QString& language);
 
@@ -53,12 +51,12 @@ int main(int argc, char *argv[])
     MessageManager msgManager(&nc);
     nc.setMessageModel(&msgManager);
 
-    PluginManager pluginManager(&nc);
-    nc.setPluginModel(&pluginManager);
+    ExtensionManager extensionManager(&nc);
+    nc.setPluginModel(&extensionManager);
 
     w.show();
 
-    shared_ptr<NcMessage> msg(new NcMessage);
+    std::shared_ptr<NcMessage> msg(new NcMessage);
     msg->setTitle("hello")
         .setIcon(QIcon::fromTheme("edit-undo"))
         // .setContent("<b>Hi</b>\n" + QString("#include <QtCore>").toHtmlEscaped());

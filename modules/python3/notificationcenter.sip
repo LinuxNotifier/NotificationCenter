@@ -21,7 +21,7 @@ class NotificationCenter : public QObject
     %End
 
     signals:
-        /* void newMessage(shared_ptr<NcMessage> message); */
+        /* void newMessage(std::shared_ptr<NcMessage> message); */
         /* void newMessage(NcMessage *message); */
         /* %MethodCode */
         /*     Py_BEGIN_ALLOW_THREADS */
@@ -36,11 +36,17 @@ class NotificationCenter : public QObject
         /*  */
         /* void modeChanged(bool quiet); */
         /*  */
-        /* void newPlugin(shared_ptr<ExtensionInterface> plugin); */
-        /* void pluginEnabled(const QString pluginId); */
-        /* void pluginDisabled(const QString pluginId); */
-        /* void pluginRemoved(const QString pluginId); */
-        /* void pluginDeleted(const QString pluginId); */
+        /* void newExtension(std::shared_ptr<ExtensionInterface> plugin); */
+        /* void extensionEnabled(const QString pluginId); */
+        /* void extensionDisabled(const QString pluginId); */
+        /* void extensionRemoved(const QString pluginId); */
+        /* void extensionDeleted(const QString pluginId); */
+        // void newExtension(ExtensionInterface *plugin /Transfer/);
+        //     %MethodCode
+        //         std::shared_ptr<ExtensionInterface> interface(plugin);
+        //         // NotificationCenter::newExtension
+        //         emit NotificationCenter::instance().newExtension(interface);
+        //     %End
 
     public:
         ~NotificationCenter();
@@ -70,8 +76,8 @@ class NotificationCenter : public QObject
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
 
-        // FIXME: prevent QObject from garbage collection
-        void addPlugin(ExtensionInterface *plugin /Transfer/) /ReleaseGIL/;
+        // void addPlugin(ExtensionInterface &plugin /Transfer/);
+        void addPlugin(ExtensionInterface *plugin /Transfer/);
 
         // static QString themeName();
         static bool quietMode();

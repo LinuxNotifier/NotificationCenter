@@ -19,9 +19,9 @@ NcMessagePrivate::~NcMessagePrivate()
 NcMessage::NcMessage() :
     d_ptr(new NcMessagePrivate(this))
 {
-    setMessageId(QUuid::createUuid().toString());
-    setCreatedTime(QDateTime::currentDateTime().toString());
-    setIcon(":/images/ncmessage_default_icon.png");
+    // setMessageId(QUuid::createUuid().toString());
+    // setCreatedTime(QDateTime::currentDateTime().toString());
+    // setIcon(":/images/ncmessage_default_icon.png");
     setDuration(Duration::Default);
 }
 

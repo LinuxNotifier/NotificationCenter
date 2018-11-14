@@ -1,11 +1,9 @@
-#ifndef PLUGINMANAGER_H
-#define PLUGINMANAGER_H
+#ifndef EXTENSIONMANAGER_H
+#define EXTENSIONMANAGER_H
 
 #include <QObject>
 #include <memory>
 #include <QHash>
-
-using namespace std;
 
 class NotificationCenter;
 class NcDatabase;
@@ -14,30 +12,30 @@ class QPluginLoader;
 
 // typedef QHash<QString, QPluginLoader*> PluginLoaderMap;
 // typedef QHash<QString, ExtensionInterface*> PluginMap;
-typedef QHash<QString, shared_ptr<QPluginLoader> > PluginLoaderMap;
-typedef QHash<QString, shared_ptr<ExtensionInterface> > PluginMap;
+typedef QHash<QString, std::shared_ptr<QPluginLoader> > PluginLoaderMap;
+typedef QHash<QString, std::shared_ptr<ExtensionInterface> > PluginMap;
 
-class PluginManager : public QObject
+class ExtensionManager : public QObject
 {
     Q_OBJECT
 
     friend class NotificationCenter;
 
     signals:
-        void newPlugin(shared_ptr<QPluginLoader> pluginLoader);
-        void newPlugin(shared_ptr<ExtensionInterface> plugin);
-        void pluginDeleted(const QString pluginId);
+        void newExtension(std::shared_ptr<QPluginLoader> pluginLoader);
+        void newExtension(std::shared_ptr<ExtensionInterface> plugin);
+        void extensionDeleted(const QString pluginId);
 
     private slots:
-        void onNewPlugin(shared_ptr<QPluginLoader> pluginLoader);
-        void onNewPlugin(shared_ptr<ExtensionInterface> plugin);
+        void onNewPlugin(std::shared_ptr<QPluginLoader> pluginLoader);
+        void onNewPlugin(std::shared_ptr<ExtensionInterface> plugin);
         void onPluginEnabled(const QString pluginId);
         void onPluginDisabled(const QString pluginId);
         void onPluginRemoved(const QString pluginId);
 
     public:
-        explicit PluginManager(NotificationCenter *parent);
-        ~PluginManager();
+        explicit ExtensionManager(NotificationCenter *parent);
+        ~ExtensionManager();
 
         inline bool isValid() {
             return m_valid;
@@ -45,7 +43,7 @@ class PluginManager : public QObject
 
     private:
         void initPluginTable();
-        void loadPlugins();
+        void loadExtensions();
         // bool insertPlugin()
 
         NcDatabase *m_ncDb = nullptr;
@@ -55,4 +53,4 @@ class PluginManager : public QObject
     
 };
 
-#endif // PLUGINMANAGER_H
+#endif // EXTENSIONMANAGER_H

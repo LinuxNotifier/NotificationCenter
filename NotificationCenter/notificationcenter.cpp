@@ -55,29 +55,30 @@ void NotificationCenter::setView(MainWindow *view)
 void NotificationCenter::setMessageModel(MessageManager *messageManager)
 {
     d_ptr->m_messageManager = messageManager;
-    connect(d_ptr->m_messageManager, SIGNAL(newMessage(shared_ptr<NcMessage>)), this, SIGNAL(newMessage(shared_ptr<NcMessage>)));
+    connect(d_ptr->m_messageManager, SIGNAL(newMessage(std::shared_ptr<NcMessage>)), this, SIGNAL(newMessage(std::shared_ptr<NcMessage>)));
     connect(d_ptr->m_messageManager, SIGNAL(messageExpired(const QString)), this, SIGNAL(messageExpired(const QString)));
 }
 
-void NotificationCenter::setPluginModel(PluginManager *pluginManager)
+void NotificationCenter::setPluginModel(ExtensionManager *extensionManager)
 {
-    d_ptr->m_pluginManager = pluginManager;
-    connect(d_ptr->m_pluginManager, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)), this, SIGNAL(newPlugin(shared_ptr<QPluginLoader>)));
-    connect(d_ptr->m_pluginManager, SIGNAL(pluginDeleted(const QString)), this, SIGNAL(pluginDeleted(const QString)));
+    d_ptr->m_extensionManager = extensionManager;
+    connect(d_ptr->m_extensionManager, SIGNAL(newExtension(std::shared_ptr<QPluginLoader>)), this, SIGNAL(newExtension(std::shared_ptr<QPluginLoader>)));
+    connect(d_ptr->m_extensionManager, SIGNAL(extensionDeleted(const QString)), this, SIGNAL(extensionDeleted(const QString)));
 }
 
 bool NotificationCenter::notify(const NcMessage &message)
 {
-    shared_ptr<NcMessage> msg(new NcMessage(message));
+    std::shared_ptr<NcMessage> msg(new NcMessage(message));
     return notify(msg);
 }
 
-bool NotificationCenter::notify(shared_ptr<NcMessage> message)
+bool NotificationCenter::notify(std::shared_ptr<NcMessage> message)
 {
     if (message->isValid())          // already notified
         return false;
 
     // TODO: set messageId here, return messageId
+    message->setMessageId(QUuid::createUuid().toString());
     message->setCreatedTime(QDateTime::currentDateTime().toString());
     message->setValid();
     MessageManager *msgMgr = instance().d_ptr->m_messageManager;
@@ -99,7 +100,7 @@ bool NotificationCenter::notify(NcNotificationWidget *widget)
 
 void NotificationCenter::addPlugin(ExtensionInterface *plugin)
 {
-    emit instance().newPlugin(shared_ptr<ExtensionInterface>(plugin));
+    emit instance().newExtension(std::shared_ptr<ExtensionInterface>(plugin));
 }
 
 bool NotificationCenter::quietMode()

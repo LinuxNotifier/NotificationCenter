@@ -4,15 +4,13 @@
 #include <QObject>
 #include <memory>
 
-using namespace std;
-
 class ExtensionInterface;
 class NcMessage;
 class NotificationCenterPrivate;
 class NcNotificationWidget;
 class MainWindow;
 class MessageManager;
-class PluginManager;
+class ExtensionManager;
 class QPluginLoader;
 
 class NotificationCenter : public QObject
@@ -20,19 +18,19 @@ class NotificationCenter : public QObject
     Q_OBJECT
 
     signals:
-        void newMessage(shared_ptr<NcMessage> message);
+        void newMessage(std::shared_ptr<NcMessage> message);
         void newNotification(NcNotificationWidget *widget);
         void messageExpired(const QString messageId);
         void messageClosed(const QString messageId);
 
         void modeChanged(bool quiet);
 
-        void newPlugin(shared_ptr<QPluginLoader> pluginLoader);
-        void newPlugin(shared_ptr<ExtensionInterface> plugin);
-        void pluginEnabled(const QString pluginId);
-        void pluginDisabled(const QString pluginId);
-        void pluginRemoved(const QString pluginId);
-        void pluginDeleted(const QString pluginId);
+        void newExtension(std::shared_ptr<QPluginLoader> pluginLoader);
+        void newExtension(std::shared_ptr<ExtensionInterface> plugin);
+        void extensionEnabled(const QString pluginId);
+        void extensionDisabled(const QString pluginId);
+        void extensionRemoved(const QString pluginId);
+        void extensionDeleted(const QString pluginId);
 
     public:
         ~NotificationCenter();
@@ -42,9 +40,9 @@ class NotificationCenter : public QObject
 
         void setView(MainWindow *view);
         void setMessageModel(MessageManager *messageManager);
-        void setPluginModel(PluginManager *pluginManager);
+        void setPluginModel(ExtensionManager *extensionManager);
 
-        static bool notify(shared_ptr<NcMessage> message);
+        static bool notify(std::shared_ptr<NcMessage> message);
         static bool notify(const NcMessage &message);
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
@@ -62,7 +60,7 @@ class NotificationCenter : public QObject
         explicit NotificationCenter(QObject *parent = nullptr);
         Q_DISABLE_COPY(NotificationCenter);
 
-        shared_ptr<NotificationCenterPrivate> d_ptr;
+        std::shared_ptr<NotificationCenterPrivate> d_ptr;
 };
 
 #endif // NOTIFICATIONCENTER_H

@@ -6,7 +6,7 @@
 class NotificationCenter;
 class NcMessage;
 class MessageManager;
-class PluginManager;
+class ExtensionManager;
 
 class NotificationCenterPrivate
 {
@@ -21,7 +21,7 @@ class NotificationCenterPrivate
 
         MainWindow *m_view = nullptr;
         MessageManager *m_messageManager = nullptr;
-        PluginManager *m_pluginManager = nullptr;
+        ExtensionManager *m_extensionManager = nullptr;
         bool m_quietMode = false;
         const QString m_ncVersion;
         NotificationCenter *q_ptr = nullptr;

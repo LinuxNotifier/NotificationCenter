@@ -60,7 +60,7 @@ void MessageManager::initMessageTable()
 void MessageManager::loadMessages()
 {
     MessageList msgList = selectAllMessages();
-    for (const shared_ptr<NcMessage> msg : msgList) {
+    for (const std::shared_ptr<NcMessage> msg : msgList) {
         NcMessage::Duration duration = static_cast<NcMessage::Duration>(msg->duration());
         if (duration != NcMessage::Duration::UntilShutdown) {
             emit newMessage(msg);
@@ -80,7 +80,7 @@ void MessageManager::messageClosed(const QString messageId)
     deleteMessage(messageId);
 }
 
-bool MessageManager::insertMessage(shared_ptr<NcMessage> message)
+bool MessageManager::insertMessage(std::shared_ptr<NcMessage> message)
 {
     bool inserted = MessageManager::insertMessage(message->messageId(),
             message->title(),
@@ -161,7 +161,7 @@ bool MessageManager::insertMessage(const QString& messageId, const QString& titl
     return inserted;
 }
 
-bool MessageManager::alterMessage(shared_ptr<NcMessage> message)
+bool MessageManager::alterMessage(std::shared_ptr<NcMessage> message)
 {
     return MessageManager::alterMessage(message->messageId(),
             message->title(),
@@ -200,13 +200,13 @@ bool MessageManager::deleteMessage(const QString& messageId)
     return result;
 }
 
-shared_ptr<NcMessage> MessageManager::selectMessage(const QString& messageId)
+std::shared_ptr<NcMessage> MessageManager::selectMessage(const QString& messageId)
 {
     QSqlQuery query(m_ncDb->internalDatabase());
     query.prepare("SELECT * FROM messages WHERE message_id = :message_id");
     query.bindValue(":message_id", messageId);
-    // shared_ptr<NcMessage> message = NotificationCenter::createSharedMessage();
-    shared_ptr<NcMessage> message(new NcMessage);
+    // std::shared_ptr<NcMessage> message = NotificationCenter::createSharedMessage();
+    std::shared_ptr<NcMessage> message(new NcMessage);
     if (query.exec() && query.first())
     {
         message->setMessageId(query.value(0).toString())

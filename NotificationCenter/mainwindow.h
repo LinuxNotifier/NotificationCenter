@@ -7,8 +7,6 @@
 #include <QHash>
 #include <QPixmap>
 
-using namespace std;
-
 class ExtensionInterface;
 class NcNotificationWidget;
 class QPluginLoader;
@@ -40,9 +38,9 @@ class MainWindow : public QWidget
     signals:
         void messageClosed(const QString messageId);
 
-        void pluginEnabled(const QString pluginId);
-        void pluginDisabled(const QString pluginId);
-        void pluginRemoved(const QString pluginId);
+        void extensionEnabled(const QString pluginId);
+        void extensionDisabled(const QString pluginId);
+        void extensionRemoved(const QString pluginId);
 
     public slots:
         void show();
@@ -50,7 +48,7 @@ class MainWindow : public QWidget
 
     private slots:
         void focusChanged(QWidget *old, QWidget *now);
-        void onNewMessage(shared_ptr<NcMessage> message);
+        void onNewMessage(std::shared_ptr<NcMessage> message);
         void onMessageClosed(const QString messageId);
         void onMessageExpired(const QString messageId);
         void onNewNotification(NcNotificationWidget *widget);
@@ -60,8 +58,8 @@ class MainWindow : public QWidget
         void onNotificationClosed();
         void onModeChanged(bool quiet);
 
-        void onNewPlugin(shared_ptr<QPluginLoader> pluginLoader);
-        void onNewPlugin(shared_ptr<ExtensionInterface> plugin);
+        void onNewPlugin(std::shared_ptr<QPluginLoader> pluginLoader);
+        void onNewPlugin(std::shared_ptr<ExtensionInterface> plugin);
         void onPluginDeleted(const QString pluginId);
 
     public:

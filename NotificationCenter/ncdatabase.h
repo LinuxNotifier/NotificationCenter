@@ -41,7 +41,7 @@ class NcDatabase : public QObject
 
         void initDatabase();
 
-        shared_ptr<NcDatabasePrivate> d_ptr;
+        std::shared_ptr<NcDatabasePrivate> d_ptr;
 };
 
 #endif // NCDATABASE_H

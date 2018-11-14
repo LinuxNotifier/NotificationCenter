@@ -7,23 +7,23 @@
 #include <QSqlError>
 #include <QTimer>
 
-PluginManager::PluginManager(NotificationCenter *parent) :
+ExtensionManager::ExtensionManager(NotificationCenter *parent) :
     QObject(parent),
     m_ncDb(&NcDatabase::instance())
 {
-    connect(parent, SIGNAL(pluginEnabled(const QString)), this, SLOT(onPluginEnabled(const QString)));
-    connect(parent, SIGNAL(pluginDisabled(const QString)), this, SLOT(onPluginDisabled(const QString)));
-    connect(parent, SIGNAL(pluginRemoved(const QString)), this, SLOT(onPluginRemoved(const QString)));
+    connect(parent, SIGNAL(extensionEnabled(const QString)), this, SLOT(onPluginEnabled(const QString)));
+    connect(parent, SIGNAL(extensionDisabled(const QString)), this, SLOT(onPluginDisabled(const QString)));
+    connect(parent, SIGNAL(extensionRemoved(const QString)), this, SLOT(onPluginRemoved(const QString)));
     initPluginTable();
-    QTimer::singleShot(1000, this, &PluginManager::loadPlugins);
+    QTimer::singleShot(1000, this, &ExtensionManager::loadExtensions);
 }
 
-PluginManager::~PluginManager()
+ExtensionManager::~ExtensionManager()
 {
 
 }
 
-void PluginManager::initPluginTable()
+void ExtensionManager::initPluginTable()
 {
     QSqlQuery query(m_ncDb->internalDatabase());
     if (!query.exec("CREATE TABLE IF NOT EXISTS plugins "
@@ -41,7 +41,7 @@ void PluginManager::initPluginTable()
         m_valid = true;
 }
 
-void PluginManager::loadPlugins()
+void ExtensionManager::loadExtensions()
 {
     QDir pluginDir(qApp->applicationDirPath());
     if (!pluginDir.cd("plugins")) {
@@ -66,33 +66,33 @@ void PluginManager::loadPlugins()
         qDebug() << "loading plugin: " << pluginLoader->metaData();
 #endif
         // m_pluginLoaderMap[pluginLoader->fileName()] = pluginLoader;
-        emit newPlugin(shared_ptr<QPluginLoader>(pluginLoader));
+        emit newExtension(std::shared_ptr<QPluginLoader>(pluginLoader));
     }
 }
 
-void PluginManager::onNewPlugin(shared_ptr<QPluginLoader> pluginLoader)
+void ExtensionManager::onNewPlugin(std::shared_ptr<QPluginLoader> pluginLoader)
 {
     if (!m_pluginLoaderMap.contains(pluginLoader->fileName())) 
         m_pluginLoaderMap[pluginLoader->fileName()] = pluginLoader;
 }
 
-void PluginManager::onNewPlugin(shared_ptr<ExtensionInterface> plugin)
+void ExtensionManager::onNewPlugin(std::shared_ptr<ExtensionInterface> plugin)
 {
     // if (!m_pluginMap.contains(plugin)) 
     //     m_pluginMap[pluginLoader->fileName()] = plugin;
 }
 
-void PluginManager::onPluginEnabled(const QString pluginId)
+void ExtensionManager::onPluginEnabled(const QString pluginId)
 {
     qDebug() << QString("plugin %1 enabled").arg(pluginId);
 }
 
-void PluginManager::onPluginDisabled(const QString pluginId)
+void ExtensionManager::onPluginDisabled(const QString pluginId)
 {
     qDebug() << QString("plugin %1 disabled").arg(pluginId);
 }
 
-void PluginManager::onPluginRemoved(const QString pluginId)
+void ExtensionManager::onPluginRemoved(const QString pluginId)
 {
     qDebug() << QString("plugin %1 removed").arg(pluginId);
 }
