@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include <unistd.h>
 #include "notificationcenter.h"
 #include "messagemanager.h"
 #include "extensionmanager.h"
@@ -14,6 +13,7 @@
 #include <memory>
 #include <QSettings>
 #include <QFile>
+#include <QThread>
 
 void initSettings();
 bool setLanguage(const QString& language);
@@ -70,11 +70,11 @@ int main(int argc, char *argv[])
     // for some weird, still unknown reason, app.exec() must be executed in python
     // if we want to make it work with threading support in Python.
     // TODO: check if python module is enabled
-    int timeout = 10;
+    int timeout = 10 * 1000;
     while (timeout > 0) {
         QApplication::processEvents();
-        sleep(1);
-        --timeout;
+        QThread::msleep(20);
+        timeout -= 20;
     }
     // this should never be executed if the python module is loaded
     return app.exec();
