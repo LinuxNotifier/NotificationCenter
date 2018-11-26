@@ -58,9 +58,9 @@ include_directories(NotificationCenter)
 
 add_subdirectory(modules)
 add_subdirectory(plugins)
-add_subdirectory(test)
-# add_subdirectory(test_process)
-# add_subdirectory(test_lib)
+if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
+    add_subdirectory(test)
+endif()
 
 # don't clean *.ts files when execute `make clean`
 set_directory_properties(PROPERTIES CLEAN_NO_CUSTOM TRUE)

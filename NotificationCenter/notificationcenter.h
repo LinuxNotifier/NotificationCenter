@@ -18,10 +18,15 @@ class NotificationCenter : public QObject
     Q_OBJECT
 
     signals:
+        // NOTE: all messages through NotificationCenter may be leaked to other plugins,
+        // you should customize notification widget to display privacy information if you
+        // have to do so.
+
         void newMessage(std::shared_ptr<NcMessage> message);
         void newNotification(NcNotificationWidget *widget);
         void messageExpired(const QString messageId);
         void messageClosed(const QString messageId);
+        void messageHandled(const QString action);
 
         void modeChanged(bool quiet);
 
@@ -44,6 +49,10 @@ class NotificationCenter : public QObject
 
         static bool notify(std::shared_ptr<NcMessage> message);
         static bool notify(const NcMessage &message);
+        // TODO
+        // renotify(notificaitonId)
+        // removeNotification(const QString notificationId);
+        // replaceNotification(notificaitonId, notification, CREATE_ON_NO, actionHandler)
         // NOTE: the following method always returns true
         static bool notify(NcNotificationWidget *widget);
 

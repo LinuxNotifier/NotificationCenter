@@ -138,9 +138,10 @@ class Plugin(PyNc.ExtensionInterface):
         super().__init__(*args, **kwargs)
 
     def initialize(self, nc):
-        msg = PyNc.NcMessage()
-        msg.setTitle("hello from python")
-        NC.notify(msg)
+        # test use
+        # msg = PyNc.NcMessage()
+        # msg.setTitle("hello from python")
+        # NC.notify(msg)
         return True
 
     def metadata(self):

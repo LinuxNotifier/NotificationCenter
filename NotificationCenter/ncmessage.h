@@ -27,6 +27,7 @@ class NcMessage
     friend class MessageManager;
 
     public:
+        // TODO: use using to import enum class from NcMessagePrivate (https://stackoverflow.com/questions/3293279/how-do-you-import-an-enum-into-a-different-namespace-in-c)
         enum class Action {
             /**
              * Create: create a new message, this is the default behaviour

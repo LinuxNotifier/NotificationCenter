@@ -112,6 +112,13 @@ QPushButton {
     border-color: red;
 }
 
+QPushButton:pressed {
+    background-color: red;
+    /* position: relative; */
+    position: absolute;
+    left: 1px; top: 1px;
+}
+
 QLabel {
     padding: 0px;
     margin: 0px;
