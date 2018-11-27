@@ -16,7 +16,6 @@ add_custom_target(${${PROJECT_NAME}_Py} ALL
     COMMAND cp ${PROJECT_BINARY_DIR}/NotificationCenter/libNCCore.so ./
     COMMAND python3 configure.py ${PROJECT_SOURCE_DIR} ${qt_dir} ${sip_dir} ${pyqt_sip_dir}  
     COMMAND $(MAKE)
-    COMMAND mkdir ${PROJECT_BINARY_DIR}/NotificationCenter/modules -p
     COMMAND cp PyNc.so ${PROJECT_BINARY_DIR}/NotificationCenter/modules
     # TODO: rebuild if and only if those "*.sip" files changed
     DEPENDS "*.sip"
@@ -31,3 +30,10 @@ add_library(${TARGET} SHARED python.json
 # qt5_use_modules(${${PROJECT_NAME}_Py} ${QT})
 target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE} ${PYTHON_LIBRARIES})
 qt5_use_modules(${TARGET} ${QT})
+
+add_custom_command(TARGET ${TARGET} POST_BUILD
+    COMMAND cp $<TARGET_FILE:${TARGET}> "${PROJECT_BINARY_DIR}/NotificationCenter/plugins"
+    )
+
+install(TARGETS ${TARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/plugins")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/PyNc.so" DESTINATION "${CMAKE_INSTALL_PREFIX}/modules")

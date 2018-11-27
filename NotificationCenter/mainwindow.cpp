@@ -169,6 +169,7 @@ void MainWindow::onTabChanged(int index)
 
 void MainWindow::show()
 {
+    emit refreshContents();
     // TODO: set focus
     // FIXME: background moving with MainWindow:
     // QWidget : QLabel (background image) : MainWindow

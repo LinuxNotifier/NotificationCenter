@@ -17,3 +17,14 @@ add_library(${TARGET} SHARED colortester.json
 
 target_link_libraries(${TARGET} ${${PROJECT_NAME}_CORE})
 qt5_use_modules(${TARGET} ${QT})
+
+# NOTE: this requires CMake 3.13 or higher
+# add_custom_command(TARGET ${TARGET} POST_BUILD
+#     COMMAND cp $<TARGET_FILE:${TARGET}> "${PROJECT_BINARY_DIR}/NotificationCenter/plugins"
+#     )
+# install(TARGETS ${TARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/plugins")
+
+add_custom_command(TARGET ${TARGET} POST_BUILD
+    COMMAND cp $<TARGET_FILE:${TARGET}> "${PROJECT_BINARY_DIR}/NotificationCenter/plugins"
+    )
+install(TARGETS ${TARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/plugins")

@@ -1,3 +1,4 @@
+file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/NotificationCenter/modules")
 if(${PYTHONLIBS_FOUND})
     add_subdirectory(python3)
 endif()

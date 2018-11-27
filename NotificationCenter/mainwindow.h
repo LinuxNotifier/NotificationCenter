@@ -41,6 +41,11 @@ class MainWindow : public QWidget
         void extensionEnabled(const QString pluginId);
         void extensionDisabled(const QString pluginId);
         void extensionRemoved(const QString pluginId);
+        /**
+         * this signal is emitted when MainWindow is reshown.
+         * plugins should connect to this signal to update contents.
+         */
+        void refreshContents();
 
     public slots:
         void show();
