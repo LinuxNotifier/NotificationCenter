@@ -77,8 +77,9 @@ file(COPY plugins DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/NotificationCenter)
 file(COPY themes DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/NotificationCenter)
 # file(COPY ${${PROJECT_NAME}_QM_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/NotificationCenter/languages)
 
+# FIXME: runtime path set to "", install the correct plugins directory
+# set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 install(DIRECTORY "plugins" DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(DIRECTORY "themes" DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES ${${PROJECT_NAME}_QM_FILES} DESTINATION "${CMAKE_INSTALL_PREFIX}/languages")
 install(DIRECTORY "docs" DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(FILES "run.sh" DESTINATION ${CMAKE_INSTALL_PREFIX})

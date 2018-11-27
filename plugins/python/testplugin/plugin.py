@@ -1,7 +1,8 @@
 import sip
 import PyNc
 from PyNc import NotificationCenter as NC
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QCalendarWidget, QSizePolicy, QTableView, QHeaderView
+# from PyQt5.QtGui import QSizePolicy
 # from PyQt5.QtCore import QJsonObject
 # from PyQt5.QtGui import *
 import sys
@@ -10,11 +11,26 @@ import sys
 print(sys.argv)
 widget = QWidget()
 layout = QVBoxLayout(widget)
-pb = QPushButton(widget)
-layout.addWidget(pb)
-pb.setText("haha")
-pb.setParent(widget)
+# pb = QPushButton(widget)
+# layout.addWidget(pb)
+# pb.setText("haha")
+# pb.setParent(widget)
 widget.setWindowTitle("plugin from Python")
+cal = QCalendarWidget()
+cal.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
+# cal.setMaximumWidth(140)
+aux = cal.findChild(QTableView)
+aux.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Fixed)
+# aux.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+# aux.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+aux.horizontalHeader().setDefaultSectionSize(48)
+print(aux)
+# layout.addWidget(cal)
+# layout = QVBoxLayout(cal)
+widget = cal
+widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+# widget = QCalendarWidget()
+# layout = QVBoxLayout(widget)
 # widget.show()
 
 

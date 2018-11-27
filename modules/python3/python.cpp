@@ -23,8 +23,10 @@ bool Python::initialize(NotificationCenter *nc)
 
     // FIXME: don't use specific version
     // fix undefined symbol: https://bugs.python.org/issue4434
-    if (!dlopen("libpython3.5m.so", RTLD_LAZY | RTLD_GLOBAL))
-		qCritical() << "failed to load libpython3.5m.so";
+    if (!dlopen("libpython3.5m.so", RTLD_LAZY | RTLD_GLOBAL)) {
+		qWarning() << "failed to load libpython3.5m.so";
+        return false;
+    }
 
     Py_Initialize();
     PyEval_InitThreads();
@@ -79,6 +81,10 @@ void Python::loadPythonPlugins()
                        "    plugin_file = os.path.join(plugins_path, package, 'plugin.py')\n"
                        "    if os.path.isfile(plugin_file):\n"
                        "        try:\n"
+                       // TODO: use factory design pattern to create plugin instance
+                       // e.g.
+                       // file: plugin/__init__.py
+                       // from .plugin import MyPlugin as Plugin
                        "            module = importlib.import_module(package + '.plugin')\n"
                        "            plugin = module.Plugin()\n"
                        "            plugins.append(plugin)\n"

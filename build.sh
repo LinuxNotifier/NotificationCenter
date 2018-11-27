@@ -10,3 +10,4 @@ cp *.qm NotificationCenter/languages
 # make -j3 && cp plugins/*/*.so NotificationCenter/plugins/ && cp modules/python3/libpython.so NotificationCenter/plugins && ./NotificationCenter/NotificationCenter
 make -j3 && cp plugins/*/*.so NotificationCenter/plugins/ && cp modules/python3/libpymodule.so NotificationCenter/plugins && ./NotificationCenter/NotificationCenter
 # make translations
+# make PyNc

@@ -47,7 +47,8 @@ class MainWindow : public QWidget
         void hide();
 
     private slots:
-        void focusChanged(QWidget *old, QWidget *now);
+        void onFocusChanged(QWidget *old, QWidget *now);
+        void onTabChanged(int index);
         void onNewMessage(std::shared_ptr<NcMessage> message);
         void onMessageClosed(const QString messageId);
         void onMessageExpired(const QString messageId);

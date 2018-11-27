@@ -8,7 +8,9 @@ set(TARGET pymodule)
 # include(SIPMacros)
 # find_package(PyQt5)
 
+# TODO: this allows this target to be automatically built, but it takes a long time
 add_custom_target(${${PROJECT_NAME}_Py} ALL
+# add_custom_target(${${PROJECT_NAME}_Py}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/configure.py ${CMAKE_CURRENT_SOURCE_DIR}/*.sip ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND cp ${PROJECT_BINARY_DIR}/NotificationCenter/libNCCore.so ./

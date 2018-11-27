@@ -68,6 +68,7 @@ void NotificationCenter::setPluginModel(ExtensionManager *extensionManager)
 
 bool NotificationCenter::notify(const NcMessage &message)
 {
+    // TODO: don't need to recreate a new one
     std::shared_ptr<NcMessage> msg(new NcMessage(message));
     return notify(msg);
 }

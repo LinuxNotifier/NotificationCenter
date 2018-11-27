@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&nc, SIGNAL(newExtension(std::shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(std::shared_ptr<QPluginLoader>)));
     connect(&nc, SIGNAL(newExtension(std::shared_ptr<ExtensionInterface>)), this, SLOT(onNewPlugin(std::shared_ptr<ExtensionInterface>)));
     connect(&nc, SIGNAL(extensionDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
-    connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
+    connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(onFocusChanged(QWidget *, QWidget *)));
 
 
     DateTimeWidget *m_dateTimeWidget = new DateTimeWidget;
@@ -153,13 +153,18 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void MainWindow::focusChanged(QWidget *old, QWidget *now)
+void MainWindow::onFocusChanged(QWidget *old, QWidget *now)
 {
 // #ifndef DEBUG
     if (!now) {                   // losing focus
         hide();
     }
 // #endif
+}
+
+void MainWindow::onTabChanged(int index)
+{
+    // TODO: set focus to plugin/notifications layout
 }
 
 void MainWindow::show()
@@ -183,6 +188,8 @@ void MainWindow::show()
 
     m_backgroundScene->show();
     QWidget::show();
+
+    ui->tabWidget->setFocus();
 }
 
 void MainWindow::hide()
@@ -461,6 +468,7 @@ void MainWindow::onNewPlugin(std::shared_ptr<QPluginLoader> pluginLoader)
             NcPluginWidget *pluginWidget = new NcPluginWidget(this);
             pluginWidget->setWidget(w);
             pluginWidget->setMaximumHeight(300);
+            w->setFixedWidth(NOTIFICATIONCENTER_WIDTH - 2 * NOTIFICATIONCENTER_MARGIN);
             m_pluginsLayout->addWidget(pluginWidget);
         }
     }
@@ -484,6 +492,7 @@ void MainWindow::onNewPlugin(std::shared_ptr<ExtensionInterface> plugin)
             NcPluginWidget *pluginWidget = new NcPluginWidget(this);
             pluginWidget->setWidget(w);
             pluginWidget->setMaximumHeight(300);
+            w->setFixedWidth(NOTIFICATIONCENTER_WIDTH - 2 * NOTIFICATIONCENTER_MARGIN);
             m_pluginsLayout->addWidget(pluginWidget);
         }
     }
