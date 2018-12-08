@@ -10,7 +10,7 @@ class NcMessage {
         enum class Action {
             /**
              * Create: create a new message, this is the default behaviour
-             * Replace: replace an old message by messageId
+             * Replace: replace an old message by notificationId
              * GroupByNotificationId: show this message in the notification widget with
              * this notificationId
              */
@@ -24,14 +24,14 @@ class NcMessage {
              * after normal notifications even if it is more new
              * Normal: the default priority of messages
              * High: more likely to be displayed on the top
-             * Urgent: most-hight priority, always shown on the top of other messages, shown
+             * Critical: most-hight priority, always shown on the top of other messages, shown
              * even in Do-Not-Disturbe mode, this should be used in critical situations like
              * low-power warning
              */
             Low,
             Normal,
             High,
-            Urgent,
+            Critical,
         };
         enum class Duration {
             /**
@@ -56,8 +56,8 @@ class NcMessage {
         NcMessage& setTitle(const QString& title);
         QString preview() const;
         NcMessage& setPreview(const QString& preview);
-        QString content() const;
-        NcMessage& setContent(const QString& content);
+        QString body() const;
+        NcMessage& setBody(const QString& content);
         int duration() const;
         /* the following method has the same python signature */
         /* NcMessage& setDuration(Duration duration); */
@@ -66,7 +66,6 @@ class NcMessage {
         NcMessage& setPriority(Priority priority);
         Action action() const;
         NcMessage& setAction(Action action);
-        QString messageId() const;
         QString notificationId() const;
         QString applicationId() const;
 

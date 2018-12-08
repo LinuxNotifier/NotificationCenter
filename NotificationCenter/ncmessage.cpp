@@ -19,7 +19,7 @@ NcMessagePrivate::~NcMessagePrivate()
 NcMessage::NcMessage() :
     d_ptr(new NcMessagePrivate(this))
 {
-    // setMessageId(QUuid::createUuid().toString());
+    // setNotificationId(QUuid::createUuid().toString());
     // setCreatedTime(QDateTime::currentDateTime().toString());
     // setIcon(":/images/ncmessage_default_icon.png");
     setDuration(Duration::Default);
@@ -28,7 +28,7 @@ NcMessage::NcMessage() :
 NcMessage::~NcMessage()
 {
 #if DEBUG
-    qDebug() << "NcMessage:" << messageId() << "destroyed";
+    qDebug() << "NcMessage:" << notificationId() << "destroyed";
 #endif
 }
 
@@ -83,14 +83,14 @@ NcMessage& NcMessage::setPreview(const QString& preview)
     return *this;
 }
 
-QString NcMessage::content() const
+QString NcMessage::body() const
 {
-    return d_ptr->m_content;
+    return d_ptr->m_body;
 }
 
-NcMessage& NcMessage::setContent(const QString& content)
+NcMessage& NcMessage::setBody(const QString& content)
 {
-    d_ptr->m_content = content;
+    d_ptr->m_body = content;
     return *this;
 }
 
@@ -153,17 +153,6 @@ NcMessage& NcMessage::setDuration(int duration)
         }
     }
     d_ptr->m_duration = duration;
-    return *this;
-}
-
-QString NcMessage::messageId() const
-{
-    return d_ptr->m_messageId;
-}
-
-NcMessage& NcMessage::setMessageId(const QString& messageId)
-{
-    d_ptr->m_messageId = messageId;
     return *this;
 }
 

@@ -78,8 +78,8 @@ bool NotificationCenter::notify(std::shared_ptr<NcMessage> message)
     if (message->isValid())          // already notified
         return false;
 
-    // TODO: set messageId here, return messageId
-    message->setMessageId(QUuid::createUuid().toString());
+    // TODO: set notificationId here, return notificationId
+    message->setNotificationId(QUuid::createUuid().toString());
     message->setCreatedTime(QDateTime::currentDateTime().toString());
     message->setValid();
     MessageManager *msgMgr = instance().d_ptr->m_messageManager;

@@ -21,10 +21,10 @@ class MessageManager : public QObject
 
     signals:
         void newMessage(std::shared_ptr<NcMessage> message);
-        void messageExpired(const QString messageId);
+        void messageExpired(const QString notificationId);
 
     private slots:
-        void messageClosed(const QString messageId);
+        void messageClosed(const QString notificationId);
 
     friend class NotificationCenter;
 
@@ -52,10 +52,10 @@ class MessageManager : public QObject
             const QIcon& icon, int action,
             const QString& created_time, int priority, int duration,
             const QString& notificationId, const QString& applicationId);
-        bool deleteMessage(const QString& messageId);
+        bool deleteMessage(const QString& notificationId);
         /* this method return the first message with this message in database,
         thought there should be "always" at most one such message. */
-        std::shared_ptr<NcMessage> selectMessage(const QString& messageId);
+        std::shared_ptr<NcMessage> selectMessage(const QString& notificationId);
         MessageList selectAllMessages();
 
         NcDatabase *m_ncDb = nullptr;

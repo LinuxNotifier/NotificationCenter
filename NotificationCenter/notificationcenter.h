@@ -24,8 +24,8 @@ class NotificationCenter : public QObject
 
         void newMessage(std::shared_ptr<NcMessage> message);
         void newNotification(NcNotificationWidget *widget);
-        void messageExpired(const QString messageId);
-        void messageClosed(const QString messageId);
+        void messageExpired(const QString notificationId);
+        void messageClosed(const QString notificationId);
         void messageHandled(const QString action);
 
         void modeChanged(bool quiet);

@@ -18,6 +18,8 @@ class QSystemTrayIcon;
 class NcMessage;
 class QString;
 class QLabel;
+class QMoveEvent;
+class SceneWidget;
 
 typedef QHash<QString, NcNotificationWidget*> MsgId2Widget;
 typedef QHash<NcNotificationWidget*, QString> Widget2MsgId;
@@ -36,7 +38,7 @@ class MainWindow : public QWidget
     friend class NotificationCenter;
 
     signals:
-        void messageClosed(const QString messageId);
+        void messageClosed(const QString notificationId);
 
         void extensionEnabled(const QString pluginId);
         void extensionDisabled(const QString pluginId);
@@ -55,8 +57,8 @@ class MainWindow : public QWidget
         void onFocusChanged(QWidget *old, QWidget *now);
         void onTabChanged(int index);
         void onNewMessage(std::shared_ptr<NcMessage> message);
-        void onMessageClosed(const QString messageId);
-        void onMessageExpired(const QString messageId);
+        void onMessageClosed(const QString notificationId);
+        void onMessageExpired(const QString notificationId);
         void onNewNotification(NcNotificationWidget *widget);
         // this slot is called actually not when notification widget
         // is closed, but the user clicked the close button. It give
@@ -102,6 +104,7 @@ class MainWindow : public QWidget
 
         QPixmap m_backgroundPixmap;
         QLabel *m_backgroundScene = nullptr;
+        // SceneWidget *m_backgroundScene = nullptr;
 
         MsgId2Widget m_msgId2Widget;
         Widget2MsgId m_widget2MsgId;

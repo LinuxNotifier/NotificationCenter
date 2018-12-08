@@ -19,21 +19,24 @@ class NcMessagePrivate
         Q_DISABLE_COPY(NcMessagePrivate)
         // FIXME: d_func() somehow returns a const pointer
 
-        QString m_messageId;
-        QString m_applicationId;
         QString m_notificationId;
-        QIcon m_icon;
+        QString m_applicationId;
         QString m_title;
+        QIcon m_icon;
         QString m_preview;
-        QString m_content;
+        QString m_body;
+        QString m_actionUrl;
+        NcMessage::Priority m_priority = NcMessage::Priority::Normal;
+        int m_duration = default_duration;
+        QString m_actions;
+        QString m_data;
+        QString m_triggerTime;
+        QString m_createdTime;
 
         // NOTE: modify NcMessage::Duration::Default doc when changed
         static const int default_duration = 10;
 
-        QString m_createdTime;
-        NcMessage::Priority m_priority = NcMessage::Priority::Normal;
         NcMessage::Action m_action = NcMessage::Action::Create;
-        int m_duration = default_duration;
         bool valid = false;
 
         NcMessage *q_ptr = nullptr;

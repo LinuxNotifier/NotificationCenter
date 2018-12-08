@@ -6,6 +6,7 @@
 #include "ncmessage.h"
 #include "notificationcenter.h"
 #include "extensioninterface.h"
+#include "scenewidget.h"
 #include "ncdebug.h"
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -50,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWindow),
     m_backgroundScene(new QLabel)
+    // TODO: change to SceneWidget
+    // m_backgroundScene(new SceneWidget)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | windowFlags());
@@ -373,15 +376,15 @@ void MainWindow::onNewMessage(std::shared_ptr<NcMessage> message)
 
 
     // Note: use QString::toHtmlEscaped() if you don't want set plain text
-    contentLabel->setText(message->content());
+    contentLabel->setText(message->body());
 
     widget->setWidget(messageWidget);
     showNotification(widget);
 
-    /* this won't be overridden since the messageId should be unique,
+    /* this won't be overridden since the notificationId should be unique,
         and every NcMessage cannot be notified twice */
-    m_msgId2Widget[message->messageId()] = widget;
-    m_widget2MsgId[widget] = message->messageId();
+    m_msgId2Widget[message->notificationId()] = widget;
+    m_widget2MsgId[widget] = message->notificationId();
 }
 
 void MainWindow::onNewNotification(NcNotificationWidget *widget)
@@ -404,10 +407,10 @@ void MainWindow::showNotification(NcNotificationWidget *widget)
     connect(widget, SIGNAL(closed()), this, SLOT(onNotificationClosed()));
 }
 
-void MainWindow::onMessageExpired(const QString messageId)
+void MainWindow::onMessageExpired(const QString notificationId)
 {
-    qDebug() << "received a message expired" << messageId;
-    onMessageClosed(messageId);
+    qDebug() << "received a message expired" << notificationId;
+    onMessageClosed(notificationId);
 }
 
 void MainWindow::onNotificationClosed()
@@ -421,8 +424,8 @@ void MainWindow::onNotificationClosed()
         /* this will cause it receiving a messageClosed signal again,
             but it doesn't matter */
         emit messageClosed(m_widget2MsgId[widget]);
-        QString messageId = m_widget2MsgId[widget];
-        m_msgId2Widget.remove(messageId);
+        QString notificationId = m_widget2MsgId[widget];
+        m_msgId2Widget.remove(notificationId);
         m_widget2MsgId.remove(widget);
     }
 
@@ -430,11 +433,11 @@ void MainWindow::onNotificationClosed()
     sender()->deleteLater();
 }
 
-void MainWindow::onMessageClosed(const QString messageId)
+void MainWindow::onMessageClosed(const QString notificationId)
 {
-    if (m_msgId2Widget.contains(messageId)) {
-        qDebug() << messageId << "closed";
-        NcNotificationWidget *widget = m_msgId2Widget[messageId];
+    if (m_msgId2Widget.contains(notificationId)) {
+        qDebug() << notificationId << "closed";
+        NcNotificationWidget *widget = m_msgId2Widget[notificationId];
         m_notificationsLayout->removeWidget(widget);
         widget->deleteLater();
     }

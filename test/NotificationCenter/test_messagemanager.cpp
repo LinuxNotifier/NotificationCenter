@@ -49,7 +49,7 @@ TEST_CASE("test MessageManager", "[message], [database]") {
                 ));
     std::shared_ptr<NcMessage> msg(new NcMessage);
     msg->setTitle("title111")
-        .setContent("content111");
+        .setBody("content111");
     NotificationCenter::notify(msg);
     REQUIRE(!msgManager.insertMessage(msg));     // already inserted in NotificationCenter::notify
 
@@ -65,17 +65,17 @@ TEST_CASE("test MessageManager", "[message], [database]") {
     MessageList messageList = msgManager.selectAllMessages();
     REQUIRE(messageList.length() == 4);
     REQUIRE(messageList.at(0)->title() == "title1");
-    REQUIRE(messageList.at(0)->content() == "content1");
+    REQUIRE(messageList.at(0)->body() == "content1");
     REQUIRE(messageList.at(1)->title() == "title2");
-    REQUIRE(messageList.at(1)->content() == "content2");
+    REQUIRE(messageList.at(1)->body() == "content2");
     REQUIRE(messageList.at(2)->title() == "title3");
-    REQUIRE(messageList.at(2)->content() == "content3");
+    REQUIRE(messageList.at(2)->body() == "content3");
 
     messageList = msgManager.selectAllMessages();
     REQUIRE(messageList.length() == 4);
 
     qDebug() << "title of message 4:" << messageList.at(3)->title();
     REQUIRE(messageList.at(3)->title() == "title111");
-    qDebug() << "content of message 4:" << messageList.at(3)->content();
-    REQUIRE(messageList.at(3)->content() == "content111");
+    qDebug() << "content of message 4:" << messageList.at(3)->body();
+    REQUIRE(messageList.at(3)->body() == "content111");
 }

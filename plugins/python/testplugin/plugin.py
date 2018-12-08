@@ -56,7 +56,7 @@ class Plugin(PyNc.ExtensionInterface):
 def run():
     print("*********************** welcome to python world **********************")
     msg = PyNc.NcMessage()
-    print(msg.messageId())
+    print(msg.notificationId())
     nc = NC.instance()
     # nc.setView(mainwin)
     print(sip.unwrapinstance(nc.view()))

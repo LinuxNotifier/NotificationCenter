@@ -15,7 +15,7 @@ TEST_CASE("test NotificationCenter", "[notificationcenter]") {
     nc.setMessageModel(&msgManager);
     NcMessage msg;
     msg.setTitle("hello")
-        .setContent("hello world");
+        .setBody("hello world");
     REQUIRE(NotificationCenter::notify(msg));
     REQUIRE(!NotificationCenter::notify(msg));
 }
