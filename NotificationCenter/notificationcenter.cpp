@@ -75,13 +75,11 @@ bool NotificationCenter::notify(const NcMessage &message)
 
 bool NotificationCenter::notify(std::shared_ptr<NcMessage> message)
 {
-    if (message->isValid())          // already notified
-        return false;
-
     // TODO: set notificationId here, return notificationId
+    if (!message->isNew())
+        return true;
     message->setNotificationId(QUuid::createUuid().toString());
     message->setCreatedTime(QDateTime::currentDateTime().toString());
-    message->setValid();
     MessageManager *msgMgr = instance().d_ptr->m_messageManager;
     if (msgMgr) {
         // we need the result of inserting a message, so didn't implement it with signals
@@ -89,7 +87,7 @@ bool NotificationCenter::notify(std::shared_ptr<NcMessage> message)
         if (inserted)
             return true;
     }
-    return false;
+    return true;    // return true if not message manager
 }
 
 bool NotificationCenter::notify(NcNotificationWidget *widget)

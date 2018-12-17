@@ -7,17 +7,6 @@ class NcMessage {
     %End
 
     public:
-        enum class Action {
-            /**
-             * Create: create a new message, this is the default behaviour
-             * Replace: replace an old message by notificationId
-             * GroupByNotificationId: show this message in the notification widget with
-             * this notificationId
-             */
-            Create,
-            Replace,
-            GroupByNotificationId,
-        };
         enum class Priority {
             /**
              * Low: for messages that can be directedly ignored, and likely to be displayed
@@ -56,20 +45,16 @@ class NcMessage {
         NcMessage& setTitle(const QString& title);
         QString preview() const;
         NcMessage& setPreview(const QString& preview);
-        QString body() const;
-        NcMessage& setBody(const QString& content);
-        int duration() const;
+        QString content() const;
+        NcMessage& setContent(const QString& content);
+        Duration duration() const;
         /* the following method has the same python signature */
-        /* NcMessage& setDuration(Duration duration); */
-        NcMessage& setDuration(int duration);
+        NcMessage& setDuration(Duration duration);
+        /* NcMessage& setDuration(int duration); */
         Priority priority() const;
         NcMessage& setPriority(Priority priority);
-        Action action() const;
-        NcMessage& setAction(Action action);
         QString notificationId() const;
         QString applicationId() const;
-
-        bool isValid() const;
 
     private:
         /* Q_DISABLE_COPY(NcMessage); */

@@ -1,6 +1,7 @@
 #ifndef NCMESSAGE_H
 #define NCMESSAGE_H
 
+#include <ncglobal.h>
 #include <QString>
 #include <QIcon>
 #include <QList>
@@ -28,17 +29,6 @@ class NcMessage
 
     public:
         // TODO: use using to import enum class from NcMessagePrivate (https://stackoverflow.com/questions/3293279/how-do-you-import-an-enum-into-a-different-namespace-in-c)
-        enum class Action {
-            /**
-             * Create: create a new message, this is the default behaviour
-             * Replace: replace an old message by notificationId
-             * GroupByNotificationId: show this message in the notification widget with
-             * this notificationId
-             */
-            Create,
-            Replace,
-            GroupByNotificationId,
-        };
         enum class Priority {
             /**
              * Low: for messages that can be directedly ignored, and likely to be displayed
@@ -69,35 +59,42 @@ class NcMessage
         NcMessage();
         ~NcMessage();
 
-        QString createdTime() const;
+        QString notificationId() const;
+        NcMessage& setNotificationId(const QString& notificationId);
+        QString applicationId() const;
+        QString title() const;
+        NcMessage& setTitle(const QString& title);
         QIcon icon() const;
         NcMessage& setIcon(const QString& icon);
         NcMessage& setIcon(const QIcon& icon);
-        QString title() const;
-        NcMessage& setTitle(const QString& title);
         QString preview() const;
         NcMessage& setPreview(const QString& preview);
-        QString body() const;
-        NcMessage& setBody(const QString& content);
-        int duration() const;
-        NcMessage& setDuration(Duration duration);
-        NcMessage& setDuration(int duration);
+        QString content() const;
+        NcMessage& setContent(const QString& content);
+        QString data() const;
+        NcMessage& setData(const QString& data);
         Priority priority() const;
         NcMessage& setPriority(Priority priority);
-        Action action() const;
-        NcMessage& setAction(Action action);
-        QString notificationId() const;
-        QString applicationId() const;
+        Duration duration() const;
+        NcMessage& setDuration(Duration duration);
+        QString triggerTime() const;
+        QString createdTime() const;
+        bool isNew() const;
 
-        bool isValid() const;
+        static int defaultDuration() {
+            return default_duration;
+        };
 
     private:
         // Q_DISABLE_COPY(NcMessage);
 
-        NcMessage& setCreatedTime(const QString& createdTime);
-        NcMessage& setNotificationId(const QString& notificationId);
         NcMessage& setApplicationId(const QString& applicationId);
-        NcMessage& setValid(bool valid = true);
+        NcMessage& setTriggerTime(const QString& triggerTime);
+        NcMessage& setCreatedTime(const QString& createdTime);
+        NcMessage& setIsNew(bool isNew);
+
+        // NOTE: modify NcMessage::Duration::Default doc when changed
+        static const int default_duration = 10;
 
         std::shared_ptr<NcMessagePrivate> d_ptr;
 };

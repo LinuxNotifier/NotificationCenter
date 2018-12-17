@@ -6,7 +6,7 @@
 #include "ncmessage.h"
 #include "notificationcenter.h"
 #include "extensioninterface.h"
-#include "scenewidget.h"
+// #include "scenewidget.h"
 #include "ncdebug.h"
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -363,7 +363,8 @@ void MainWindow::onNewMessage(std::shared_ptr<NcMessage> message)
     messgeLayout->addWidget(contentLabel);
     contentLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     contentLabel->setContentsMargins(0, 0, 0, 0);
-    contentLabel->setTextFormat(Qt::RichText);
+    // contentLabel->setTextFormat(Qt::RichText);
+    contentLabel->setTextFormat(Qt::AutoText);
     contentLabel->setWordWrap(true);
 
     // contentLabel->setStyleSheet("color: rgb(152, 152, 157)");
@@ -376,7 +377,7 @@ void MainWindow::onNewMessage(std::shared_ptr<NcMessage> message)
 
 
     // Note: use QString::toHtmlEscaped() if you don't want set plain text
-    contentLabel->setText(message->body());
+    contentLabel->setText(message->content());
 
     widget->setWidget(messageWidget);
     showNotification(widget);

@@ -23,6 +23,7 @@ NcMessage::NcMessage() :
     // setCreatedTime(QDateTime::currentDateTime().toString());
     // setIcon(":/images/ncmessage_default_icon.png");
     setDuration(Duration::Default);
+    setApplicationId("org.linuxnotifier.Notification");
 }
 
 NcMessage::~NcMessage()
@@ -30,130 +31,6 @@ NcMessage::~NcMessage()
 #if DEBUG
     qDebug() << "NcMessage:" << notificationId() << "destroyed";
 #endif
-}
-
-QString NcMessage::createdTime() const
-{
-    return d_ptr->m_createdTime;
-}
-
-NcMessage& NcMessage::setCreatedTime(const QString& createdTime)
-{
-    d_ptr->m_createdTime = createdTime;
-    return *this;
-}
-
-QIcon NcMessage::icon() const
-{
-    return d_ptr->m_icon;
-}
-
-NcMessage& NcMessage::setIcon(const QString& icon)
-{
-    d_ptr->m_icon = QIcon(icon);
-    return *this;
-}
-
-NcMessage& NcMessage::setIcon(const QIcon& icon)
-{
-    if (!icon.pixmap(ICON_SIZE, ICON_SIZE).isNull())
-        d_ptr->m_icon = const_cast<QIcon&>(icon);
-    return *this;
-}
-
-QString NcMessage::title() const
-{
-    return d_ptr->m_title;
-}
-
-NcMessage& NcMessage::setTitle(const QString& title)
-{
-    d_ptr->m_title = title;
-    return *this;
-}
-
-QString NcMessage::preview() const
-{
-    return d_ptr->m_preview;
-}
-
-NcMessage& NcMessage::setPreview(const QString& preview)
-{
-    d_ptr->m_preview = preview;
-    return *this;
-}
-
-QString NcMessage::body() const
-{
-    return d_ptr->m_body;
-}
-
-NcMessage& NcMessage::setBody(const QString& content)
-{
-    d_ptr->m_body = content;
-    return *this;
-}
-
-NcMessage::Priority NcMessage::priority() const
-{
-    return d_ptr->m_priority;
-}
-
-NcMessage& NcMessage::setPriority(Priority priority)
-{
-    d_ptr->m_priority = priority;
-    return *this;
-}
-
-NcMessage::Action NcMessage::action() const
-{
-    return d_ptr->m_action;
-}
-
-NcMessage& NcMessage::setAction(Action action)
-{
-    switch (action) {
-        // case NcMessage::Create:
-        case Action::Create:
-        case Action::Replace:
-        case Action::GroupByNotificationId:
-            d_ptr->m_action = action;
-            break;
-        default:
-            d_ptr->m_action = Action::Create;
-    }
-    return *this;
-}
-
-int NcMessage::duration() const
-{
-    return d_ptr->m_duration;
-}
-
-NcMessage& NcMessage::setDuration(Duration duration)
-{
-    switch (duration) {
-        case Duration::UntilConfirmation:
-        case Duration::UntilShutdown:
-            setDuration(static_cast<int>(duration));
-        case Duration::Default:
-        default:
-            setDuration(NcMessagePrivate::default_duration);
-    }
-    return *this;
-}
-
-NcMessage& NcMessage::setDuration(int duration)
-{
-    if (duration <= 0) {
-        Duration durationType = static_cast<Duration>(duration);
-        if (durationType != Duration::UntilConfirmation && durationType != Duration::UntilShutdown) {
-            qWarning() << QObject::tr("duration must be  greater than 0");
-            setDuration(Duration::Default);
-        }
-    }
-    d_ptr->m_duration = duration;
-    return *this;
 }
 
 QString NcMessage::notificationId() const
@@ -178,13 +55,119 @@ NcMessage& NcMessage::setApplicationId(const QString& applicationId)
     return *this;
 }
 
-bool NcMessage::isValid() const
+QString NcMessage::title() const
 {
-    return d_ptr->valid;
+    return d_ptr->m_title;
 }
 
-NcMessage& NcMessage::setValid(bool valid)
+NcMessage& NcMessage::setTitle(const QString& title)
 {
-    d_ptr->valid = valid;
+    d_ptr->m_title = title;
+    return *this;
+}
+
+QIcon NcMessage::icon() const
+{
+    return d_ptr->m_icon;
+}
+
+NcMessage& NcMessage::setIcon(const QString& icon)
+{
+    d_ptr->m_icon = QIcon(icon);
+    return *this;
+}
+
+NcMessage& NcMessage::setIcon(const QIcon& icon)
+{
+    if (!icon.pixmap(ICON_SIZE, ICON_SIZE).isNull())
+        d_ptr->m_icon = const_cast<QIcon&>(icon);
+    return *this;
+}
+
+QString NcMessage::preview() const
+{
+    return d_ptr->m_preview;
+}
+
+NcMessage& NcMessage::setPreview(const QString& preview)
+{
+    d_ptr->m_preview = preview;
+    return *this;
+}
+
+QString NcMessage::content() const
+{
+    return d_ptr->m_content;
+}
+
+NcMessage& NcMessage::setContent(const QString& content)
+{
+    d_ptr->m_content = content;
+    return *this;
+}
+
+QString NcMessage::data() const
+{
+    return d_ptr->m_data;
+}
+
+NcMessage& NcMessage::setData(const QString& data)
+{
+    d_ptr->m_data = data;
+    return *this;
+}
+
+NcMessage::Priority NcMessage::priority() const
+{
+    return d_ptr->m_priority;
+}
+
+NcMessage& NcMessage::setPriority(Priority priority)
+{
+    d_ptr->m_priority = priority;
+    return *this;
+}
+
+NcMessage::Duration NcMessage::duration() const
+{
+    return d_ptr->m_duration;
+}
+
+NcMessage& NcMessage::setDuration(Duration duration)
+{
+    d_ptr->m_duration = duration;
+    return *this;
+}
+
+QString NcMessage::triggerTime() const
+{
+    return d_ptr->m_triggerTime;
+}
+
+NcMessage& NcMessage::setTriggerTime(const QString& triggerTime)
+{
+    d_ptr->m_triggerTime = triggerTime;
+    return *this;
+}
+
+QString NcMessage::createdTime() const
+{
+    return d_ptr->m_createdTime;
+}
+
+NcMessage& NcMessage::setCreatedTime(const QString& createdTime)
+{
+    d_ptr->m_createdTime = createdTime;
+    return *this;
+}
+
+bool NcMessage::isNew() const
+{
+    return d_ptr->m_isNew;
+}
+
+NcMessage& NcMessage::setIsNew(bool isNew)
+{
+    d_ptr->m_isNew = isNew;
     return *this;
 }

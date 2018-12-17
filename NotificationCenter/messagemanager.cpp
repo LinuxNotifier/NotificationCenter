@@ -37,17 +37,17 @@ void MessageManager::initMessageTable()
 {
     QSqlQuery query(m_ncDb->internalDatabase());
     if (!query.exec("CREATE TABLE IF NOT EXISTS messages "
-                "(message_id TEXT PRIMARY KEY NOT NULL, "
+                "(notification_id TEXT PRIMARY KEY NOT NULL, "
+                "application_id TEXT NOT NULL, "
                 "title TEXT, "
+                "icon BLOB, "
                 "preview TEXT, "
                 "content TEXT, "
-                "icon BLOB, "
-                "action INTEGER, "
-                "created_time TEXT, "
-                "priority INTEGER, "
+                "priority INT, "
                 "duration INT, "
-                "notification_id TEXT, "
-                "application_id TEXT)"
+                "data TEXT, "
+                "trigger_time TEXT, "
+                "created_time TEXT)"
                 )) {
         qCritical() << QObject::tr("creating table \"messages\" failed");
         qCritical() << query.lastError();
@@ -61,7 +61,7 @@ void MessageManager::loadMessages()
 {
     MessageList msgList = selectAllMessages();
     for (const std::shared_ptr<NcMessage> msg : msgList) {
-        NcMessage::Duration duration = static_cast<NcMessage::Duration>(msg->duration());
+        NcMessage::Duration duration = msg->duration();
         if (duration != NcMessage::Duration::UntilShutdown) {
             emit newMessage(msg);
             m_messageMap[msg->notificationId()] = msg;
@@ -83,16 +83,16 @@ void MessageManager::messageClosed(const QString notificationId)
 bool MessageManager::insertMessage(std::shared_ptr<NcMessage> message)
 {
     bool inserted = MessageManager::insertMessage(message->notificationId(),
+            message->applicationId(),
             message->title(),
-            message->preview(),
-            message->body(),
             message->icon(),
-            static_cast<int>(message->action()),
-            message->createdTime(),
+            message->preview(),
+            message->content(),
+            message->data(),
             static_cast<int>(message->priority()),
-            message->duration(),
-            message->notificationId(),
-            message->applicationId()
+            static_cast<int>(message->duration()),
+            message->triggerTime(),
+            message->createdTime()
             );
     if (inserted) {
         m_messageMap[message->notificationId()] = message;
@@ -101,42 +101,42 @@ bool MessageManager::insertMessage(std::shared_ptr<NcMessage> message)
     return inserted;
 }
 
-bool MessageManager::insertMessage(const QString& messageId, const QString& title,
-        const QString& preview, const QString& content,
-        const QIcon& icon, int action,
-        const QString& created_time, int priority, int duration,
-        const QString& notificationId, const QString& applicationId)
+bool MessageManager::insertMessage(const QString& notificationId, const
+        QString& applicationId, const QString& title, const QIcon& icon, const
+        QString& preview, const QString& content, const QString& data, int
+        priority, int duration, const QString& triggerTime, const QString&
+        createdTime)
 {
     QSqlQuery query(m_ncDb->internalDatabase());
     query.prepare("INSERT INTO messages "
-            "(message_id, "
+            "(notification_id, "
+            "application_id, "
             "title, "
+            "icon, "
             "preview, "
             "content, "
-            "icon, "
-            "action, "
-            "created_time, "
+            "data, "
             "priority, "
             "duration, "
-            "notification_id, "
-            "application_id)"
+            "trigger_time, "
+            "created_time)"
             "VALUES "
-            "(:message_id, "
+            "(:notification_id, "
+            ":application_id, "
             ":title, "
+            ":icon, "
             ":preview, "
             ":content, "
-            ":icon, "
-            ":action, "
-            ":created_time, "
+            ":data, "
             ":priority, "
             ":duration, "
-            ":notification_id, "
-            ":application_id"
-            ")");
-    query.bindValue(":message_id", messageId);
+            ":trigger_time, "
+            ":created_time)"
+            );
+    query.bindValue(":notification_id", notificationId);
+    qDebug() << "got notificationId:" << notificationId;
+    query.bindValue(":application_id", applicationId);
     query.bindValue(":title", title);
-    query.bindValue(":preview", preview);
-    query.bindValue(":content", content);
 
     QPixmap pixmap = icon.pixmap(ICON_SIZE, ICON_SIZE);
     QByteArray bytes;
@@ -148,12 +148,13 @@ bool MessageManager::insertMessage(const QString& messageId, const QString& titl
 #endif
     query.bindValue(":icon", bytes);
 
+    query.bindValue(":preview", preview);
+    query.bindValue(":content", content);
+    query.bindValue(":data", data);
     query.bindValue(":priority", priority);
-    query.bindValue(":created_time", created_time);
     query.bindValue(":duration", duration);
-    query.bindValue(":action", action);
-    query.bindValue(":notification_id", notificationId);
-    query.bindValue(":application_id", applicationId);
+    query.bindValue(":trigger_time", triggerTime);
+    query.bindValue(":created_time", createdTime);
 
     bool inserted = query.exec();
     if (!inserted)
@@ -163,37 +164,40 @@ bool MessageManager::insertMessage(const QString& messageId, const QString& titl
 
 bool MessageManager::alterMessage(std::shared_ptr<NcMessage> message)
 {
-    return MessageManager::alterMessage(message->notificationId(),
-            message->title(),
-            message->preview(),
-            message->body(),
-            message->icon(),
-            static_cast<int>(message->action()),
-            message->createdTime(),
-            static_cast<int>(message->priority()),
-            message->duration(),
-            message->notificationId(),
-            message->applicationId()
-            );
+    // return MessageManager::alterMessage(message->notificationId(),
+    //         message->title(),
+    //         message->preview(),
+    //         message->content(),
+    //         message->icon(),
+    //         // static_cast<int>(message->action()),
+    //         message->createdTime(),
+    //         static_cast<int>(message->priority()),
+    //         static_cast<int>(message->duration()),
+    //         message->notificationId(),
+    //         message->applicationId()
+    //         );
+    return true;
 }
 
-bool MessageManager::alterMessage(const QString& messageId, const QString& title,
-        const QString& preview, const QString& content,
-        const QIcon& icon, int action,
-        const QString& created_time, int priority, int duration,
-        const QString& notificationId, const QString& applicationId)
-{
-    deleteMessage(notificationId);
-    return insertMessage(notificationId, title, preview, content, icon,
-            action, created_time, priority, duration,
-            notificationId, applicationId);
-}
+// bool MessageManager::alterMessage(const QString& messageId, const QString& title,
+//         const QString& preview, const QString& content,
+//         // const QIcon& icon, int action,
+//         const QIcon& icon,
+//         const QString& created_time, int priority, int duration,
+//         const QString& notificationId, const QString& applicationId)
+// {
+//     deleteMessage(notificationId);
+//     return insertMessage(notificationId, title, preview, content, icon,
+//             // action, created_time, priority, duration,
+//             created_time, priority, duration,
+//             notificationId, applicationId);
+// }
 
 bool MessageManager::deleteMessage(const QString& notificationId)
 {
     QSqlQuery query(m_ncDb->internalDatabase());
-    query.prepare("DELETE FROM messages WHERE message_id = :message_id");
-    query.bindValue(":message_id", notificationId);
+    query.prepare("DELETE FROM messages WHERE notification_id = :notification_id");
+    query.bindValue(":notification_id", notificationId);
     bool result = query.exec();
     if (!result)
         qCritical() << query.lastError();
@@ -203,31 +207,29 @@ bool MessageManager::deleteMessage(const QString& notificationId)
 std::shared_ptr<NcMessage> MessageManager::selectMessage(const QString& notificationId)
 {
     QSqlQuery query(m_ncDb->internalDatabase());
-    query.prepare("SELECT * FROM messages WHERE message_id = :message_id");
-    query.bindValue(":message_id", notificationId);
-    // std::shared_ptr<NcMessage> message = NotificationCenter::createSharedMessage();
+    query.prepare("SELECT * FROM messages WHERE notification_id = :notification_id");
+    query.bindValue(":notification_id", notificationId);
     std::shared_ptr<NcMessage> message(new NcMessage);
     if (query.exec() && query.first())
     {
         message->setNotificationId(query.value(0).toString())
-            .setTitle(query.value(1).toString())
-            .setPreview(query.value(2).toString())
-            .setBody(query.value(3).toString())
-            .setAction(static_cast<NcMessage::Action>(query.value(5).toInt()))
-            .setCreatedTime(query.value(6).toString())
-            .setPriority(static_cast<NcMessage::Priority>(query.value(7).toInt()))
-            .setDuration(query.value(8).toInt())
-            .setNotificationId(query.value(9).toString())
-            .setApplicationId(query.value(10).toString());
-
+            .setApplicationId(query.value(1).toString())
+            .setTitle(query.value(2).toString())
+            .setPreview(query.value(4).toString())
+            .setContent(query.value(5).toString())
+            .setPriority(static_cast<NcMessage::Priority>(query.value(6).toInt()))
+            .setDuration(static_cast<NcMessage::Duration>(query.value(7).toInt()))
+            .setData(query.value(8).toString())
+            .setTriggerTime(query.value(9).toString())
+            .setCreatedTime(query.value(10).toString());
         QPixmap pixmap;
-        if (pixmap.loadFromData(query.value(4).toByteArray(), "PNG") and !pixmap.isNull()) {
+        if (pixmap.loadFromData(query.value(3).toByteArray(), "PNG") and !pixmap.isNull()) {
             message->setIcon(QIcon(pixmap));
 #if DEBUG
             qDebug() << "loading icon from database succeeded" << pixmap;
 #endif
         }
-        message->setValid();
+        message->setIsNew(false);
     }
 #if DEBUG
     else {
@@ -242,7 +244,7 @@ MessageList MessageManager::selectAllMessages()
 {
     MessageList messageList;
     QSqlQuery query(m_ncDb->internalDatabase());
-    if (!query.exec("SELECT message_id FROM messages ORDER BY created_time")) {
+    if (!query.exec("SELECT notification_id FROM messages ORDER BY created_time")) {
         qCritical() << query.lastError();
         return messageList;
     }

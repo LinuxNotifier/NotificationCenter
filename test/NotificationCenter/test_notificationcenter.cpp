@@ -2,7 +2,9 @@
 #include "ncmessage.h"
 #include "messagemanager.h"
 #include "ncdebug.h"
+#include <unistd.h>
 #include <QApplication>
+#include <QUuid>
 #include <Catch2/catch.hpp>
 
 TEST_CASE("test NotificationCenter", "[notificationcenter]") {
@@ -10,12 +12,14 @@ TEST_CASE("test NotificationCenter", "[notificationcenter]") {
     int argc = 1;
     char *argv[] = {(char *)"./test_main"};
     QApplication app(argc, argv);
-    NotificationCenter &nc = NotificationCenter::instance();
-    MessageManager msgManager(&nc);
-    nc.setMessageModel(&msgManager);
+    // NotificationCenter &nc = NotificationCenter::instance();
+    // MessageManager msgManager(&nc);
+    // nc.setMessageModel(&msgManager);
     NcMessage msg;
     msg.setTitle("hello")
-        .setBody("hello world");
+        .setNotificationId(QUuid::createUuid().toString())
+        .setApplicationId(QUuid::createUuid().toString())
+        .setContent("hello world");
     REQUIRE(NotificationCenter::notify(msg));
-    REQUIRE(!NotificationCenter::notify(msg));
+    REQUIRE(NotificationCenter::notify(msg));
 }

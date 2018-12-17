@@ -40,18 +40,19 @@ class MessageManager : public QObject
         void initMessageTable();
         void loadMessages();
 
+
         bool insertMessage(std::shared_ptr<NcMessage> message);
-        bool insertMessage(const QString& messageId, const QString& title,
-            const QString& preview, const QString& content,
-            const QIcon& icon, int action,
-            const QString& created_time, int priority, int duration,
-            const QString& notificationId, const QString& applicationId);
+        bool insertMessage(const QString& notificationId, const
+                QString& applicationId, const QString& title, const QIcon&
+                icon, const QString& preview, const QString& content, const
+                QString& data, int priority, int duration, const QString&
+                triggerTime, const QString& createdTime);
         bool alterMessage(std::shared_ptr<NcMessage> message);
-        bool alterMessage(const QString& messageId, const QString& title,
-            const QString& preview, const QString& content,
-            const QIcon& icon, int action,
-            const QString& created_time, int priority, int duration,
-            const QString& notificationId, const QString& applicationId);
+        bool alterMessage(const QString& notificationId, const QString&
+                applicationId, const QString& title, const QIcon& icon, const
+                QString& preview, const QString& data, const QString& content,
+                int priority, int duration, const QString& triggerTime, const
+                QString& created_time);
         bool deleteMessage(const QString& notificationId);
         /* this method return the first message with this message in database,
         thought there should be "always" at most one such message. */

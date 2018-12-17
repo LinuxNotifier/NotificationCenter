@@ -14,13 +14,13 @@ TEST_CASE("test NcMessage", "[ncmessage], [message]") {
     msg.setIcon(icon)
         .setTitle("test_title")
         .setPreview("test_preview")
-        .setBody("test_content")
-        .setDuration(100)
+        .setContent("test_content")
+        .setDuration(NcMessage::Duration::UntilShutdown)
         .setPriority(NcMessage::Priority::High);
     // REQUIRE(msg.icon() == icon);
     REQUIRE(msg.title() == "test_title");
     REQUIRE(msg.preview() == "test_preview");
-    REQUIRE(msg.body() == "test_content");
-    REQUIRE(msg.duration() == 100);
+    REQUIRE(msg.content() == "test_content");
+    REQUIRE(msg.duration() == NcMessage::Duration::UntilShutdown);
     REQUIRE(msg.priority() == NcMessage::Priority::High);
 }

@@ -3,6 +3,8 @@
 
 #include <QDebug>
 
+// TODO: add color to logger type
+// qDebug() << "\033[1;31mbold red text\033[0m\n";
 #undef qDebug
 #define qDebug QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC).debug().noquote
 #undef qInfo
