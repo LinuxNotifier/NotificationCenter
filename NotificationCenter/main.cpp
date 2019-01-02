@@ -1,10 +1,10 @@
 #include "mainwindow.h"
 #include "notificationcenter.h"
-#include "messagemanager.h"
+#include "notificationmanager.h"
 #include "extensionmanager.h"
-#include "ncmessage.h"
-#include "ncdebug.h"
-#include "ncglobal.h"
+#include "notification.h"
+#include "debug.h"
+#include "global.h"
 #include <QApplication>
 #include <QTranslator>
 #include <QFile>
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     nc.setView(&w);
 
-    MessageManager msgManager(&nc);
+    NotificationManager msgManager(&nc);
     nc.setMessageModel(&msgManager);
 
     ExtensionManager extensionManager(&nc);
@@ -56,12 +56,13 @@ int main(int argc, char *argv[])
 
     w.show();
 
-    std::shared_ptr<NcMessage> msg(new NcMessage);
-    msg->setTitle("hello")
+    std::shared_ptr<Notification> msg(new Notification);
+    msg->setTitle("you cant see me")
         .setIcon(QIcon::fromTheme("edit-undo"))
         // .setContent("<b>Hi</b>\n" + QString("#include <QtCore>").toHtmlEscaped());
         // .setContent("<html><head/><body><ul><li>Coffee</li><li>Tea</li><li>Milk</li></ul></body></html>");
-        .setContent("<html><head/><body><p>sfdsdfff<img src=\":/images/notificationcenter_icon.png\" alt=\"smile\" style=\"width:100px; height:30px\"/></p><p> This is really great!!!<br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p>helo, world</p><ul><li>Coffee</li><li>Tea</li><li>Milk</li></ul></body></html>");
+        // .setContent("<html><head/><body><p>sfdsdfff<img src=\":/images/notificationcenter_icon.png\" alt=\"smile\" style=\"width:100px; height:30px\"/></p><p> This is really great!!!<br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p>helo, world</p><ul><li>Coffee</li><li>Tea</li><li>Milk</li></ul></body></html>");
+        .setContent("this should not be shown");
         // .setContent("<html><head/><body><p>sfdsdfff<img src=\":/images/notificationcenter_icon.png\" height=\"16\" width=\"16\"/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p>helo, world</p></body></html>");
         // .setContent("<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1");
         // .setContent("<b>Hi</b>, how are you doing?");

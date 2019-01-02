@@ -1,5 +1,5 @@
 #include "ncnotificationwidget.h"
-#include "ncglobal.h"
+#include "global.h"
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLabel>

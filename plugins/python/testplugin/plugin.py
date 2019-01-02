@@ -55,7 +55,7 @@ class Plugin(PyNc.ExtensionInterface):
 
 def run():
     print("*********************** welcome to python world **********************")
-    msg = PyNc.NcMessage()
+    msg = PyNc.Notification()
     print(msg.notificationId())
     nc = NC.instance()
     # nc.setView(mainwin)
@@ -65,7 +65,7 @@ def run():
     print('instanize Plugin')
     plugin = Plugin()
     print('adding plugin Plugin')
-    NC.instance().addPlugin(plugin)
+    NC.instance().registerExtension(plugin)
     print('plugin Plugin added')
     print("*********************** end of journey **********************")
 

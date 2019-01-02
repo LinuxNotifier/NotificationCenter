@@ -1,7 +1,7 @@
 #include "testplugin.h"
 #include "notificationcenter.h"
-#include "ncglobal.h"
-#include "ncdebug.h"
+#include "global.h"
+#include "debug.h"
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>

@@ -139,7 +139,7 @@ class Plugin(PyNc.ExtensionInterface):
 
     def initialize(self, nc):
         # test use
-        # msg = PyNc.NcMessage()
+        # msg = PyNc.Notification()
         # msg.setTitle("hello from python")
         # NC.notify(msg)
         return True

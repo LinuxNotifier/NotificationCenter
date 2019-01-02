@@ -2,8 +2,8 @@
 #include "ctwidget.h"
 #include "notificationcenter.h"
 #include "ncpluginwidget.h"
-#include "ncglobal.h"
-#include "ncdebug.h"
+#include "global.h"
+#include "debug.h"
 #include <QWidget>
 #include <QIcon>
 #include <QEvent>

@@ -1,7 +1,7 @@
 #include "notificationcenter.h"
-#include "ncmessage.h"
-#include "messagemanager.h"
-#include "ncdebug.h"
+#include "notification.h"
+#include "notificationmanager.h"
+#include "debug.h"
 #include <unistd.h>
 #include <QApplication>
 #include <QUuid>
@@ -13,9 +13,9 @@ TEST_CASE("test NotificationCenter", "[notificationcenter]") {
     char *argv[] = {(char *)"./test_main"};
     QApplication app(argc, argv);
     // NotificationCenter &nc = NotificationCenter::instance();
-    // MessageManager msgManager(&nc);
+    // NotificationManager msgManager(&nc);
     // nc.setMessageModel(&msgManager);
-    NcMessage msg;
+    Notification msg;
     msg.setTitle("hello")
         .setNotificationId(QUuid::createUuid().toString())
         .setApplicationId(QUuid::createUuid().toString())

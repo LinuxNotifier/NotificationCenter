@@ -1,16 +1,16 @@
-#include "messagemanager.h"
+#include "notificationmanager.h"
 #include "notificationcenter.h"
-#include "ncdebug.h"
+#include "debug.h"
 #include <QApplication>
 #include <QDateTime>
 #include <QUuid>
 #include <QIcon>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include "ncdatabase.h"
+#include "database.h"
 #include <Catch2/catch.hpp>
 
-TEST_CASE("test MessageManager", "[message], [database]") {
+TEST_CASE("test NotificationManager", "[message], [database]") {
     qSetMessagePattern("[%{type}] " __FILENAME__ ":%{line} <%{function}> %{message}");
     int argc = 1;
     char *argv[] = {(char *)"./test_main"};
@@ -18,9 +18,9 @@ TEST_CASE("test MessageManager", "[message], [database]") {
 
     NotificationCenter &nc = NotificationCenter::instance();
 
-    MessageManager msgManager(&nc);
+    NotificationManager msgManager(&nc);
     nc.setMessageModel(&msgManager);
-    NcDatabase &ncDb = NcDatabase::instance();
+    Database &ncDb = Database::instance();
     QSqlQuery query(ncDb.internalDatabase());
     query.exec("DELETE FROM messages");
     query.exec("SELECT * FROM messages");
@@ -49,7 +49,7 @@ TEST_CASE("test MessageManager", "[message], [database]") {
                 QDateTime::currentDateTime().toString(),
                 QDateTime::currentDateTime().toString()
                 ));
-    std::shared_ptr<NcMessage> msg(new NcMessage);
+    std::shared_ptr<Notification> msg(new Notification);
     msg->setTitle("title111")
         .setNotificationId("aaa")
         .setApplicationId("bbb")

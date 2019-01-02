@@ -2,14 +2,20 @@
 #include "notificationcenter_p.h"
 #include "ncnotificationwidget.h"
 #include "extensioninterface.h"
-#include "messagemanager.h"
+#include "notificationmanager.h"
 #include "extensionmanager.h"
-#include "ncmessage.h"
+#include "notification.h"
 #include "mainwindow.h"
-#include "ncdebug.h"
-#include "ncglobal.h"
+#include "debug.h"
+#include "global.h"
 #include <memory>
 #include <QDateTime>
+
+#if DEBUG
+const bool Debug = true;
+#else
+const bool Debug = false;
+#endif
 
 NotificationCenterPrivate::NotificationCenterPrivate(NotificationCenter *q_ptr) :
     q_ptr(q_ptr),
@@ -35,12 +41,6 @@ NotificationCenter::~NotificationCenter()
 
 }
 
-NotificationCenter& NotificationCenter::instance(QObject *parent)
-{
-    static NotificationCenter instance(parent);
-    return instance;
-}
-
 QString NotificationCenter::version()
 {
     return instance().d_ptr->m_ncVersion;
@@ -52,10 +52,10 @@ void NotificationCenter::setView(MainWindow *view)
     connect(d_ptr->m_view, SIGNAL(messageClosed(const QString)), this, SIGNAL(messageClosed(const QString)));
 }
 
-void NotificationCenter::setMessageModel(MessageManager *messageManager)
+void NotificationCenter::setMessageModel(NotificationManager *messageManager)
 {
     d_ptr->m_messageManager = messageManager;
-    connect(d_ptr->m_messageManager, SIGNAL(newMessage(std::shared_ptr<NcMessage>)), this, SIGNAL(newMessage(std::shared_ptr<NcMessage>)));
+    connect(d_ptr->m_messageManager, SIGNAL(newMessage(std::shared_ptr<Notification>)), this, SIGNAL(newMessage(std::shared_ptr<Notification>)));
     connect(d_ptr->m_messageManager, SIGNAL(messageExpired(const QString)), this, SIGNAL(messageExpired(const QString)));
 }
 
@@ -66,40 +66,71 @@ void NotificationCenter::setPluginModel(ExtensionManager *extensionManager)
     connect(d_ptr->m_extensionManager, SIGNAL(extensionDeleted(const QString)), this, SIGNAL(extensionDeleted(const QString)));
 }
 
-bool NotificationCenter::notify(const NcMessage &message)
+bool NotificationCenter::notify(const Notification &message)
 {
     // TODO: don't need to recreate a new one
-    std::shared_ptr<NcMessage> msg(new NcMessage(message));
+    std::shared_ptr<Notification> msg(new Notification(message));
     return notify(msg);
 }
 
-bool NotificationCenter::notify(std::shared_ptr<NcMessage> message)
+bool NotificationCenter::notify(std::shared_ptr<Notification> message)
 {
     // TODO: set notificationId here, return notificationId
     if (!message->isNew())
         return true;
     message->setNotificationId(QUuid::createUuid().toString());
     message->setCreatedTime(QDateTime::currentDateTime().toString());
-    MessageManager *msgMgr = instance().d_ptr->m_messageManager;
+    NotificationManager *msgMgr = instance().d_ptr->m_messageManager;
+    QString applicationId = message->applicationId();
+    auto map = instance().d_ptr->m_notificationServiceMap;
+    // FIX: NotificationListner
+    // if (map.contains(applicationId)) {
+    //     map[applicationId]->onNewNotification(message);
+    // }
     if (msgMgr) {
         // we need the result of inserting a message, so didn't implement it with signals
         bool inserted = instance().d_ptr->m_messageManager->insertMessage(message);
         if (inserted)
             return true;
     }
-    return true;    // return true if not message manager
+    return true;    // return true if no message manager
 }
 
-bool NotificationCenter::notify(NcNotificationWidget *widget)
+bool NotificationCenter::display(NcNotificationWidget *widget)
 {
-
-    emit instance().newNotification(widget);
+    // emit instance().displayNotification(widget);
+    emit instance().d_ptr->m_view->displayNotification(widget);
     return true;
 }
 
-void NotificationCenter::addPlugin(ExtensionInterface *plugin)
+bool NotificationCenter::registerNotificationService(const QString& applicationId, NotificationHandler *handler)
 {
+    if (applicationId.isEmpty() || instance().d_ptr->m_notificationServiceMap.contains(applicationId))
+    {
+        qWarning() << "invalid applicationId or applicationId already exists";
+        return false;
+    }
+    instance().d_ptr->m_notificationServiceMap[applicationId] = handler;
+    return true;
+
+}
+
+bool NotificationCenter::registerExtension(ExtensionInterface *plugin)
+{
+    // // invalid application will not able to custom notifications, but it can
+    // // still send naive notificaitons
+    QString applicationId = plugin->applicationId();
+    // if (applicationId.isEmpty()) {
+    //     qWarning() << "empty application id";
+    //     return false;
+    // }
+    // if (instance().d_ptr->m_extensionMap.contains(applicationId)) {
+    //     qWarning() << "extension with application id:" << applicationId << "already exists";
+    //     return false;
+    // }
+    instance().d_ptr->m_extensionMap[applicationId] = plugin;
     emit instance().newExtension(std::shared_ptr<ExtensionInterface>(plugin));
+    return true;
 }
 
 bool NotificationCenter::quietMode()

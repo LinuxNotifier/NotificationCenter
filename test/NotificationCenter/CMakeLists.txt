@@ -1,10 +1,10 @@
 set(TARGET test_NotificationCenter)
 
 add_executable(${TARGET} test_main.cpp
-    test_ncdatabase.cpp
-    test_ncmessage.cpp
+    test_database.cpp
+    test_notification.cpp
     test_notificationcenter.cpp
-    test_messagemanager.cpp
+    test_notificationmanager.cpp
     test_extensioninterface.h
     test_extensioninterface.cpp
     test_extensionmanager.cpp

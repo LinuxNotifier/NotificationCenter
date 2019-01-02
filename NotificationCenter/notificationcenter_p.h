@@ -2,11 +2,14 @@
 #define NOTIFICATIONCENTER_P_H
 
 #include <QString>
+#include <QHash>
 
 class NotificationCenter;
-class NcMessage;
-class MessageManager;
+class Notification;
+class NotificationManager;
 class ExtensionManager;
+class ExtensionInterface;
+class NotificationHandler;
 
 class NotificationCenterPrivate
 {
@@ -20,10 +23,13 @@ class NotificationCenterPrivate
         Q_DISABLE_COPY(NotificationCenterPrivate)
 
         MainWindow *m_view = nullptr;
-        MessageManager *m_messageManager = nullptr;
+        NotificationManager *m_messageManager = nullptr;
         ExtensionManager *m_extensionManager = nullptr;
         bool m_quietMode = false;
         const QString m_ncVersion;
+        QHash<QString, ExtensionInterface*> m_extensionMap;
+        QHash<QString, NotificationHandler*> m_notificationServiceMap;
+
         NotificationCenter *q_ptr = nullptr;
 };
 

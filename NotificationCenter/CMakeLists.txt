@@ -3,14 +3,14 @@ set(TARGET NotificationCenter)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(HEADERS mainwindow.h
-    ncglobal.h
-    ncdebug.h
+    global.h
+    debug.h
     notificationcenter.h
     notificationcenter_p.h
-    ncdatabase.h
-    ncmessage.h
-    ncmessage_p.h
-    messagemanager.h
+    database.h
+    notification.h
+    notification_p.h
+    notificationmanager.h
     extensionmanager.h
     extensioninterface.h
     )
@@ -18,9 +18,9 @@ set(HEADERS mainwindow.h
 set(SOURCES mainwindow.cpp
     # blur.cpp
     notificationcenter.cpp
-    ncdatabase.cpp
-    ncmessage.cpp
-    messagemanager.cpp
+    database.cpp
+    notification.cpp
+    notificationmanager.cpp
     extensionmanager.cpp
     extensioninterface.cpp
     )

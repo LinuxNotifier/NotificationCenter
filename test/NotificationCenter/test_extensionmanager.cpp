@@ -1,4 +1,4 @@
-#include "ncglobal.h"
+#include "global.h"
 #include "extensionmanager.h"
 #include "notificationcenter.h"
 #include <QApplication>

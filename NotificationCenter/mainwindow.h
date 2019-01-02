@@ -15,7 +15,7 @@ class QEvent;
 class QVBoxLayout;
 class QRect;
 class QSystemTrayIcon;
-class NcMessage;
+class Notification;
 class QString;
 class QLabel;
 class QMoveEvent;
@@ -56,10 +56,9 @@ class MainWindow : public QWidget
     private slots:
         void onFocusChanged(QWidget *old, QWidget *now);
         void onTabChanged(int index);
-        void onNewMessage(std::shared_ptr<NcMessage> message);
+        void onNewMessage(std::shared_ptr<Notification> message);
         void onMessageClosed(const QString notificationId);
         void onMessageExpired(const QString notificationId);
-        void onNewNotification(NcNotificationWidget *widget);
         // this slot is called actually not when notification widget
         // is closed, but the user clicked the close button. It give
         // us time to deal with the close animation.
@@ -76,6 +75,7 @@ class MainWindow : public QWidget
 
         bool eventFilter(QObject *watched, QEvent *event) override;
 
+        void displayNotification(NcNotificationWidget *widget);
         bool loadTheme(QString name);
 
     protected:

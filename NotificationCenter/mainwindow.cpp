@@ -3,11 +3,11 @@
 #include "ncnotificationwidget.h"
 #include "datetimewidget.h"
 #include "ncpluginwidget.h"
-#include "ncmessage.h"
+#include "notification.h"
 #include "notificationcenter.h"
 #include "extensioninterface.h"
 // #include "scenewidget.h"
-#include "ncdebug.h"
+#include "debug.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QKeyEvent>
@@ -31,7 +31,8 @@
 
 QPixmap blur_render(QPixmap src, int extent = 5)
 {
-    if(src.isNull()) return QPixmap();   //No need to do anything else!
+    if(src.isNull())
+        return QPixmap();
     QGraphicsScene scene;
     QGraphicsPixmapItem item;
     QGraphicsBlurEffect effect;
@@ -70,7 +71,8 @@ MainWindow::MainWindow(QWidget *parent) :
     initUi();
 
     NotificationCenter &nc = NotificationCenter::instance();
-    connect(&NotificationCenter::instance(), SIGNAL(newMessage(std::shared_ptr<NcMessage>)), this, SLOT(onNewMessage(std::shared_ptr<NcMessage>)));
+    // nc.registerNotificationService("org.linuxnotifier.Notifier", this);
+    connect(&NotificationCenter::instance(), SIGNAL(newMessage(std::shared_ptr<Notification>)), this, SLOT(onNewMessage(std::shared_ptr<Notification>)));
     connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
     connect(&nc, SIGNAL(messageClosed(const QString)), this, SLOT(onMessageClosed(const QString)));
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
@@ -87,6 +89,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_pluginsLayout->addWidget(m_dateTimeWidget, Qt::AlignTop);
 
     // m_backgroundScene->show();
+
+    // FIX: NotificationListner
+    // NotificationCenter::registerNotificationService("org.linuxnotifier.Notification", this);
 }
 
 MainWindow::~MainWindow()
@@ -340,7 +345,7 @@ void MainWindow::initUi()
     m_notificationsLayout->addStretch();
 }
 
-void MainWindow::onNewMessage(std::shared_ptr<NcMessage> message)
+void MainWindow::onNewMessage(std::shared_ptr<Notification> message)
 {
     // TODO: beautify the widget UI
     qDebug() << "received a new message:" << message->title();
@@ -383,12 +388,12 @@ void MainWindow::onNewMessage(std::shared_ptr<NcMessage> message)
     showNotification(widget);
 
     /* this won't be overridden since the notificationId should be unique,
-        and every NcMessage cannot be notified twice */
+        and every Notification cannot be notified twice */
     m_msgId2Widget[message->notificationId()] = widget;
     m_widget2MsgId[widget] = message->notificationId();
 }
 
-void MainWindow::onNewNotification(NcNotificationWidget *widget)
+void MainWindow::displayNotification(NcNotificationWidget *widget)
 {
     qDebug() << "received notification" << widget;
     showNotification(widget);

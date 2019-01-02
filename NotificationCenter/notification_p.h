@@ -1,22 +1,22 @@
-#ifndef NCMESSAGE_P_H
-#define NCMESSAGE_P_H
+#ifndef NOTIFICATION_P_H
+#define NOTIFICATION_P_H
 
 #include <QString>
 #include <QIcon>
 
-class NcMessage;
+class Notification;
 class NotificationCenter;
 
-class NcMessagePrivate
+class NotificationPrivate
 {
-    friend class NcMessage;
+    friend class Notification;
 
     public:
-        ~NcMessagePrivate();
+        ~NotificationPrivate();
 
     private:
-        explicit NcMessagePrivate(NcMessage *q_ptr);
-        Q_DISABLE_COPY(NcMessagePrivate)
+        explicit NotificationPrivate(Notification *q_ptr);
+        Q_DISABLE_COPY(NotificationPrivate)
         // FIXME: d_func() somehow returns a const pointer
 
         QString m_notificationId;
@@ -26,8 +26,8 @@ class NcMessagePrivate
         QString m_preview;
         QString m_content;
         QString m_data;
-        NcMessage::Priority m_priority = NcMessage::Priority::Normal;
-        NcMessage::Duration m_duration = NcMessage::Duration::Default;
+        Notification::Priority m_priority = Notification::Priority::Normal;
+        Notification::Duration m_duration = Notification::Duration::Default;
         QString m_triggerTime;
         QString m_createdTime;
 
@@ -35,7 +35,7 @@ class NcMessagePrivate
         // TODO: check if new messsage is new? (choose to store this message or not)
         bool m_isNew = true;
 
-        NcMessage *q_ptr = nullptr;
+        Notification *q_ptr = nullptr;
 };
 
-#endif // NCMESSAGE_P_H
+#endif // NOTIFICATION_P_H

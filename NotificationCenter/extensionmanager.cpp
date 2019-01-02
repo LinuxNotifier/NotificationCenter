@@ -1,7 +1,7 @@
 #include "extensionmanager.h"
 #include "notificationcenter.h"
 #include "extensioninterface.h"
-#include "ncdatabase.h"
+#include "database.h"
 #include <QSqlQuery>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -9,7 +9,7 @@
 
 ExtensionManager::ExtensionManager(NotificationCenter *parent) :
     QObject(parent),
-    m_ncDb(&NcDatabase::instance())
+    m_ncDb(&Database::instance())
 {
     connect(parent, SIGNAL(extensionEnabled(const QString)), this, SLOT(onPluginEnabled(const QString)));
     connect(parent, SIGNAL(extensionDisabled(const QString)), this, SLOT(onPluginDisabled(const QString)));

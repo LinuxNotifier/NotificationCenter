@@ -1,8 +1,8 @@
-#include "ncdatabase.h"
-#include "ncdatabase_p.h"
+#include "database.h"
+#include "database_p.h"
 #include "notificationcenter.h"
-#include "ncdebug.h"
-#include "ncglobal.h"
+#include "debug.h"
+#include "global.h"
 #include <QDir>
 #include <QApplication>
 #include <QSqlRecord>
@@ -12,42 +12,42 @@
 #include <QPixmap>
 #include <QIcon>
 
-NcDatabasePrivate::NcDatabasePrivate(NcDatabase *q_ptr) :
+DatabasePrivate::DatabasePrivate(Database *q_ptr) :
     q_ptr(q_ptr)
 {
 
 }
 
-NcDatabasePrivate::~NcDatabasePrivate()
+DatabasePrivate::~DatabasePrivate()
 {
 
 }
 
-NcDatabase::NcDatabase(NotificationCenter *parent) :
+Database::Database(NotificationCenter *parent) :
     QObject(parent),
-    d_ptr(new NcDatabasePrivate(this))
+    d_ptr(new DatabasePrivate(this))
 {
     d_ptr->m_dbName = "ncdb";
     initDatabase();
 }
 
-NcDatabase::~NcDatabase()
+Database::~Database()
 {
     
 }
 
-NcDatabase& NcDatabase::instance()
+Database& Database::instance()
 {
-    static NcDatabase ncDb(&NotificationCenter::instance());
+    static Database ncDb(&NotificationCenter::instance());
     return ncDb;
 }
 
-QString NcDatabase::dbName() const
+QString Database::dbName() const
 {
     return d_ptr->m_dbName;
 }
 
-void NcDatabase::initDatabase()
+void Database::initDatabase()
 {
     const QString dbDirName = "dbs";
     const QString dbFileName = "nc.db";

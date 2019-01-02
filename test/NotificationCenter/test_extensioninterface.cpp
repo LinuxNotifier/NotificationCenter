@@ -1,7 +1,7 @@
 #include "test_extensioninterface.h"
 #include "notificationcenter.h"
-#include "ncglobal.h"
-#include "ncdebug.h"
+#include "global.h"
+#include "debug.h"
 #include <QApplication>
 #include <QWidget>
 #include <Catch2/catch.hpp>

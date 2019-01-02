@@ -1,7 +1,7 @@
-class NcMessage {
+class Notification {
     %TypeHeaderCode
         #include "notificationcenter.h"
-        #include "ncmessage.h"
+        #include "notification.h"
         #include <memory>
         #include <QDebug>
     %End
@@ -34,32 +34,32 @@ class NcMessage {
             Default = 3,
         };
 
-        NcMessage();
-        ~NcMessage();
+        Notification();
+        ~Notification();
 
         QString createdTime() const;
         QIcon icon() const;
-        NcMessage& setIcon(const QString& icon);
-        NcMessage& setIcon(const QIcon& icon);
+        Notification& setIcon(const QString& icon);
+        Notification& setIcon(const QIcon& icon);
         QString title() const;
-        NcMessage& setTitle(const QString& title);
+        Notification& setTitle(const QString& title);
         QString preview() const;
-        NcMessage& setPreview(const QString& preview);
+        Notification& setPreview(const QString& preview);
         QString content() const;
-        NcMessage& setContent(const QString& content);
+        Notification& setContent(const QString& content);
         Duration duration() const;
         /* the following method has the same python signature */
-        NcMessage& setDuration(Duration duration);
-        /* NcMessage& setDuration(int duration); */
+        Notification& setDuration(Duration duration);
+        /* Notification& setDuration(int duration); */
         Priority priority() const;
-        NcMessage& setPriority(Priority priority);
+        Notification& setPriority(Priority priority);
         QString notificationId() const;
         QString applicationId() const;
 
     private:
-        /* Q_DISABLE_COPY(NcMessage); */
+        /* Q_DISABLE_COPY(Notification); */
 
-        /* NcMessage() /Factory/; */
-        /* NcMessage(const NcMessage&); */
-        /* NcMessage& operator=(const NcMessage&); */
+        /* Notification() /Factory/; */
+        /* Notification(const Notification&); */
+        /* Notification& operator=(const Notification&); */
 };

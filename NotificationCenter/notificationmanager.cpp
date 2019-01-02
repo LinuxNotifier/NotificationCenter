@@ -1,9 +1,10 @@
-#include "messagemanager.h"
-#include "ncdatabase.h"
+#include "notificationmanager.h"
+#include "database.h"
 #include "notificationcenter.h"
-#include "ncmessage.h"
-#include "ncglobal.h"
-#include "ncdebug.h"
+#include "notificationchannel.h"
+#include "notification.h"
+#include "global.h"
+#include "debug.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QBuffer>
@@ -16,24 +17,29 @@
 #include <QSqlError>
 #include <QTimer>
 
-MessageManager::MessageManager(NotificationCenter *parent) :
+NotificationManager::NotificationManager(NotificationCenter *parent) :
     QObject(parent),
-    m_ncDb(&NcDatabase::instance())
+    m_ncDb(&Database::instance())
 {
     connect(parent, SIGNAL(messageClosed(const QString)), this, SLOT(messageClosed(const QString)));
     initMessageTable();
     // FIXME: duplicate message if new message is inserted before loading
     // messages when program starts up
-    QTimer::singleShot(1000, this, &MessageManager::loadMessages);
+    QTimer::singleShot(1000, this, &NotificationManager::loadMessages);
     // loadMessages();
 }
 
-MessageManager::~MessageManager()
+NotificationManager::~NotificationManager()
 {
 
 }
 
-void MessageManager::initMessageTable()
+void NotificationManager::createNotficationChannel(const NotificationChannel& channel)
+{
+    // mChannels.append(channel);
+}
+
+void NotificationManager::initMessageTable()
 {
     QSqlQuery query(m_ncDb->internalDatabase());
     if (!query.exec("CREATE TABLE IF NOT EXISTS messages "
@@ -57,12 +63,12 @@ void MessageManager::initMessageTable()
         m_valid = true;
 }
 
-void MessageManager::loadMessages()
+void NotificationManager::loadMessages()
 {
     MessageList msgList = selectAllMessages();
-    for (const std::shared_ptr<NcMessage> msg : msgList) {
-        NcMessage::Duration duration = msg->duration();
-        if (duration != NcMessage::Duration::UntilShutdown) {
+    for (const std::shared_ptr<Notification> msg : msgList) {
+        Notification::Duration duration = msg->duration();
+        if (duration != Notification::Duration::UntilShutdown) {
             emit newMessage(msg);
             m_messageMap[msg->notificationId()] = msg;
         }
@@ -73,16 +79,16 @@ void MessageManager::loadMessages()
 }
 
 
-void MessageManager::messageClosed(const QString notificationId)
+void NotificationManager::messageClosed(const QString notificationId)
 {
     qDebug() << "message closed:" << notificationId;
     m_messageMap.remove(notificationId);
     deleteMessage(notificationId);
 }
 
-bool MessageManager::insertMessage(std::shared_ptr<NcMessage> message)
+bool NotificationManager::insertMessage(std::shared_ptr<Notification> message)
 {
-    bool inserted = MessageManager::insertMessage(message->notificationId(),
+    bool inserted = NotificationManager::insertMessage(message->notificationId(),
             message->applicationId(),
             message->title(),
             message->icon(),
@@ -101,7 +107,7 @@ bool MessageManager::insertMessage(std::shared_ptr<NcMessage> message)
     return inserted;
 }
 
-bool MessageManager::insertMessage(const QString& notificationId, const
+bool NotificationManager::insertMessage(const QString& notificationId, const
         QString& applicationId, const QString& title, const QIcon& icon, const
         QString& preview, const QString& content, const QString& data, int
         priority, int duration, const QString& triggerTime, const QString&
@@ -162,9 +168,9 @@ bool MessageManager::insertMessage(const QString& notificationId, const
     return inserted;
 }
 
-bool MessageManager::alterMessage(std::shared_ptr<NcMessage> message)
+bool NotificationManager::alterMessage(std::shared_ptr<Notification> message)
 {
-    // return MessageManager::alterMessage(message->notificationId(),
+    // return NotificationManager::alterMessage(message->notificationId(),
     //         message->title(),
     //         message->preview(),
     //         message->content(),
@@ -179,7 +185,7 @@ bool MessageManager::alterMessage(std::shared_ptr<NcMessage> message)
     return true;
 }
 
-// bool MessageManager::alterMessage(const QString& messageId, const QString& title,
+// bool NotificationManager::alterMessage(const QString& messageId, const QString& title,
 //         const QString& preview, const QString& content,
 //         // const QIcon& icon, int action,
 //         const QIcon& icon,
@@ -193,7 +199,7 @@ bool MessageManager::alterMessage(std::shared_ptr<NcMessage> message)
 //             notificationId, applicationId);
 // }
 
-bool MessageManager::deleteMessage(const QString& notificationId)
+bool NotificationManager::deleteMessage(const QString& notificationId)
 {
     QSqlQuery query(m_ncDb->internalDatabase());
     query.prepare("DELETE FROM messages WHERE notification_id = :notification_id");
@@ -204,12 +210,12 @@ bool MessageManager::deleteMessage(const QString& notificationId)
     return result;
 }
 
-std::shared_ptr<NcMessage> MessageManager::selectMessage(const QString& notificationId)
+std::shared_ptr<Notification> NotificationManager::selectMessage(const QString& notificationId)
 {
     QSqlQuery query(m_ncDb->internalDatabase());
     query.prepare("SELECT * FROM messages WHERE notification_id = :notification_id");
     query.bindValue(":notification_id", notificationId);
-    std::shared_ptr<NcMessage> message(new NcMessage);
+    std::shared_ptr<Notification> message(new Notification);
     if (query.exec() && query.first())
     {
         message->setNotificationId(query.value(0).toString())
@@ -217,8 +223,8 @@ std::shared_ptr<NcMessage> MessageManager::selectMessage(const QString& notifica
             .setTitle(query.value(2).toString())
             .setPreview(query.value(4).toString())
             .setContent(query.value(5).toString())
-            .setPriority(static_cast<NcMessage::Priority>(query.value(6).toInt()))
-            .setDuration(static_cast<NcMessage::Duration>(query.value(7).toInt()))
+            .setPriority(static_cast<Notification::Priority>(query.value(6).toInt()))
+            .setDuration(static_cast<Notification::Duration>(query.value(7).toInt()))
             .setData(query.value(8).toString())
             .setTriggerTime(query.value(9).toString())
             .setCreatedTime(query.value(10).toString());
@@ -240,7 +246,7 @@ std::shared_ptr<NcMessage> MessageManager::selectMessage(const QString& notifica
     return message;
 }
 
-MessageList MessageManager::selectAllMessages()
+MessageList NotificationManager::selectAllMessages()
 {
     MessageList messageList;
     QSqlQuery query(m_ncDb->internalDatabase());

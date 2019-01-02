@@ -3,24 +3,24 @@
 
 #include <QSqlDatabase>
 
-class NcDatabase;
+class Database;
 
-class NcDatabasePrivate
+class DatabasePrivate
 {
-    friend class NcDatabase;
+    friend class Database;
 
     public:
-        ~NcDatabasePrivate();
+        ~DatabasePrivate();
 
     private:
-        NcDatabasePrivate(NcDatabase *q_ptr);
+        DatabasePrivate(Database *q_ptr);
 
         bool m_valid = false;
         QSqlDatabase m_db;
 
         QString m_dbName;
 
-        NcDatabase *q_ptr = nullptr;
+        Database *q_ptr = nullptr;
 };
 
 #endif // NCDATABASE_P_H

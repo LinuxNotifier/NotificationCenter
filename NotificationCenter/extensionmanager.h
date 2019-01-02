@@ -6,7 +6,7 @@
 #include <QHash>
 
 class NotificationCenter;
-class NcDatabase;
+class Database;
 class ExtensionInterface;
 class QPluginLoader;
 
@@ -46,7 +46,7 @@ class ExtensionManager : public QObject
         void loadExtensions();
         // bool insertPlugin()
 
-        NcDatabase *m_ncDb = nullptr;
+        Database *m_ncDb = nullptr;
         PluginLoaderMap m_pluginLoaderMap;
         PluginLoaderMap m_pluginMap;
         bool m_valid = false;

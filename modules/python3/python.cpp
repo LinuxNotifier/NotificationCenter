@@ -1,7 +1,7 @@
 #include <Python.h>
 #include "python.h"
 #include <dlfcn.h>
-#include "ncdebug.h"
+#include "debug.h"
 #include <QCoreApplication>
 #include <QStringList>
 
@@ -88,7 +88,7 @@ void Python::loadPythonPlugins()
                        "            module = importlib.import_module(package + '.plugin')\n"
                        "            plugin = module.Plugin()\n"
                        "            plugins.append(plugin)\n"
-                       "            NC.instance().addPlugin(plugin)\n"
+                       "            NC.instance().registerExtension(plugin)\n"
                        // "            NC.instance().newExtension.emit(plugin)\n"
                        "        except Exception as e:\n"
                        "            print(e)\n"

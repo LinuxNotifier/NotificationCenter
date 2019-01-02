@@ -5,13 +5,18 @@
 #include <memory>
 
 class ExtensionInterface;
-class NcMessage;
+// class NotificationService;
+class Notification;
 class NotificationCenterPrivate;
 class NcNotificationWidget;
 class MainWindow;
-class MessageManager;
+class NotificationManager;
 class ExtensionManager;
+class NotificationHandler;
 class QPluginLoader;
+
+// this is for Python plugins to detech if in debug mode
+extern const bool Debug;
 
 class NotificationCenter : public QObject
 {
@@ -22,8 +27,8 @@ class NotificationCenter : public QObject
         // you should customize notification widget to display privacy information if you
         // have to do so.
 
-        void newMessage(std::shared_ptr<NcMessage> message);
-        void newNotification(NcNotificationWidget *widget);
+        void newMessage(std::shared_ptr<Notification> message);
+        void displayNotification(NcNotificationWidget *widget);
         void messageExpired(const QString notificationId);
         void messageClosed(const QString notificationId);
         void messageHandled(const QString action);
@@ -39,27 +44,34 @@ class NotificationCenter : public QObject
 
     public:
         ~NotificationCenter();
-        static NotificationCenter& instance(QObject *parent = nullptr);
+        static inline NotificationCenter& instance(QObject *parent = nullptr) {
+            static NotificationCenter instance(parent);
+            return instance;
+        };
 
         static QString version();
 
         void setView(MainWindow *view);
-        void setMessageModel(MessageManager *messageManager);
+        void setMessageModel(NotificationManager *messageManager);
         void setPluginModel(ExtensionManager *extensionManager);
 
-        static bool notify(std::shared_ptr<NcMessage> message);
-        static bool notify(const NcMessage &message);
+        // TODO: using signal's sender to idnetify the caller, and trust the applicationId
+        // return notification id
+        static bool notify(std::shared_ptr<Notification> message);
+        // TODO: directly call MainWindow::show()
+        static bool notify(const Notification &message);
+        static bool registerNotificationService(const QString& applicationId, NotificationHandler *handler);
         // TODO
         // renotify(notificaitonId)
         // removeNotification(const QString notificationId);
         // replaceNotification(notificaitonId, notification, CREATE_ON_NO, actionHandler)
         // NOTE: the following method always returns true
-        static bool notify(NcNotificationWidget *widget);
+        static bool display(NcNotificationWidget *widget);
 
-        static void addPlugin(ExtensionInterface *plugin);
+        static bool registerExtension(ExtensionInterface *plugin);
 
         // TODO
-        // static QString themeName();
+        // static QString themeName();  // for the extensions to adjust their theme accordingly
         static bool quietMode();
         static void setQuietMode(bool quiet = true);
         static void toggleQuietMode();

@@ -1,34 +1,34 @@
-#ifndef NCMESSAGE_H
-#define NCMESSAGE_H
+#ifndef NOTIFICATION_H
+#define NOTIFICATION_H
 
-#include <ncglobal.h>
+#include <global.h>
 #include <QString>
 #include <QIcon>
 #include <QList>
 #include <QHash>
 #include <memory>
 
-class NcMessagePrivate;
+class NotificationPrivate;
 class NotificationCenter;
 class NotificationCenterPrivate;
-class NcDatabase;
-class NcMessage;
+class Database;
+class Notification;
 
-typedef QList<std::shared_ptr<NcMessage> > MessageList;
-typedef QHash<QString, std::shared_ptr<NcMessage> > MessageMap;
-typedef std::shared_ptr<NcMessage> NcMessageSharedPointer;
+typedef QList<std::shared_ptr<Notification> > MessageList;
+typedef QHash<QString, std::shared_ptr<Notification> > MessageMap;
+typedef std::shared_ptr<Notification> NotificationSharedPointer;
 
 /**
  * This class encapsulates a message that transfered among the NotificationCenter
  */
-class NcMessage
+class Notification
 {
     friend class NotificationCenter;
     friend class NotificationCenterPrivate;
-    friend class MessageManager;
+    friend class NotificationManager;
 
     public:
-        // TODO: use using to import enum class from NcMessagePrivate (https://stackoverflow.com/questions/3293279/how-do-you-import-an-enum-into-a-different-namespace-in-c)
+        // TODO: use using to import enum class from NotificationPrivate (https://stackoverflow.com/questions/3293279/how-do-you-import-an-enum-into-a-different-namespace-in-c)
         enum class Priority {
             /**
              * Low: for messages that can be directedly ignored, and likely to be displayed
@@ -56,27 +56,27 @@ class NcMessage
             Default = UntilConfirmation | UntilShutdown,
         };
 
-        NcMessage();
-        ~NcMessage();
+        Notification();
+        ~Notification();
 
         QString notificationId() const;
-        NcMessage& setNotificationId(const QString& notificationId);
+        Notification& setNotificationId(const QString& notificationId);
         QString applicationId() const;
         QString title() const;
-        NcMessage& setTitle(const QString& title);
+        Notification& setTitle(const QString& title);
         QIcon icon() const;
-        NcMessage& setIcon(const QString& icon);
-        NcMessage& setIcon(const QIcon& icon);
+        Notification& setIcon(const QString& icon);
+        Notification& setIcon(const QIcon& icon);
         QString preview() const;
-        NcMessage& setPreview(const QString& preview);
+        Notification& setPreview(const QString& preview);
         QString content() const;
-        NcMessage& setContent(const QString& content);
+        Notification& setContent(const QString& content);
         QString data() const;
-        NcMessage& setData(const QString& data);
+        Notification& setData(const QString& data);
         Priority priority() const;
-        NcMessage& setPriority(Priority priority);
+        Notification& setPriority(Priority priority);
         Duration duration() const;
-        NcMessage& setDuration(Duration duration);
+        Notification& setDuration(Duration duration);
         QString triggerTime() const;
         QString createdTime() const;
         bool isNew() const;
@@ -86,17 +86,17 @@ class NcMessage
         };
 
     private:
-        // Q_DISABLE_COPY(NcMessage);
+        // Q_DISABLE_COPY(Notification);
 
-        NcMessage& setApplicationId(const QString& applicationId);
-        NcMessage& setTriggerTime(const QString& triggerTime);
-        NcMessage& setCreatedTime(const QString& createdTime);
-        NcMessage& setIsNew(bool isNew);
+        Notification& setApplicationId(const QString& applicationId);
+        Notification& setTriggerTime(const QString& triggerTime);
+        Notification& setCreatedTime(const QString& createdTime);
+        Notification& setIsNew(bool isNew);
 
-        // NOTE: modify NcMessage::Duration::Default doc when changed
+        // NOTE: modify Notification::Duration::Default doc when changed
         static const int default_duration = 10;
 
-        std::shared_ptr<NcMessagePrivate> d_ptr;
+        std::shared_ptr<NotificationPrivate> d_ptr;
 };
 
-#endif // NCMESSAGE_H   
+#endif // NOTIFICATION_H

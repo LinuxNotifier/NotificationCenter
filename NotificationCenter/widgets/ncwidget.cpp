@@ -1,5 +1,5 @@
 #include "ncwidget.h"
-#include "ncglobal.h"
+#include "global.h"
 #include <QPropertyAnimation>
 #include <QSizePolicy>
 #include <QVBoxLayout>
