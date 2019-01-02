@@ -1,7 +1,7 @@
 #include "colortester.h"
 #include "ctwidget.h"
 #include "notificationcenter.h"
-#include "ncpluginwidget.h"
+#include "pluginwidget.h"
 #include "global.h"
 #include "debug.h"
 #include <QWidget>

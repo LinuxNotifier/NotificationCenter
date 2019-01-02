@@ -75,7 +75,7 @@ void Python::loadPythonPlugins()
                        "sys.path.insert(0, plugins_path)\n"
                        "modules_path = os.path.join(qApp.applicationDirPath(), 'modules')\n"
                        "sys.path.insert(0, modules_path)\n"
-                       "from PyNc import NotificationCenter as NC\n"
+                       "from Py import NotificationCenter as NC\n"
                        "plugins = []\n"
                        "for package in os.listdir(plugins_path):\n"
                        "    plugin_file = os.path.join(plugins_path, package, 'plugin.py')\n"

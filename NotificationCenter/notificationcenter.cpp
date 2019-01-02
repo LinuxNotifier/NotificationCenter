@@ -1,6 +1,6 @@
 #include "notificationcenter.h"
 #include "notificationcenter_p.h"
-#include "ncnotificationwidget.h"
+#include "notificationwidget.h"
 #include "extensioninterface.h"
 #include "notificationmanager.h"
 #include "extensionmanager.h"
@@ -96,7 +96,7 @@ bool NotificationCenter::notify(std::shared_ptr<Notification> message)
     return true;    // return true if no message manager
 }
 
-bool NotificationCenter::display(NcNotificationWidget *widget)
+bool NotificationCenter::display(NotificationWidget *widget)
 {
     // emit instance().displayNotification(widget);
     emit instance().d_ptr->m_view->displayNotification(widget);

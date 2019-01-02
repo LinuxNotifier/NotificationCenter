@@ -1,4 +1,4 @@
-# NcNotification
+# Notification
     * notificationId (this will replace that notificaion with the same notificaionId)
     * applicationId
     * applicaitonName
@@ -15,4 +15,4 @@
     * createdTime
     * triggerTime
     
-    * "NcClosed, NcExpired, Nc"
+    * "Closed, Expired, "

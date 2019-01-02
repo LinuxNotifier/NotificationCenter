@@ -8,7 +8,7 @@ class ExtensionInterface;
 // class NotificationService;
 class Notification;
 class NotificationCenterPrivate;
-class NcNotificationWidget;
+class NotificationWidget;
 class MainWindow;
 class NotificationManager;
 class ExtensionManager;
@@ -28,7 +28,7 @@ class NotificationCenter : public QObject
         // have to do so.
 
         void newMessage(std::shared_ptr<Notification> message);
-        void displayNotification(NcNotificationWidget *widget);
+        void displayNotification(NotificationWidget *widget);
         void messageExpired(const QString notificationId);
         void messageClosed(const QString notificationId);
         void messageHandled(const QString action);
@@ -66,7 +66,7 @@ class NotificationCenter : public QObject
         // removeNotification(const QString notificationId);
         // replaceNotification(notificaitonId, notification, CREATE_ON_NO, actionHandler)
         // NOTE: the following method always returns true
-        static bool display(NcNotificationWidget *widget);
+        static bool display(NotificationWidget *widget);
 
         static bool registerExtension(ExtensionInterface *plugin);
 

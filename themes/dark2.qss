@@ -63,7 +63,7 @@ QWidget {
     color: rgba(255, 255, 255, 1);
 }
 
-NcWidget {
+Widget {
     background: transparent;
     /* background-color: rgba(235, 235, 235, 0.85); */
     /* background-color: rgba(255, 255, 255, 0); */
@@ -75,7 +75,7 @@ NcWidget {
     /* border-color: red;  */
 }
 
-NcWidget QWidget#frameWidget {
+Widget QWidget#frameWidget {
     background: transparent;
     /* background-color: grey; */
     background-color: rgba(241, 248, 233, 0.1);
@@ -83,11 +83,11 @@ NcWidget QWidget#frameWidget {
 }
 
 /* FIXME: not working */
-NcNotificationWidget {
+NotificationWidget {
     background-color: green;
 }
 
-/* NcPluginWidget { */
+/* PluginWidget { */
 /*     background-color: rgba(155, 154, 90, 172); */
 /*     color: rgba(0, 0, 0, 255); */
 /*     margin: 0px; */

@@ -1,4 +1,4 @@
-#include "ncnotificationwidget.h"
+#include "notificationwidget.h"
 #include "global.h"
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -6,8 +6,8 @@
 #include <QIcon>
 #include <QDebug>
 
-NcNotificationWidget::NcNotificationWidget(QWidget *parent) :
-    NcWidget(parent)
+NotificationWidget::NotificationWidget(QWidget *parent) :
+    Widget(parent)
 {
     m_mainLayout->setAlignment(Qt::AlignTop);
     m_mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -17,7 +17,7 @@ NcNotificationWidget::NcNotificationWidget(QWidget *parent) :
 
     // TODO: change to close icon
     m_closeButton = new QPushButton(this);
-    m_closeButton->setIcon(QIcon(":/images/ncnotificationwidget_clear_message.png"));
+    m_closeButton->setIcon(QIcon(":/images/notificationwidget_clear_message.png"));
     m_closeButton->resize(ICON_SIZE, ICON_SIZE);
     // m_closeButton->resize(4, 4);
     m_closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -27,7 +27,7 @@ NcNotificationWidget::NcNotificationWidget(QWidget *parent) :
     // setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 } 
 
-NcNotificationWidget::~NcNotificationWidget()
+NotificationWidget::~NotificationWidget()
 {
     
 }

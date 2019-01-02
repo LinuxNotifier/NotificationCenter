@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(NotificationCenter)
 set(${PROJECT_NAME}_CORE NCCore)
-set(${PROJECT_NAME}_Py PyNc)
+set(${PROJECT_NAME}_Py Py)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 

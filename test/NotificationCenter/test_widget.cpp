@@ -1,9 +1,9 @@
-#include "ncnotificationwidget.h"
+#include "notificationwidget.h"
 #include "mainwindow.h"
 #include <QApplication>
 #include <Catch2/catch.hpp>
 
-TEST_CASE("test NcWidget", "[ncwidget], [widget]") {
+TEST_CASE("test Widget", "[widget], [widget]") {
 
     qSetMessagePattern("[%{type}] " __FILENAME__ ":%{line} <%{function}> %{message}");
     int argc = 1;
@@ -11,5 +11,5 @@ TEST_CASE("test NcWidget", "[ncwidget], [widget]") {
     QApplication app(argc, argv);
     MainWindow w;
     w.loadTheme("dark");
-    NcNotificationWidget widget;
+    NotificationWidget widget;
 }

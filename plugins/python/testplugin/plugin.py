@@ -1,6 +1,6 @@
 import sip
-import PyNc
-from PyNc import NotificationCenter as NC
+import Py
+from Py import NotificationCenter as NC
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QCalendarWidget, QSizePolicy, QTableView, QHeaderView
 # from PyQt5.QtGui import QSizePolicy
 # from PyQt5.QtCore import QJsonObject
@@ -34,7 +34,7 @@ widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 # widget.show()
 
 
-class Plugin(PyNc.ExtensionInterface):
+class Plugin(Py.ExtensionInterface):
     def initialize(self, nc):
         return True
 
@@ -55,7 +55,7 @@ class Plugin(PyNc.ExtensionInterface):
 
 def run():
     print("*********************** welcome to python world **********************")
-    msg = PyNc.Notification()
+    msg = Py.Notification()
     print(msg.notificationId())
     nc = NC.instance()
     # nc.setView(mainwin)
@@ -72,5 +72,5 @@ def run():
 
 if __name__ == '__main__':
     app = QApplication([])
-    # mainwin = PyNc.MainWindow()
+    # mainwin = Py.MainWindow()
     run()

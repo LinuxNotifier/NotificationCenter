@@ -1,6 +1,6 @@
-import PyNc
+import Py
 from .secret import client_id, client_secret, scope
-from PyNc import NotificationCenter as NC
+from Py import NotificationCenter as NC
 import time
 import json
 from urllib import parse as urlparse
@@ -133,13 +133,13 @@ class PluginWidget(QWidget):
 
 
 # WARNING: DO NOT sub-class QObject
-class Plugin(PyNc.ExtensionInterface):
+class Plugin(Py.ExtensionInterface):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def initialize(self, nc):
         # test use
-        # msg = PyNc.Notification()
+        # msg = Py.Notification()
         # msg.setTitle("hello from python")
         # NC.notify(msg)
         return True

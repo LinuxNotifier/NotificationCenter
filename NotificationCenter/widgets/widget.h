@@ -19,7 +19,7 @@ class QSize;
  * @param name name of the widget, this will be used as the title of the widget
  * @param icon used as the icon the of widget
  */
-class NcWidget : public QWidget
+class Widget : public QWidget
 {
     Q_OBJECT
         Q_PROPERTY(int maskWidth READ maskWidth WRITE setMaskWidth DESIGNABLE true);
@@ -32,8 +32,8 @@ class NcWidget : public QWidget
         };
         Q_ENUM(Style)
 
-        explicit NcWidget(QWidget *parent=nullptr);
-        virtual ~NcWidget();
+        explicit Widget(QWidget *parent=nullptr);
+        virtual ~Widget();
 
         int maskWidth() const;
         void setMaskWidth(int);

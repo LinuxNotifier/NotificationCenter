@@ -8,7 +8,7 @@
 #include <QPixmap>
 
 class ExtensionInterface;
-class NcNotificationWidget;
+class NotificationWidget;
 class QPluginLoader;
 class QFocusEvent;
 class QEvent;
@@ -21,8 +21,8 @@ class QLabel;
 class QMoveEvent;
 class SceneWidget;
 
-typedef QHash<QString, NcNotificationWidget*> MsgId2Widget;
-typedef QHash<NcNotificationWidget*, QString> Widget2MsgId;
+typedef QHash<QString, NotificationWidget*> MsgId2Widget;
+typedef QHash<NotificationWidget*, QString> Widget2MsgId;
 
 namespace Ui {
 class MainWindow;
@@ -75,7 +75,7 @@ class MainWindow : public QWidget
 
         bool eventFilter(QObject *watched, QEvent *event) override;
 
-        void displayNotification(NcNotificationWidget *widget);
+        void displayNotification(NotificationWidget *widget);
         bool loadTheme(QString name);
 
     protected:
@@ -86,7 +86,7 @@ class MainWindow : public QWidget
     private:
         Q_DISABLE_COPY(MainWindow)
 
-        void showNotification(NcNotificationWidget *widget);
+        void showNotification(NotificationWidget *widget);
 
         void setupGeometry();
         void setupSystemTrayIcon();

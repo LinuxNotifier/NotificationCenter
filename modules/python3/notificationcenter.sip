@@ -1,5 +1,5 @@
 /* %Module NotificationCenter */
-%Module(name=PyNc, call_super_init=True, keyword_arguments="Optional")
+%Module(name=Py, call_super_init=True, keyword_arguments="Optional")
 /* %DefaultMetatype PyQt5.QtCore.pyqtWrapperType */
 %DefaultSupertype sip.simplewrapper
 
@@ -9,7 +9,7 @@
 %Include notification.sip
 %Include extensioninterface.sip
 
-class NcNotificationWidget;
+class NotificationWidget;
 class MainWindow;
 
 class NotificationCenter : public QObject
@@ -30,7 +30,7 @@ class NotificationCenter : public QObject
         /*     Py_END_ALLOW_THREADS */
         /* %End */
         /*  */
-        /* void newNotification(NcNotificationWidget *widget); */
+        /* void newNotification(NotificationWidget *widget); */
         /* void messageExpired(const QString notificationId); */
         /* void messageClosed(const QString notificationId); */
         /*  */
@@ -74,7 +74,7 @@ class NotificationCenter : public QObject
         /*     %End */
 
         // NOTE: the following method always returns true
-        static bool display(NcNotificationWidget *widget);
+        static bool display(NotificationWidget *widget);
 
         // void registerExtension(ExtensionInterface &plugin /Transfer/);
         void registerExtension(ExtensionInterface *plugin /Transfer/);

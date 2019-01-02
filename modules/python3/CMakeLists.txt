@@ -16,7 +16,7 @@ add_custom_target(${${PROJECT_NAME}_Py} ALL
     COMMAND cp ${PROJECT_BINARY_DIR}/NotificationCenter/libNCCore.so ./
     COMMAND python3 configure.py ${PROJECT_SOURCE_DIR} ${qt_dir} ${sip_dir} ${pyqt_sip_dir}  
     COMMAND $(MAKE)
-    COMMAND cp PyNc.so ${PROJECT_BINARY_DIR}/NotificationCenter/modules
+    COMMAND cp Py.so ${PROJECT_BINARY_DIR}/NotificationCenter/modules
     # TODO: rebuild if and only if those "*.sip" files changed
     DEPENDS "*.sip"
     )
@@ -36,4 +36,4 @@ add_custom_command(TARGET ${TARGET} POST_BUILD
     )
 
 install(TARGETS ${TARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/plugins")
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/PyNc.so" DESTINATION "${CMAKE_INSTALL_PREFIX}/modules")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/Py.so" DESTINATION "${CMAKE_INSTALL_PREFIX}/modules")

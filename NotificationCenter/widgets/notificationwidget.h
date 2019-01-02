@@ -1,17 +1,17 @@
 #ifndef NCNOTIFICATIONWIDGET_H
 #define NCNOTIFICATIONWIDGET_H
 
-#include "ncwidget.h"
+#include "widget.h"
 
 class QPushButton;
 
-class NcNotificationWidget : public NcWidget
+class NotificationWidget : public Widget
 {
     signals:
 
     public:
-        NcNotificationWidget(QWidget *parent = nullptr);
-        ~NcNotificationWidget();
+        NotificationWidget(QWidget *parent = nullptr);
+        ~NotificationWidget();
 
     private:
         QPushButton *m_closeButton;

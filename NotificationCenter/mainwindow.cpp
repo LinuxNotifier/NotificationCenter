@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "ncnotificationwidget.h"
+#include "notificationwidget.h"
 #include "datetimewidget.h"
-#include "ncpluginwidget.h"
+#include "pluginwidget.h"
 #include "notification.h"
 #include "notificationcenter.h"
 #include "extensioninterface.h"
@@ -223,7 +223,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
         QWidget *widget = qobject_cast<QWidget*>(watched);
         qDebug() << widget << " was clicked";
         if (mouseEvent->buttons() & Qt::LeftButton) {
-            NcNotificationWidget * notificationWidget = static_cast<NcNotificationWidget *>(widget->parent());
+            NotificationWidget * notificationWidget = static_cast<NotificationWidget *>(widget->parent());
             if (notificationWidget)
                 notificationWidget->toggleStyle();
         }
@@ -350,7 +350,7 @@ void MainWindow::onNewMessage(std::shared_ptr<Notification> message)
     // TODO: beautify the widget UI
     qDebug() << "received a new message:" << message->title();
 
-    NcNotificationWidget *widget = new NcNotificationWidget(this);
+    NotificationWidget *widget = new NotificationWidget(this);
 
     QWidget *messageWidget = new QWidget(widget);
     messageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -393,18 +393,18 @@ void MainWindow::onNewMessage(std::shared_ptr<Notification> message)
     m_widget2MsgId[widget] = message->notificationId();
 }
 
-void MainWindow::displayNotification(NcNotificationWidget *widget)
+void MainWindow::displayNotification(NotificationWidget *widget)
 {
     qDebug() << "received notification" << widget;
     showNotification(widget);
 }
 
-void MainWindow::showNotification(NcNotificationWidget *widget)
+void MainWindow::showNotification(NotificationWidget *widget)
 {
     widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_notificationsLayout->insertWidget(0, widget);
     widget->setFixedWidth(NOTIFICATIONCENTER_WIDTH - 2 * NOTIFICATIONCENTER_MARGIN);
-    widget->setStyle(NcWidget::Style::Preview);
+    widget->setStyle(Widget::Style::Preview);
 
     QWidget *frameWidget = widget->frameWidget();
     frameWidget->installEventFilter(this);
@@ -424,8 +424,8 @@ void MainWindow::onNotificationClosed()
     // FIXME: the widgets are unstable when removing a widget
     // maybe I need to implement without QVBoxLayout
     qDebug() << sender() << "closed";
-    NcNotificationWidget *widget = static_cast<NcNotificationWidget *>(sender());
-    // this notification widget is created by MainWindow::newMessage(std::shared_ptr<NcNotificationWidget> message)
+    NotificationWidget *widget = static_cast<NotificationWidget *>(sender());
+    // this notification widget is created by MainWindow::newMessage(std::shared_ptr<NotificationWidget> message)
     if (m_widget2MsgId.contains(widget)) {
         /* this will cause it receiving a messageClosed signal again,
             but it doesn't matter */
@@ -443,7 +443,7 @@ void MainWindow::onMessageClosed(const QString notificationId)
 {
     if (m_msgId2Widget.contains(notificationId)) {
         qDebug() << notificationId << "closed";
-        NcNotificationWidget *widget = m_msgId2Widget[notificationId];
+        NotificationWidget *widget = m_msgId2Widget[notificationId];
         m_notificationsLayout->removeWidget(widget);
         widget->deleteLater();
     }
@@ -472,10 +472,10 @@ void MainWindow::onNewPlugin(std::shared_ptr<QPluginLoader> pluginLoader)
     bool appliable = interface->initialize(&NotificationCenter::instance());
     if (appliable) {
         QWidget *w = interface->centralWidget();
-        // TODO: try cast to NcPluginWidget. if succeeded, don't create NcPluginWidget for it
+        // TODO: try cast to PluginWidget. if succeeded, don't create PluginWidget for it
         if (w) {
             qDebug() << "title: " << w->windowTitle();
-            NcPluginWidget *pluginWidget = new NcPluginWidget(this);
+            PluginWidget *pluginWidget = new PluginWidget(this);
             pluginWidget->setWidget(w);
             pluginWidget->setMaximumHeight(300);
             w->setFixedWidth(NOTIFICATIONCENTER_WIDTH - 2 * NOTIFICATIONCENTER_MARGIN);
@@ -499,7 +499,7 @@ void MainWindow::onNewPlugin(std::shared_ptr<ExtensionInterface> plugin)
     QWidget *w = plugin->centralWidget();
         if (w) {
             qDebug() << "title: " << w->windowTitle();
-            NcPluginWidget *pluginWidget = new NcPluginWidget(this);
+            PluginWidget *pluginWidget = new PluginWidget(this);
             pluginWidget->setWidget(w);
             pluginWidget->setMaximumHeight(300);
             w->setFixedWidth(NOTIFICATIONCENTER_WIDTH - 2 * NOTIFICATIONCENTER_MARGIN);

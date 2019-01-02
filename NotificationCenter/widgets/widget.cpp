@@ -1,4 +1,4 @@
-#include "ncwidget.h"
+#include "widget.h"
 #include "global.h"
 #include <QPropertyAnimation>
 #include <QSizePolicy>
@@ -14,7 +14,7 @@
 #include <QSize>
 #include <QSequentialAnimationGroup>
 
-NcWidget::NcWidget(QWidget *parent) :
+Widget::Widget(QWidget *parent) :
     QWidget(parent),
     m_widget(nullptr),
     m_frameWidget(new QWidget(this)),
@@ -65,28 +65,28 @@ NcWidget::NcWidget(QWidget *parent) :
     setCallable(true);
 }
 
-NcWidget::~NcWidget()
+Widget::~Widget()
 {
 
 }
 
-int NcWidget::maskWidth() const
+int Widget::maskWidth() const
 {
     return m_maskWidth;
 }
 
-void NcWidget::setMaskWidth(int maskWidget)
+void Widget::setMaskWidth(int maskWidget)
 {
     m_maskWidth = maskWidget;
     setMask(QRegion(QRect(0, 0, m_maskWidth, height())));
 }
 
-bool NcWidget::isCallable()
+bool Widget::isCallable()
 {
     return m_callable;
 }
 
-void NcWidget::setCallable(bool callable)
+void Widget::setCallable(bool callable)
 {
     m_callable = callable;
     if (m_callable) {
@@ -100,22 +100,22 @@ void NcWidget::setCallable(bool callable)
     }
 }
 
-bool NcWidget::eventFilter(QObject *watched, QEvent *event)
+bool Widget::eventFilter(QObject *watched, QEvent *event)
 {
     return false;
 }
 
-void NcWidget::onStartUpApp()
+void Widget::onStartUpApp()
 {
     qDebug() << "starting app " << m_title;
 }
 
-void NcWidget::refreshContents()
+void Widget::refreshContents()
 {
 
 }
 
-void NcWidget::closeEvent(QCloseEvent *event)
+void Widget::closeEvent(QCloseEvent *event)
 {
     // setStyleSheet("background: transparent; color: transparent;");
     // setAttribute(Qt::WA_TranslucentBackground);
@@ -152,16 +152,16 @@ void NcWidget::closeEvent(QCloseEvent *event)
     setWindowOpacity(0);
 }
 
-void NcWidget::onCloseAnimationFinished()
+void Widget::onCloseAnimationFinished()
 {
     // sender()->
-    NcWidget *widget = static_cast<NcWidget *>(sender());
+    Widget *widget = static_cast<Widget *>(sender());
     qDebug()  << "widget" << widget << "closed";
     widget->setVisible(false);
     // widget->hide();
 }
 
-void NcWidget::setWidget(QWidget *widget)
+void Widget::setWidget(QWidget *widget)
 {
     m_widget = widget;
     m_widget->setParent(this);
@@ -172,7 +172,7 @@ void NcWidget::setWidget(QWidget *widget)
         setWindowTitle(m_widget->windowTitle());
 }
 
-void NcWidget::paintEvent(QPaintEvent *event)
+void Widget::paintEvent(QPaintEvent *event)
 {
     QStyleOption opt;
     opt.init(this);
@@ -180,12 +180,12 @@ void NcWidget::paintEvent(QPaintEvent *event)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-NcWidget::Style NcWidget::getStyle()
+Widget::Style Widget::getStyle()
 {
     return m_style;
 }
 
-void NcWidget::setStyle(Style style)
+void Widget::setStyle(Style style)
 {
     m_style = style;
     if (m_style == Style::Preview)
@@ -194,7 +194,7 @@ void NcWidget::setStyle(Style style)
         setMaximumHeight(QWIDGETSIZE_MAX);
 }
 
-void NcWidget::toggleStyle()
+void Widget::toggleStyle()
 {
     // TODO: use QTimer to increase maximumHeight to keep speed
     QPropertyAnimation *scaleAnimation = new QPropertyAnimation(this, "maximumHeight");
@@ -215,12 +215,12 @@ void NcWidget::toggleStyle()
     scaleAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
-QWidget* NcWidget::frameWidget()
+QWidget* Widget::frameWidget()
 {
     return m_frameWidget;
 }
 
-void NcWidget::setWindowIcon(const QIcon& icon)
+void Widget::setWindowIcon(const QIcon& icon)
 {
 
     // TODO: more detailed distinction between with/without icon
@@ -233,7 +233,7 @@ void NcWidget::setWindowIcon(const QIcon& icon)
     }
 }
 
-void NcWidget::setWindowTitle(const QString& title)
+void Widget::setWindowTitle(const QString& title)
 {
     // TODO: bold font
     m_title = title;
