@@ -6949,7 +6949,7 @@ namespace detail {
                 bool tokenParsed = false;
 
                 for( size_t i = 0; i < totalParsers; ++i ) {
-                    auto&  parseInfo = parseInfos[i];
+                    auto& parseInfo = parseInfos[i];
                     if( parseInfo.parser->cardinality() == 0 || parseInfo.count < parseInfo.parser->cardinality() ) {
                         result = parseInfo.parser->parse(exeName, result.value().remainingTokens());
                         if (!result)

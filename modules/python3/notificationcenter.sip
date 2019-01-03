@@ -21,12 +21,12 @@ class NotificationCenter : public QObject
     %End
 
     signals:
-        /* void newMessage(std::shared_ptr<Notification> message); */
-        /* void newMessage(Notification *message); */
+        /* void newNotification(std::shared_ptr<Notification> notification); */
+        /* void newNotification(Notification *notification); */
         /* %MethodCode */
         /*     Py_BEGIN_ALLOW_THREADS */
-        /*     std::shared_ptr<Notification> ptr(message); */
-        /*     NotificationCenter::newMessage(ptr); */
+        /*     std::shared_ptr<Notification> ptr(notification); */
+        /*     NotificationCenter::newNotification(ptr); */
         /*     Py_END_ALLOW_THREADS */
         /* %End */
         /*  */
@@ -54,18 +54,18 @@ class NotificationCenter : public QObject
 
         static QString version();
 
-        /* static Notification createMessage(); */
+        /* static Notification createNotification(); */
         /*     %MethodCode */
         /*         Py_BEGIN_ALLOW_THREADS */
             /*     // FIXME: keep reference when the object is alive */
-            /*     std::shared_ptr<Notification> ptr = *(new std::shared_ptr<Notification>(NotificationCenter::createSharedMessage())); */
+            /*     std::shared_ptr<Notification> ptr = *(new std::shared_ptr<Notification>(NotificationCenter::createSharedNotification())); */
             /*     sipRes = ptr.get(); */
             /*         sipRes = new Notification; */
             /*     Py_END_ALLOW_THREADS */
             /* %End */
 
-        static bool notify(const Notification& message /Transfer/);
-        /* static bool notify(Notification *message /Transfer/); */
+        static bool notify(const Notification& notification /Transfer/);
+        /* static bool notify(Notification *notification /Transfer/); */
         /*     %MethodCode */
         /*         Py_BEGIN_ALLOW_THREADS */
         /*         std::shared_ptr<Notification> ptr(a0); */

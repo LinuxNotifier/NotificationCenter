@@ -56,9 +56,9 @@ class MainWindow : public QWidget
     private slots:
         void onFocusChanged(QWidget *old, QWidget *now);
         void onTabChanged(int index);
-        void onNewMessage(std::shared_ptr<Notification> message);
-        void onMessageClosed(const QString notificationId);
-        void onMessageExpired(const QString notificationId);
+        void onNewNotification(std::shared_ptr<Notification> notification);
+        void onNotificationClosed(const QString notificationId);
+        void onNotificationExpired(const QString notificationId);
         // this slot is called actually not when notification widget
         // is closed, but the user clicked the close button. It give
         // us time to deal with the close animation.

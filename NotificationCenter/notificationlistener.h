@@ -11,10 +11,13 @@ class NotificationListener
         NotificationListener() = default;
         virtual ~NotificationListener() {};
 
-        void addNotificationChannel(NotificationChannel channel);
-        void removeNotificationChannel(NotificationChannel channel);
+        void addNotificationChannel(const QString& channelId, const int channelToken);
+        void removeNotificationChannel(const QString& channelId);
 
-        virtual void onNewNotification(Notification message) {};
+        virtual void onNewNotification(Notification notification) {};
+
+    private:
+
 };
 
 #endif // NOTIFICATIONLISTENER_H

@@ -72,9 +72,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     NotificationCenter &nc = NotificationCenter::instance();
     // nc.registerNotificationService("org.linuxnotifier.Notifier", this);
-    connect(&NotificationCenter::instance(), SIGNAL(newMessage(std::shared_ptr<Notification>)), this, SLOT(onNewMessage(std::shared_ptr<Notification>)));
-    connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onMessageExpired(const QString)));
-    connect(&nc, SIGNAL(messageClosed(const QString)), this, SLOT(onMessageClosed(const QString)));
+    connect(&NotificationCenter::instance(), SIGNAL(newNotification(std::shared_ptr<Notification>)), this, SLOT(onNewNotification(std::shared_ptr<Notification>)));
+    connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onNotificationExpired(const QString)));
+    connect(&nc, SIGNAL(messageClosed(const QString)), this, SLOT(onNotificationClosed(const QString)));
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 
     connect(&nc, SIGNAL(newExtension(std::shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(std::shared_ptr<QPluginLoader>)));
@@ -345,18 +345,18 @@ void MainWindow::initUi()
     m_notificationsLayout->addStretch();
 }
 
-void MainWindow::onNewMessage(std::shared_ptr<Notification> message)
+void MainWindow::onNewNotification(std::shared_ptr<Notification> notification)
 {
     // TODO: beautify the widget UI
-    qDebug() << "received a new message:" << message->title();
+    qDebug() << "received a new notification:" << notification->title();
 
     NotificationWidget *widget = new NotificationWidget(this);
 
     QWidget *messageWidget = new QWidget(widget);
     messageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     messageWidget->setContentsMargins(0, 0, 0, 0);
-    messageWidget->setWindowTitle(message->title() + " -- " + message->createdTime());
-    messageWidget->setWindowIcon(message->icon());
+    messageWidget->setWindowTitle(notification->title() + " -- " + notification->createdTime());
+    messageWidget->setWindowIcon(notification->icon());
 
     QVBoxLayout *messgeLayout = new QVBoxLayout(messageWidget);
     messageWidget->setLayout(messgeLayout);
@@ -382,15 +382,15 @@ void MainWindow::onNewMessage(std::shared_ptr<Notification> message)
 
 
     // Note: use QString::toHtmlEscaped() if you don't want set plain text
-    contentLabel->setText(message->content());
+    contentLabel->setText(notification->content());
 
     widget->setWidget(messageWidget);
     showNotification(widget);
 
     /* this won't be overridden since the notificationId should be unique,
         and every Notification cannot be notified twice */
-    m_msgId2Widget[message->notificationId()] = widget;
-    m_widget2MsgId[widget] = message->notificationId();
+    m_msgId2Widget[notification->notificationId()] = widget;
+    m_widget2MsgId[widget] = notification->notificationId();
 }
 
 void MainWindow::displayNotification(NotificationWidget *widget)
@@ -413,10 +413,10 @@ void MainWindow::showNotification(NotificationWidget *widget)
     connect(widget, SIGNAL(closed()), this, SLOT(onNotificationClosed()));
 }
 
-void MainWindow::onMessageExpired(const QString notificationId)
+void MainWindow::onNotificationExpired(const QString notificationId)
 {
-    qDebug() << "received a message expired" << notificationId;
-    onMessageClosed(notificationId);
+    qDebug() << "received a notification expired" << notificationId;
+    onNotificationClosed(notificationId);
 }
 
 void MainWindow::onNotificationClosed()
@@ -425,7 +425,7 @@ void MainWindow::onNotificationClosed()
     // maybe I need to implement without QVBoxLayout
     qDebug() << sender() << "closed";
     NotificationWidget *widget = static_cast<NotificationWidget *>(sender());
-    // this notification widget is created by MainWindow::newMessage(std::shared_ptr<NotificationWidget> message)
+    // this notification widget is created by MainWindow::newNotification(std::shared_ptr<NotificationWidget> notification)
     if (m_widget2MsgId.contains(widget)) {
         /* this will cause it receiving a messageClosed signal again,
             but it doesn't matter */
@@ -439,7 +439,7 @@ void MainWindow::onNotificationClosed()
     sender()->deleteLater();
 }
 
-void MainWindow::onMessageClosed(const QString notificationId)
+void MainWindow::onNotificationClosed(const QString notificationId)
 {
     if (m_msgId2Widget.contains(notificationId)) {
         qDebug() << notificationId << "closed";

@@ -60,7 +60,7 @@ def run():
     nc = NC.instance()
     # nc.setView(mainwin)
     print(sip.unwrapinstance(nc.view()))
-    print('notifying message')
+    print('notifying notification')
     # nc.notify(msg)
     print('instanize Plugin')
     plugin = Plugin()

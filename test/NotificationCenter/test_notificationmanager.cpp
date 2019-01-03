@@ -10,7 +10,7 @@
 #include "database.h"
 #include <Catch2/catch.hpp>
 
-TEST_CASE("test NotificationManager", "[message], [database]") {
+TEST_CASE("test NotificationManager", "[notification], [database]") {
     qSetMessagePattern("[%{type}] " __FILENAME__ ":%{line} <%{function}> %{message}");
     int argc = 1;
     char *argv[] = {(char *)"./test_main"};
@@ -19,32 +19,32 @@ TEST_CASE("test NotificationManager", "[message], [database]") {
     NotificationCenter &nc = NotificationCenter::instance();
 
     NotificationManager msgManager(&nc);
-    nc.setMessageModel(&msgManager);
+    nc.setNotificationModel(&msgManager);
     Database &ncDb = Database::instance();
     QSqlQuery query(ncDb.internalDatabase());
     query.exec("DELETE FROM messages");
     query.exec("SELECT * FROM messages");
     QSqlRecord record = query.record();
 
-    REQUIRE(msgManager.insertMessage(QUuid::createUuid().toString(),
+    REQUIRE(msgManager.insertNotification(QUuid::createUuid().toString(),
                 QUuid::createUuid().toString(), "title1",
                 QIcon::fromTheme("edit", QIcon()), "test preview", "content1", "",
                 1, 1, QDateTime::currentDateTime().toString(),
                 QDateTime::currentDateTime().toString()                ));
-    REQUIRE(msgManager.insertMessage(QUuid::createUuid().toString(),
+    REQUIRE(msgManager.insertNotification(QUuid::createUuid().toString(),
                 QUuid::createUuid().toString(), "title2",
                 QIcon::fromTheme("edit-undo", QIcon()), "test preview",
                 "content2",  "", 1, 1, QDateTime::currentDateTime().toString(),
                 QDateTime::currentDateTime().toString()
                 ));
-    REQUIRE(msgManager.insertMessage(QUuid::createUuid().toString(),
+    REQUIRE(msgManager.insertNotification(QUuid::createUuid().toString(),
                 QUuid::createUuid().toString(), "title3",QIcon(), "test preview",
                 "content3", "", 1, 1,
                 QDateTime::currentDateTime().toString(),
                 QDateTime::currentDateTime().toString()
                 ));
     // fail because of invalid notificationId
-    REQUIRE(!msgManager.insertMessage(QString(), QString(), "title3", QIcon(), 
+    REQUIRE(!msgManager.insertNotification(QString(), QString(), "title3", QIcon(), 
                 "test preview", "content3", "data", 1, 1,
                 QDateTime::currentDateTime().toString(),
                 QDateTime::currentDateTime().toString()
@@ -56,20 +56,20 @@ TEST_CASE("test NotificationManager", "[message], [database]") {
         .setContent("content111");
     NotificationCenter::notify(msg);
     qDebug() << "notificationId:" << msg->notificationId();
-    REQUIRE(!msgManager.insertMessage(msg));    // this notification already exists
+    REQUIRE(!msgManager.insertNotification(msg));    // this notification already exists
 
     query.exec("SELECT * FROM messages");
     record = query.record();
     int count = 0;
     while (query.next()) {
         ++count;
-        qDebug() << QString("message %1: uuid: %2 title: %3 content: %4").arg(count)
+        qDebug() << QString("notification %1: uuid: %2 title: %3 content: %4").arg(count)
             .arg(query.value(0).toString()).arg(query.value(2).toString())
             .arg(query.value(5).toString());
     }
     REQUIRE(count == 4);
 
-    MessageList messageList = msgManager.selectAllMessages();
+    NotificationList messageList = msgManager.selectAllNotifications();
     REQUIRE(messageList.length() == 4);
     REQUIRE(messageList.at(0)->title() == "title1");
     REQUIRE(messageList.at(0)->content() == "content1");
@@ -78,11 +78,11 @@ TEST_CASE("test NotificationManager", "[message], [database]") {
     REQUIRE(messageList.at(2)->title() == "title3");
     REQUIRE(messageList.at(2)->content() == "content3");
 
-    messageList = msgManager.selectAllMessages();
+    messageList = msgManager.selectAllNotifications();
     REQUIRE(messageList.length() == 4);
 
-    qDebug() << "title of message 4:" << messageList.at(3)->title();
+    qDebug() << "title of notification 4:" << messageList.at(3)->title();
     REQUIRE(messageList.at(3)->title() == "title111");
-    qDebug() << "content of message 4:" << messageList.at(3)->content();
+    qDebug() << "content of notification 4:" << messageList.at(3)->content();
     REQUIRE(messageList.at(3)->content() == "content111");
 }

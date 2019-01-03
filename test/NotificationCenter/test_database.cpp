@@ -24,7 +24,7 @@ TEST_CASE("test Database", "[database]") {
     int count = 0;
     while (query.next()) {
         ++count;
-        qDebug() << QString("message %1: uuid: %2 title: %3 content: %4").arg(count).arg(query.value(0).toString()).arg(query.value(1).toString()).arg(query.value(3).toString());
+        qDebug() << QString("notification %1: uuid: %2 title: %3 content: %4").arg(count).arg(query.value(0).toString()).arg(query.value(1).toString()).arg(query.value(3).toString());
     }
     REQUIRE(count == 0);
 }

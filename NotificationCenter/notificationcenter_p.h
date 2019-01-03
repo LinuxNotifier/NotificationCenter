@@ -7,9 +7,11 @@
 class NotificationCenter;
 class Notification;
 class NotificationManager;
+class NotificationManager;
 class ExtensionManager;
 class ExtensionInterface;
 class NotificationHandler;
+class MainWindow;
 
 class NotificationCenterPrivate
 {
@@ -23,7 +25,8 @@ class NotificationCenterPrivate
         Q_DISABLE_COPY(NotificationCenterPrivate)
 
         MainWindow *m_view = nullptr;
-        NotificationManager *m_messageManager = nullptr;
+        // NotificationManager *m_notificationManager = nullptr;
+        NotificationManager *m_notificationManager = nullptr;
         ExtensionManager *m_extensionManager = nullptr;
         bool m_quietMode = false;
         const QString m_ncVersion;

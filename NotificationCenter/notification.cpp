@@ -56,6 +56,17 @@ Notification& Notification::setApplicationId(const QString& applicationId)
     return *this;
 }
 
+QString Notification::channelId() const
+{
+    return d_ptr->m_channelId;
+}
+
+Notification& Notification::setChannelId(const QString& channelId, const int channelToken)
+{
+    d_ptr->m_channelId = channelId;
+    return *this;
+}
+
 QString Notification::title() const
 {
     return d_ptr->m_title;

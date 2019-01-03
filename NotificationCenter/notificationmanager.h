@@ -21,7 +21,7 @@ class NotificationManager : public QObject
     Q_OBJECT
 
     signals:
-        void newMessage(std::shared_ptr<Notification> message);
+        void newNotification(std::shared_ptr<Notification> notification);
         void messageExpired(const QString notificationId);
 
     private slots:
@@ -37,33 +37,33 @@ class NotificationManager : public QObject
             return m_valid;
         };
 
-        void createNotficationChannel(const NotificationChannel& channel);
+        int createNotificationChannel(const QString& id, const QString& name);
 
     private:
-        void initMessageTable();
-        void loadMessages();
+        void initNotificationTable();
+        void loadNotifications();
 
 
-        bool insertMessage(std::shared_ptr<Notification> message);
-        bool insertMessage(const QString& notificationId, const
+        bool insertNotification(std::shared_ptr<Notification> notification);
+        bool insertNotification(const QString& notificationId, const
                 QString& applicationId, const QString& title, const QIcon&
                 icon, const QString& preview, const QString& content, const
                 QString& data, int priority, int duration, const QString&
                 triggerTime, const QString& createdTime);
-        bool alterMessage(std::shared_ptr<Notification> message);
-        bool alterMessage(const QString& notificationId, const QString&
+        bool alterNotification(std::shared_ptr<Notification> notification);
+        bool alterNotification(const QString& notificationId, const QString&
                 applicationId, const QString& title, const QIcon& icon, const
                 QString& preview, const QString& data, const QString& content,
                 int priority, int duration, const QString& triggerTime, const
                 QString& created_time);
-        bool deleteMessage(const QString& notificationId);
-        /* this method return the first message with this message in database,
-        thought there should be "always" at most one such message. */
-        std::shared_ptr<Notification> selectMessage(const QString& notificationId);
-        MessageList selectAllMessages();
+        bool deleteNotification(const QString& notificationId);
+        /* this method return the first notification with this notification in database,
+        thought there should be "always" at most one such notification. */
+        std::shared_ptr<Notification> selectNotification(const QString& notificationId);
+        NotificationList selectAllNotifications();
 
         Database *m_ncDb = nullptr;
-        MessageMap m_messageMap;
+        NotificationMap m_notificationMap;
         bool m_valid = false;
 };
 

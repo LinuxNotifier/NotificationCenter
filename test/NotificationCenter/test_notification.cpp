@@ -4,7 +4,7 @@
 #include <QIcon>
 #include <Catch2/catch.hpp>
 
-TEST_CASE("test Notification", "[notification], [message]") {
+TEST_CASE("test Notification", "[notification], [notification]") {
     qSetMessagePattern("[%{type}] " __FILENAME__ ":%{line} <%{function}> %{message}");
     int argc = 1;
     char *argv[] = {(char *)"./test_main"};

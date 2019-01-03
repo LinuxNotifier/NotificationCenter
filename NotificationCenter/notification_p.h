@@ -21,6 +21,7 @@ class NotificationPrivate
 
         QString m_notificationId;
         QString m_applicationId;
+        QString m_channelId;
         QString m_title;
         QIcon m_icon;
         QString m_preview;
@@ -32,7 +33,7 @@ class NotificationPrivate
         QString m_createdTime;
 
         // used to indicate if this notification is new (not from database)
-        // TODO: check if new messsage is new? (choose to store this message or not)
+        // TODO: check if new messsage is new? (choose to store this notification or not)
         bool m_isNew = true;
 
         Notification *q_ptr = nullptr;

@@ -2,12 +2,12 @@
 #include "notificationchannel.h"
 #include "notification.h"
 
-void NotificationListener::addNotificationChannel(NotificationChannel channel)
+void NotificationListener::addNotificationChannel(const QString& channelId, const int channelToken)
 {
     
 }
 
-void NotificationListener::removeNotificationChannel(NotificationChannel channel)
+void NotificationListener::removeNotificationChannel(const QString& channelId)
 {
     
 }

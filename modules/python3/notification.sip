@@ -24,10 +24,10 @@ class Notification {
         };
         enum class Duration {
             /**
-             * UntilConfirmation: keep this message until user manually close it even if
+             * UntilConfirmation: keep this notification until user manually close it even if
              * machine rebooted before
-             * UntilShutdown: remove this message after this machine shutdown
-             * Default: to keep this message in default seconds, right now 10s
+             * UntilShutdown: remove this notification after this machine shutdown
+             * Default: to keep this notification in default seconds, right now 10s
              */
             UntilConfirmation = 1,
             UntilShutdown = 2,

@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     nc.setView(&w);
 
     NotificationManager msgManager(&nc);
-    nc.setMessageModel(&msgManager);
+    nc.setNotificationModel(&msgManager);
 
     ExtensionManager extensionManager(&nc);
     nc.setPluginModel(&extensionManager);
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
         // .setContent("<html><head/><body><p>sfdsdfff<img src=\":/images/notificationcenter_icon.png\" height=\"16\" width=\"16\"/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p>helo, world</p></body></html>");
         // .setContent("<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1");
         // .setContent("<b>Hi</b>, how are you doing?");
-        // .setContent("<b>hello</b> world\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello, this is a test message, you should ignore it. Hey, how are you? I'm fine. How are you? Today's weather is wonderful, how do you think? Yes, it's really wonderful.");
+        // .setContent("<b>hello</b> world\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello, this is a test notification, you should ignore it. Hey, how are you? I'm fine. How are you? Today's weather is wonderful, how do you think? Yes, it's really wonderful.");
     // NotificationCenter::notify(msg);
 
     // for some weird, still unknown reason, app.exec() must be executed in python

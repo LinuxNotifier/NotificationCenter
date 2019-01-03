@@ -27,7 +27,7 @@ class NotificationCenter : public QObject
         // you should customize notification widget to display privacy information if you
         // have to do so.
 
-        void newMessage(std::shared_ptr<Notification> message);
+        void newNotification(std::shared_ptr<Notification> notification);
         void displayNotification(NotificationWidget *widget);
         void messageExpired(const QString notificationId);
         void messageClosed(const QString notificationId);
@@ -52,14 +52,14 @@ class NotificationCenter : public QObject
         static QString version();
 
         void setView(MainWindow *view);
-        void setMessageModel(NotificationManager *messageManager);
+        void setNotificationModel(NotificationManager *messageManager);
         void setPluginModel(ExtensionManager *extensionManager);
 
         // TODO: using signal's sender to idnetify the caller, and trust the applicationId
         // return notification id
-        static bool notify(std::shared_ptr<Notification> message);
+        static bool notify(std::shared_ptr<Notification> notification);
         // TODO: directly call MainWindow::show()
-        static bool notify(const Notification &message);
+        static bool notify(const Notification& notification);
         static bool registerNotificationService(const QString& applicationId, NotificationHandler *handler);
         // TODO
         // renotify(notificaitonId)
@@ -69,6 +69,10 @@ class NotificationCenter : public QObject
         static bool display(NotificationWidget *widget);
 
         static bool registerExtension(ExtensionInterface *plugin);
+        /**
+         * @return channelToken the token to post notifications to this channel
+         */
+        static int createNotficationNotificationChannel(const QString& id, const QString& name);
 
         // TODO
         // static QString themeName();  // for the extensions to adjust their theme accordingly

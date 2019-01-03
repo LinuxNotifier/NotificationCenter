@@ -14,7 +14,7 @@ TEST_CASE("test NotificationCenter", "[notificationcenter]") {
     QApplication app(argc, argv);
     // NotificationCenter &nc = NotificationCenter::instance();
     // NotificationManager msgManager(&nc);
-    // nc.setMessageModel(&msgManager);
+    // nc.setNotificationModel(&msgManager);
     Notification msg;
     msg.setTitle("hello")
         .setNotificationId(QUuid::createUuid().toString())

@@ -14,12 +14,12 @@ class NotificationCenterPrivate;
 class Database;
 class Notification;
 
-typedef QList<std::shared_ptr<Notification> > MessageList;
-typedef QHash<QString, std::shared_ptr<Notification> > MessageMap;
+typedef QList<std::shared_ptr<Notification> > NotificationList;
+typedef QHash<QString, std::shared_ptr<Notification> > NotificationMap;
 typedef std::shared_ptr<Notification> NotificationSharedPointer;
 
 /**
- * This class encapsulates a message that transfered among the NotificationCenter
+ * This class encapsulates a notification that transfered among the NotificationCenter
  */
 class Notification
 {
@@ -46,10 +46,10 @@ class Notification
         };
         enum class Duration {
             /**
-             * UntilConfirmation: keep this message until user manually close it even if
+             * UntilConfirmation: keep this notification until user manually close it even if
              * machine rebooted before
-             * UntilShutdown: remove this message after this machine shutdown
-             * Default: to keep this message in default seconds, right now 10s
+             * UntilShutdown: remove this notification after this machine shutdown
+             * Default: to keep this notification in default seconds, right now 10s
              */
             UntilConfirmation = 1 << 0,
             UntilShutdown = 1 << 1,
@@ -62,6 +62,8 @@ class Notification
         QString notificationId() const;
         Notification& setNotificationId(const QString& notificationId);
         QString applicationId() const;
+        QString channelId() const;
+        Notification& setChannelId(const QString& channelId, const int channelToken);
         QString title() const;
         Notification& setTitle(const QString& title);
         QIcon icon() const;
