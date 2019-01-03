@@ -25,6 +25,7 @@ class ExtensionInterface
         // NOTE: extensions should call NotificationCente::registerExtension() if you
         // want to send custom notifications.
         virtual bool initialize(NotificationCenter *nc) = 0;
+        // virtual bool uninitialize() = 0;
         QString applicationId() {
             return m_applicationId;
         };
