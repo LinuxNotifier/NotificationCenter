@@ -1,7 +1,7 @@
 #ifndef NOTIFICATION_H
 #define NOTIFICATION_H
 
-#include <global.h>
+#include "global.h"
 #include <QString>
 #include <QIcon>
 #include <QList>
