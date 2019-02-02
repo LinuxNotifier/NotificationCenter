@@ -14,7 +14,7 @@ class QString;
 class Database;
 
 /**
- * This class manages the lifetime of messages.
+ * This class manages the lifetime of notifications.
  */
 class NotificationManager : public QObject
 {
@@ -22,10 +22,10 @@ class NotificationManager : public QObject
 
     signals:
         void newNotification(std::shared_ptr<Notification> notification);
-        void messageExpired(const QString notificationId);
+        void notificationExpired(const QString notificationId);
 
     private slots:
-        void messageClosed(const QString notificationId);
+        void notificationClosed(const QString notificationId);
 
     friend class NotificationCenter;
 
