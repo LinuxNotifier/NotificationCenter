@@ -31,8 +31,8 @@ class NotificationCenter : public QObject
         /* %End */
         /*  */
         /* void newNotification(NotificationWidget *widget); */
-        /* void messageExpired(const QString notificationId); */
-        /* void messageClosed(const QString notificationId); */
+        /* void notificationExpired(const QString notificationId); */
+        /* void notificationClosed(const QString notificationId); */
         /*  */
         /* void modeChanged(bool quiet); */
         /*  */

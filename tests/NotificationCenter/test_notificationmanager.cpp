@@ -22,8 +22,8 @@ TEST_CASE("test NotificationManager", "[notification], [database]") {
     nc.setNotificationModel(&msgManager);
     Database &ncDb = Database::instance();
     QSqlQuery query(ncDb.internalDatabase());
-    query.exec("DELETE FROM messages");
-    query.exec("SELECT * FROM messages");
+    query.exec("DELETE FROM notifications");
+    query.exec("SELECT * FROM notifications");
     QSqlRecord record = query.record();
 
     REQUIRE(msgManager.insertNotification(QUuid::createUuid().toString(),
@@ -58,7 +58,7 @@ TEST_CASE("test NotificationManager", "[notification], [database]") {
     qDebug() << "notificationId:" << msg->notificationId();
     REQUIRE(!msgManager.insertNotification(msg));    // this notification already exists
 
-    query.exec("SELECT * FROM messages");
+    query.exec("SELECT * FROM notifications");
     record = query.record();
     int count = 0;
     while (query.next()) {
@@ -69,20 +69,20 @@ TEST_CASE("test NotificationManager", "[notification], [database]") {
     }
     REQUIRE(count == 4);
 
-    NotificationList messageList = msgManager.selectAllNotifications();
-    REQUIRE(messageList.length() == 4);
-    REQUIRE(messageList.at(0)->title() == "title1");
-    REQUIRE(messageList.at(0)->content() == "content1");
-    REQUIRE(messageList.at(1)->title() == "title2");
-    REQUIRE(messageList.at(1)->content() == "content2");
-    REQUIRE(messageList.at(2)->title() == "title3");
-    REQUIRE(messageList.at(2)->content() == "content3");
+    NotificationList notificationList = msgManager.selectAllNotifications();
+    REQUIRE(notificationList.length() == 4);
+    REQUIRE(notificationList.at(0)->title() == "title1");
+    REQUIRE(notificationList.at(0)->content() == "content1");
+    REQUIRE(notificationList.at(1)->title() == "title2");
+    REQUIRE(notificationList.at(1)->content() == "content2");
+    REQUIRE(notificationList.at(2)->title() == "title3");
+    REQUIRE(notificationList.at(2)->content() == "content3");
 
-    messageList = msgManager.selectAllNotifications();
-    REQUIRE(messageList.length() == 4);
+    notificationList = msgManager.selectAllNotifications();
+    REQUIRE(notificationList.length() == 4);
 
-    qDebug() << "title of notification 4:" << messageList.at(3)->title();
-    REQUIRE(messageList.at(3)->title() == "title111");
-    qDebug() << "content of notification 4:" << messageList.at(3)->content();
-    REQUIRE(messageList.at(3)->content() == "content111");
+    qDebug() << "title of notification 4:" << notificationList.at(3)->title();
+    REQUIRE(notificationList.at(3)->title() == "title111");
+    qDebug() << "content of notification 4:" << notificationList.at(3)->content();
+    REQUIRE(notificationList.at(3)->content() == "content111");
 }

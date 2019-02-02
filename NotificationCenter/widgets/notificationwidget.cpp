@@ -17,7 +17,7 @@ NotificationWidget::NotificationWidget(QWidget *parent) :
 
     // TODO: change to close icon
     m_closeButton = new QPushButton(this);
-    m_closeButton->setIcon(QIcon(":/images/notificationwidget_clear_message.png"));
+    m_closeButton->setIcon(QIcon(":/images/notificationwidget_clear_notification.png"));
     m_closeButton->resize(ICON_SIZE, ICON_SIZE);
     // m_closeButton->resize(4, 4);
     m_closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);

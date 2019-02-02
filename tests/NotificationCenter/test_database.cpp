@@ -17,8 +17,8 @@ TEST_CASE("test Database", "[database]") {
     QApplication app(argc, argv);
     Database &ncDb = Database::instance();
     QSqlQuery query(ncDb.internalDatabase());
-    query.exec("DELETE FROM messages");
-    query.exec("SELECT * FROM messages");
+    query.exec("DELETE FROM notifications");
+    query.exec("SELECT * FROM notifications");
     QSqlRecord record = query.record();
     // REQUIRE(query.size() == 4);      //SQLITE does not support this method
     int count = 0;

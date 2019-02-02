@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>images/notificationcenter_icon.png</file>
-        <file>images/ncnotificationwidget_clear_message.png</file>
+        <file>images/notificationwidget_clear_notification.png</file>
     </qresource>
 </RCC>

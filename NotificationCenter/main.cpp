@@ -3,6 +3,7 @@
 #include "notificationmanager.h"
 #include "extensionmanager.h"
 #include "notification.h"
+#include "notifier.h"
 #include "debug.h"
 #include "global.h"
 #include <QApplication>
@@ -14,6 +15,7 @@
 #include <QSettings>
 #include <QFile>
 #include <QThread>
+#include <QTimer>
 
 void initSettings();
 bool setLanguage(const QString& language);
@@ -30,12 +32,6 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(__NOTIFICATIONCENTER_VERSION__);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-    // get icon filename
-    // QIcon icon(":/images/notificationcenter_icon.png");
-    // qDebug() << "name of icon:" << icon.name();
-    // icon = QIcon::fromTheme(":dit-undo");
-    // qDebug() << "name of icon:" << icon.name();
-
     QSettings settings;
     qDebug() << settings.fileName();
     if (!QFile(settings.fileName()).exists())
@@ -48,26 +44,21 @@ int main(int argc, char *argv[])
     MainWindow w;
     nc.setView(&w);
 
-    NotificationManager msgManager(&nc);
-    nc.setNotificationModel(&msgManager);
+    NotificationManager notificationManager(&nc);
+    nc.setNotificationModel(&notificationManager);
 
     ExtensionManager extensionManager(&nc);
     nc.setPluginModel(&extensionManager);
 
     w.show();
 
-    std::shared_ptr<Notification> msg(new Notification);
-    msg->setTitle("you cant see me")
+    std::shared_ptr<Notification> notification(new Notification);
+    notification->setTitle("you cant see me")
         .setIcon(QIcon::fromTheme("edit-undo"))
-        // .setContent("<b>Hi</b>\n" + QString("#include <QtCore>").toHtmlEscaped());
-        // .setContent("<html><head/><body><ul><li>Coffee</li><li>Tea</li><li>Milk</li></ul></body></html>");
-        // .setContent("<html><head/><body><p>sfdsdfff<img src=\":/images/notificationcenter_icon.png\" alt=\"smile\" style=\"width:100px; height:30px\"/></p><p> This is really great!!!<br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p>helo, world</p><ul><li>Coffee</li><li>Tea</li><li>Milk</li></ul></body></html>");
         .setContent("this should not be shown");
-        // .setContent("<html><head/><body><p>sfdsdfff<img src=\":/images/notificationcenter_icon.png\" height=\"16\" width=\"16\"/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p><br/></p><p>helo, world</p></body></html>");
-        // .setContent("<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1&#10<b>Hi</b> Dany, I'm unable to do this. this file is un-editable. I tried through the terminal as well by using command - sudo gedit /etc/apt/sources.list.save.1");
-        // .setContent("<b>Hi</b>, how are you doing?");
-        // .setContent("<b>hello</b> world\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello, this is a test notification, you should ignore it. Hey, how are you? I'm fine. How are you? Today's weather is wonderful, how do you think? Yes, it's really wonderful.");
-    // NotificationCenter::notify(msg);
+    QTimer::singleShot(5000, [notification] () {
+        NotificationCenter::notify(notification);
+    });
 
     // for some weird, still unknown reason, app.exec() must be executed in python
     // if we want to make it work with threading support in Python.
@@ -75,8 +66,8 @@ int main(int argc, char *argv[])
     int timeout = 10 * 1000;
     while (timeout > 0) {
         QApplication::processEvents();
-        QThread::msleep(20);
-        timeout -= 20;
+        QThread::msleep(5);
+        timeout -= 5;
     }
     // this should never be executed if the python module is loaded
     return app.exec();

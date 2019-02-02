@@ -23,15 +23,15 @@ class NotificationCenter : public QObject
     Q_OBJECT
 
     signals:
-        // NOTE: all messages through NotificationCenter may be leaked to other plugins,
+        // NOTE: all notifications through NotificationCenter may be leaked to other plugins,
         // you should customize notification widget to display privacy information if you
         // have to do so.
 
         void newNotification(std::shared_ptr<Notification> notification);
         void displayNotification(NotificationWidget *widget);
-        void messageExpired(const QString notificationId);
-        void messageClosed(const QString notificationId);
-        void messageHandled(const QString action);
+        void notificationExpired(const QString notificationId);
+        void notificationClosed(const QString notificationId);
+        void notificationHandled(const QString action);
 
         void modeChanged(bool quiet);
 
@@ -52,7 +52,7 @@ class NotificationCenter : public QObject
         static QString version();
 
         void setView(MainWindow *view);
-        void setNotificationModel(NotificationManager *messageManager);
+        void setNotificationModel(NotificationManager *notificationManager);
         void setPluginModel(ExtensionManager *extensionManager);
 
         // TODO: using signal's sender to idnetify the caller, and trust the applicationId

@@ -49,14 +49,14 @@ QString NotificationCenter::version()
 void NotificationCenter::setView(MainWindow *view)
 {
     d_ptr->m_view = view;
-    connect(d_ptr->m_view, SIGNAL(messageClosed(const QString)), this, SIGNAL(messageClosed(const QString)));
+    connect(d_ptr->m_view, SIGNAL(notificationClosed(const QString)), this, SIGNAL(notificationClosed(const QString)));
 }
 
-void NotificationCenter::setNotificationModel(NotificationManager *messageManager)
+void NotificationCenter::setNotificationModel(NotificationManager *notificationManager)
 {
-    d_ptr->m_notificationManager = messageManager;
+    d_ptr->m_notificationManager = notificationManager;
     connect(d_ptr->m_notificationManager, SIGNAL(newNotification(std::shared_ptr<Notification>)), this, SIGNAL(newNotification(std::shared_ptr<Notification>)));
-    connect(d_ptr->m_notificationManager, SIGNAL(messageExpired(const QString)), this, SIGNAL(messageExpired(const QString)));
+    connect(d_ptr->m_notificationManager, SIGNAL(notificationExpired(const QString)), this, SIGNAL(notificationExpired(const QString)));
 }
 
 void NotificationCenter::setPluginModel(ExtensionManager *extensionManager)
@@ -75,6 +75,7 @@ bool NotificationCenter::notify(const Notification& notification)
 
 bool NotificationCenter::notify(std::shared_ptr<Notification> notification)
 {
+    emit instance().newNotification(notification);
     // TODO: set notificationId here, return notificationId
     if (!notification->isNew())
         return true;
@@ -83,7 +84,7 @@ bool NotificationCenter::notify(std::shared_ptr<Notification> notification)
     NotificationManager *msgMgr = instance().d_ptr->m_notificationManager;
     QString applicationId = notification->applicationId();
     auto map = instance().d_ptr->m_notificationServiceMap;
-    // FIX: NotificationListner
+    // FIXME: NotificationListner
     // if (map.contains(applicationId)) {
     //     map[applicationId]->onNewNotification(notification);
     // }

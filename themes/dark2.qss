@@ -131,3 +131,8 @@ QScrollArea {
     padding: 0px;
     /* background-color: yellow; */
 }
+
+/* Notifier */
+QFrame#notifier {
+    background-color: rgb(77, 90, 53);
+}

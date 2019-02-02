@@ -6,11 +6,13 @@
 #include "notification.h"
 #include "notificationcenter.h"
 #include "extensioninterface.h"
-// #include "scenewidget.h"
+#include "notifier.h"
+#include "backgroundwidget.h"
 #include "debug.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QKeyEvent>
+#include <QMoveEvent>
 #include <QPainter>
 #include <QStyleOption>
 #include <QPaintEvent>
@@ -51,9 +53,7 @@ QPixmap blur_render(QPixmap src, int extent = 5)
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainWindow),
-    m_backgroundScene(new QLabel)
-    // TODO: change to SceneWidget
-    // m_backgroundScene(new SceneWidget)
+    m_backgroundScene(new BackGroundWidget)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | windowFlags());
@@ -61,9 +61,12 @@ MainWindow::MainWindow(QWidget *parent) :
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     setupGeometry();
+    m_backgroundScene->setObjectName("backgroundScene");
     m_backgroundScene->setWindowFlags(windowFlags());
     setParent(m_backgroundScene);
     move(0, 0);
+    Notifier::setMasterWidget(m_backgroundScene);
+    Notifier::setCentralWidget(this);
 
     connect(qApp->desktop(), &QDesktopWidget::resized, this, &MainWindow::setupGeometry);
     loadTheme("dark2");
@@ -72,9 +75,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     NotificationCenter &nc = NotificationCenter::instance();
     // nc.registerNotificationService("org.linuxnotifier.Notifier", this);
-    connect(&NotificationCenter::instance(), SIGNAL(newNotification(std::shared_ptr<Notification>)), this, SLOT(onNewNotification(std::shared_ptr<Notification>)));
-    connect(&nc, SIGNAL(messageExpired(const QString)), this, SLOT(onNotificationExpired(const QString)));
-    connect(&nc, SIGNAL(messageClosed(const QString)), this, SLOT(onNotificationClosed(const QString)));
+    connect(&nc, SIGNAL(newNotification(std::shared_ptr<Notification>)), this, SLOT(onNewNotification(std::shared_ptr<Notification>)));
+    connect(&nc, SIGNAL(notificationExpired(const QString)), this, SLOT(onNotificationExpired(const QString)));
+    connect(&nc, SIGNAL(notificationClosed(const QString)), this, SLOT(onNotificationClosed(const QString)));
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 
     connect(&nc, SIGNAL(newExtension(std::shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(std::shared_ptr<QPluginLoader>)));
@@ -195,6 +198,13 @@ void MainWindow::show()
     showAnimation->setEasingCurve(QEasingCurve::InOutQuad);
     showAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 
+    // Fix auto-move when widget is off-screen by waiting for widget entering the screen.
+    int timeout = 50;
+    while (timeout > 0) {
+        QApplication::processEvents();
+        QThread::msleep(5);
+        timeout -= 5;
+    }
     m_backgroundScene->show();
     QWidget::show();
 
@@ -217,10 +227,12 @@ void MainWindow::hide()
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
+    QWidget *widget = qobject_cast<QWidget*>(watched);
+    QEvent::Type type = event->type();
+
     // TODO: listen clearEvent, and set maximumHeight decrease peacefully.
-    if (event->type() == QEvent::MouseButtonPress) {
+    if (type == QEvent::MouseButtonPress) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-        QWidget *widget = qobject_cast<QWidget*>(watched);
         qDebug() << widget << " was clicked";
         if (mouseEvent->buttons() & Qt::LeftButton) {
             NotificationWidget * notificationWidget = static_cast<NotificationWidget *>(widget->parent());
@@ -249,7 +261,8 @@ bool MainWindow::loadTheme(QString name)
         return false;
     }
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        setStyleSheet(file.readAll());
+        // setStyleSheet(file.readAll());
+        qApp->setStyleSheet(file.readAll());
         return true;
     }
     else {
@@ -262,6 +275,7 @@ void MainWindow::setupSystemTrayIcon()
 {
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
         m_systemTrayIcon = new QSystemTrayIcon(this);
+        m_systemTrayIcon->setObjectName("systemTrayIcon");
         QIcon *systemTrayIcon = new QIcon(":/images/notificationcenter_icon.png");
         if (systemTrayIcon->isNull()) {
             qWarning() << tr("loading system-tray icon failed");
@@ -270,8 +284,9 @@ void MainWindow::setupSystemTrayIcon()
         m_systemTrayIcon->setIcon(*systemTrayIcon);
         QMenu *menu = new QMenu;
         m_systemTrayIcon->setContextMenu(menu);
+        m_systemTrayIcon->installEventFilter(this);
 
-        // FIXME: this does not work in Ubuntu 16.04
+        // FIXME: this does not work in Ubuntu 16.04; maybe installEventFilter()
         connect(m_systemTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(show()));
         connect(menu, SIGNAL(aboutToShow()), this, SLOT(show()));
         connect(menu, SIGNAL(aboutToHide()), this, SLOT(hide()));
@@ -348,49 +363,56 @@ void MainWindow::initUi()
 void MainWindow::onNewNotification(std::shared_ptr<Notification> notification)
 {
     // TODO: beautify the widget UI
-    qDebug() << "received a new notification:" << notification->title();
+    qDebug() << "received a new notification:" << notification->notificationId();
 
-    NotificationWidget *widget = new NotificationWidget(this);
+    // NotificationWidget *widget = new NotificationWidget(this);
+    //
+    // QWidget *notificationWidget = new QWidget(widget);
+    // notificationWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // notificationWidget->setContentsMargins(0, 0, 0, 0);
+    // notificationWidget->setWindowTitle(notification->title() + " -- " + notification->createdTime());
+    // notificationWidget->setWindowIcon(notification->icon());
+    //
+    // QVBoxLayout *messgeLayout = new QVBoxLayout(notificationWidget);
+    // notificationWidget->setLayout(messgeLayout);
+    // messgeLayout->setContentsMargins(4, 0, 4, 0);
+    // messgeLayout->setAlignment(Qt::AlignTop);
+    // messgeLayout->setSpacing(0);
+    //
+    // QLabel *contentLabel = new QLabel(notificationWidget);
+    // messgeLayout->addWidget(contentLabel);
+    // contentLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // contentLabel->setContentsMargins(0, 0, 0, 0);
+    // // contentLabel->setTextFormat(Qt::RichText);
+    // contentLabel->setTextFormat(Qt::AutoText);
+    // contentLabel->setWordWrap(true);
+    //
+    // // contentLabel->setStyleSheet("color: rgb(152, 152, 157)");
+    // QFont timeFont = contentLabel->font();
+    // timeFont.setPixelSize(17);
+    // // timeFont.setWeight(QFont::Light);
+    // timeFont.setWeight(QFont::Normal);
+    // contentLabel->setFont(timeFont);
+    //
+    //
+    //
+    // // Note: use QString::toHtmlEscaped() if you don't want set plain text
+    // contentLabel->setText(notification->content());
+    //
+    // widget->setWidget(notificationWidget);
+    // showNotification(widget);
+    //
+    // /* this won't be overridden since the notificationId should be unique,
+    //     and every Notification cannot be notified twice */
+    // m_msgId2Widget[notification->notificationId()] = widget;
+    // m_widget2MsgId[widget] = notification->notificationId();
+    m_notificationMap[notification->notificationId()] = notification;
 
-    QWidget *messageWidget = new QWidget(widget);
-    messageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    messageWidget->setContentsMargins(0, 0, 0, 0);
-    messageWidget->setWindowTitle(notification->title() + " -- " + notification->createdTime());
-    messageWidget->setWindowIcon(notification->icon());
 
-    QVBoxLayout *messgeLayout = new QVBoxLayout(messageWidget);
-    messageWidget->setLayout(messgeLayout);
-    messgeLayout->setContentsMargins(4, 0, 4, 0);
-    messgeLayout->setAlignment(Qt::AlignTop);
-    messgeLayout->setSpacing(0);
+    Notifier *notifier = new Notifier;
+    notifier->setNotification(notification);
+    notifier->show();
 
-    QLabel *contentLabel = new QLabel(messageWidget);
-    messgeLayout->addWidget(contentLabel);
-    contentLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    contentLabel->setContentsMargins(0, 0, 0, 0);
-    // contentLabel->setTextFormat(Qt::RichText);
-    contentLabel->setTextFormat(Qt::AutoText);
-    contentLabel->setWordWrap(true);
-
-    // contentLabel->setStyleSheet("color: rgb(152, 152, 157)");
-    QFont timeFont = contentLabel->font();
-    timeFont.setPixelSize(17);
-    // timeFont.setWeight(QFont::Light);
-    timeFont.setWeight(QFont::Normal);
-    contentLabel->setFont(timeFont);
-
-
-
-    // Note: use QString::toHtmlEscaped() if you don't want set plain text
-    contentLabel->setText(notification->content());
-
-    widget->setWidget(messageWidget);
-    showNotification(widget);
-
-    /* this won't be overridden since the notificationId should be unique,
-        and every Notification cannot be notified twice */
-    m_msgId2Widget[notification->notificationId()] = widget;
-    m_widget2MsgId[widget] = notification->notificationId();
 }
 
 void MainWindow::displayNotification(NotificationWidget *widget)
@@ -416,7 +438,54 @@ void MainWindow::showNotification(NotificationWidget *widget)
 void MainWindow::onNotificationExpired(const QString notificationId)
 {
     qDebug() << "received a notification expired" << notificationId;
-    onNotificationClosed(notificationId);
+    // onNotificationClosed(notificationId);
+
+    std::shared_ptr<Notification> notification = m_notificationMap.value(notificationId);
+    if (!notification) {
+        return;
+    }
+
+    NotificationWidget *widget = new NotificationWidget(this);
+
+    QWidget *notificationWidget = new QWidget(widget);
+    notificationWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    notificationWidget->setContentsMargins(0, 0, 0, 0);
+    notificationWidget->setWindowTitle(notification->title() + " -- " + notification->createdTime());
+    notificationWidget->setWindowIcon(notification->icon());
+
+    QVBoxLayout *messgeLayout = new QVBoxLayout(notificationWidget);
+    notificationWidget->setLayout(messgeLayout);
+    messgeLayout->setContentsMargins(4, 0, 4, 0);
+    messgeLayout->setAlignment(Qt::AlignTop);
+    messgeLayout->setSpacing(0);
+
+    QLabel *contentLabel = new QLabel(notificationWidget);
+    messgeLayout->addWidget(contentLabel);
+    contentLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    contentLabel->setContentsMargins(0, 0, 0, 0);
+    // contentLabel->setTextFormat(Qt::RichText);
+    contentLabel->setTextFormat(Qt::AutoText);
+    contentLabel->setWordWrap(true);
+
+    // contentLabel->setStyleSheet("color: rgb(152, 152, 157)");
+    QFont timeFont = contentLabel->font();
+    timeFont.setPixelSize(17);
+    // timeFont.setWeight(QFont::Light);
+    timeFont.setWeight(QFont::Normal);
+    contentLabel->setFont(timeFont);
+
+
+
+    // Note: use QString::toHtmlEscaped() if you don't want set plain text
+    contentLabel->setText(notification->content());
+
+    widget->setWidget(notificationWidget);
+    showNotification(widget);
+
+    /* this won't be overridden since the notificationId should be unique,
+        and every Notification cannot be notified twice */
+    m_msgId2Widget[notification->notificationId()] = widget;
+    m_widget2MsgId[widget] = notification->notificationId();
 }
 
 void MainWindow::onNotificationClosed()
@@ -427,9 +496,9 @@ void MainWindow::onNotificationClosed()
     NotificationWidget *widget = static_cast<NotificationWidget *>(sender());
     // this notification widget is created by MainWindow::newNotification(std::shared_ptr<NotificationWidget> notification)
     if (m_widget2MsgId.contains(widget)) {
-        /* this will cause it receiving a messageClosed signal again,
+        /* this will cause it receiving a notificationClosed signal again,
             but it doesn't matter */
-        emit messageClosed(m_widget2MsgId[widget]);
+        emit notificationClosed(m_widget2MsgId[widget]);
         QString notificationId = m_widget2MsgId[widget];
         m_msgId2Widget.remove(notificationId);
         m_widget2MsgId.remove(widget);
@@ -447,6 +516,8 @@ void MainWindow::onNotificationClosed(const QString notificationId)
         m_notificationsLayout->removeWidget(widget);
         widget->deleteLater();
     }
+
+    m_notificationMap.remove(notificationId);
 }
 
 void MainWindow::onModeChanged(bool quiet)

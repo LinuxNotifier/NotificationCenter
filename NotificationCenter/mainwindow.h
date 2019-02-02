@@ -38,16 +38,18 @@ class MainWindow : public QWidget
     friend class NotificationCenter;
 
     signals:
-        void messageClosed(const QString notificationId);
+        void notificationClosed(const QString notificationId);
 
         void extensionEnabled(const QString pluginId);
         void extensionDisabled(const QString pluginId);
         void extensionRemoved(const QString pluginId);
         /**
          * this signal is emitted when MainWindow is reshown.
-         * plugins should connect to this signal to update contents.
+         * extensions should connect to this signal to update contents.
          */
         void refreshContents();
+        void reposition(bool indexChaned);
+        void notifierDestroyed(const int index);
 
     public slots:
         void show();
@@ -108,6 +110,7 @@ class MainWindow : public QWidget
 
         MsgId2Widget m_msgId2Widget;
         Widget2MsgId m_widget2MsgId;
+        QHash<QString, std::shared_ptr<Notification> > m_notificationMap;
 };
 
 #endif // MAINWINDOW_H

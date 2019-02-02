@@ -9,11 +9,11 @@ class Notification {
     public:
         enum class Priority {
             /**
-             * Low: for messages that can be directedly ignored, and likely to be displayed
+             * Low: for notifications that can be directedly ignored, and likely to be displayed
              * after normal notifications even if it is more new
-             * Normal: the default priority of messages
+             * Normal: the default priority of notification
              * High: more likely to be displayed on the top
-             * Critical: most-hight priority, always shown on the top of other messages, shown
+             * Critical: most-hight priority, always shown on the top of other notifications, shown
              * even in Do-Not-Disturbe mode, this should be used in critical situations like
              * low-power warning
              */
