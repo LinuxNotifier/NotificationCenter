@@ -25,10 +25,8 @@ Notifier::Notifier(QWidget *parent) :
     m_index(count++)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint | Qt::WindowStaysOnTopHint | windowFlags());
-    // TODO: Use QWidget::nativeEvent() to implement click-through effect.
     setObjectName("notifier");
 
-    // FIXME: define NDEBUG
     // make sure Notifier::setCentral/MasterWidget() is called before any instanization
     assert(centralWidget);  
     assert(masterWidget);

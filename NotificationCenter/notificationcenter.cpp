@@ -75,12 +75,12 @@ bool NotificationCenter::notify(const Notification& notification)
 
 bool NotificationCenter::notify(std::shared_ptr<Notification> notification)
 {
-    emit instance().newNotification(notification);
     // TODO: set notificationId here, return notificationId
     if (!notification->isNew())
         return true;
     notification->setNotificationId(QUuid::createUuid().toString());
     notification->setCreatedTime(QDateTime::currentDateTime().toString());
+    emit instance().newNotification(notification);
     NotificationManager *msgMgr = instance().d_ptr->m_notificationManager;
     QString applicationId = notification->applicationId();
     auto map = instance().d_ptr->m_notificationServiceMap;
