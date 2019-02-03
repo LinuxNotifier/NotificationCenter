@@ -182,10 +182,6 @@ void MainWindow::show()
 {
     emit refreshContents();
     // TODO: set focus
-    // FIXME: background moving with MainWindow:
-    // QWidget : QLabel (background image) : MainWindow
-    // when moving QWidget, we also move QLabel in QWidget
-    // FIXME: the border gets very bright!!
     QPixmap screen = QApplication::primaryScreen()->grabWindow(0);
     m_backgroundPixmap = blur_render(screen, 60).copy(m_geometry);
     m_backgroundScene->setPixmap(m_backgroundPixmap);

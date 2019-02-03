@@ -20,6 +20,7 @@ class QString;
 class QLabel;
 class QMoveEvent;
 class SceneWidget;
+class BackGroundWidget;
 
 typedef QHash<QString, NotificationWidget*> MsgId2Widget;
 typedef QHash<NotificationWidget*, QString> Widget2MsgId;
@@ -105,8 +106,7 @@ class MainWindow : public QWidget
         QVBoxLayout *m_notificationsLayout = nullptr;
 
         QPixmap m_backgroundPixmap;
-        QLabel *m_backgroundScene = nullptr;
-        // SceneWidget *m_backgroundScene = nullptr;
+        BackGroundWidget *m_backgroundScene = nullptr;
 
         MsgId2Widget m_msgId2Widget;
         Widget2MsgId m_widget2MsgId;

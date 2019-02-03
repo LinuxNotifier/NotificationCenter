@@ -78,14 +78,10 @@ void Python::loadPythonPlugins()
                        "from Py import NotificationCenter as NC\n"
                        "plugins = []\n"
                        "for package in os.listdir(plugins_path):\n"
-                       "    plugin_file = os.path.join(plugins_path, package, 'plugin.py')\n"
-                       "    if os.path.isfile(plugin_file):\n"
+                       "    plugin = os.path.join(plugins_path, package)\n"
+                       "    if os.path.isdir(plugin):\n"
                        "        try:\n"
-                       // TODO: use factory design pattern to create plugin instance
-                       // e.g.
-                       // file: plugin/__init__.py
-                       // from .plugin import MyPlugin as Plugin
-                       "            module = importlib.import_module(package + '.plugin')\n"
+                       "            module = importlib.import_module(package)\n"
                        "            plugin = module.Plugin()\n"
                        "            plugins.append(plugin)\n"
                        "            NC.instance().registerExtension(plugin)\n"

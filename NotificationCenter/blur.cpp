@@ -1,6 +1,7 @@
 #include <QImage>
 #include <QRect>
 
+// FIXME: the blur algorithm brightened the margin!!
 QImage blurred(const QImage& image, const QRect& rect, int radius, bool alphaOnly = false)
 {
     int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
