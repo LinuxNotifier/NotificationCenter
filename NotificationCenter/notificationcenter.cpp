@@ -3,6 +3,7 @@
 #include "notificationwidget.h"
 #include "extensioninterface.h"
 #include "notificationmanager.h"
+#include "notificationservice.h"
 #include "extensionmanager.h"
 #include "notification.h"
 #include "mainwindow.h"
@@ -34,6 +35,7 @@ NotificationCenter::NotificationCenter(QObject *parent) :
     d_ptr(new NotificationCenterPrivate(this))
 {
     // instance().d_ptr->m_ncVersion = __NOTIFICATIONCENTER_VERSION__;
+    d_ptr->m_notificationService = new NotificationService(this);
 }
 
 NotificationCenter::~NotificationCenter()
@@ -49,14 +51,6 @@ QString NotificationCenter::version()
 void NotificationCenter::setView(MainWindow *view)
 {
     d_ptr->m_view = view;
-    connect(d_ptr->m_view, SIGNAL(notificationClosed(const QString)), this, SIGNAL(notificationClosed(const QString)));
-}
-
-void NotificationCenter::setNotificationModel(NotificationManager *notificationManager)
-{
-    d_ptr->m_notificationManager = notificationManager;
-    connect(d_ptr->m_notificationManager, SIGNAL(newNotification(std::shared_ptr<Notification>)), this, SIGNAL(newNotification(std::shared_ptr<Notification>)));
-    connect(d_ptr->m_notificationManager, SIGNAL(notificationExpired(const QString)), this, SIGNAL(notificationExpired(const QString)));
 }
 
 void NotificationCenter::setPluginModel(ExtensionManager *extensionManager)
@@ -64,56 +58,6 @@ void NotificationCenter::setPluginModel(ExtensionManager *extensionManager)
     d_ptr->m_extensionManager = extensionManager;
     connect(d_ptr->m_extensionManager, SIGNAL(newExtension(std::shared_ptr<QPluginLoader>)), this, SIGNAL(newExtension(std::shared_ptr<QPluginLoader>)));
     connect(d_ptr->m_extensionManager, SIGNAL(extensionDeleted(const QString)), this, SIGNAL(extensionDeleted(const QString)));
-}
-
-bool NotificationCenter::notify(const Notification& notification)
-{
-    // TODO: don't need to recreate a new one
-    std::shared_ptr<Notification> msg(new Notification(notification));
-    return notify(msg);
-}
-
-bool NotificationCenter::notify(std::shared_ptr<Notification> notification)
-{
-    // TODO: set notificationId here, return notificationId
-    if (!notification->isNew())
-        return true;
-    notification->setNotificationId(QUuid::createUuid().toString());
-    notification->setCreatedTime(QDateTime::currentDateTime().toString());
-    emit instance().newNotification(notification);
-    NotificationManager *msgMgr = instance().d_ptr->m_notificationManager;
-    QString applicationId = notification->applicationId();
-    auto map = instance().d_ptr->m_notificationServiceMap;
-    // FIXME: NotificationListner
-    // if (map.contains(applicationId)) {
-    //     map[applicationId]->onNewNotification(notification);
-    // }
-    if (msgMgr) {
-        // we need the result of inserting a notification, so didn't implement it with signals
-        bool inserted = instance().d_ptr->m_notificationManager->insertNotification(notification);
-        if (inserted)
-            return true;
-    }
-    return true;    // return true if no notification manager
-}
-
-bool NotificationCenter::display(NotificationWidget *widget)
-{
-    // emit instance().displayNotification(widget);
-    emit instance().d_ptr->m_view->displayNotification(widget);
-    return true;
-}
-
-bool NotificationCenter::registerNotificationService(const QString& applicationId, NotificationHandler *handler)
-{
-    if (applicationId.isEmpty() || instance().d_ptr->m_notificationServiceMap.contains(applicationId))
-    {
-        qWarning() << "invalid applicationId or applicationId already exists";
-        return false;
-    }
-    instance().d_ptr->m_notificationServiceMap[applicationId] = handler;
-    return true;
-
 }
 
 bool NotificationCenter::registerExtension(ExtensionInterface *plugin)
@@ -132,10 +76,6 @@ bool NotificationCenter::registerExtension(ExtensionInterface *plugin)
     instance().d_ptr->m_extensionMap[applicationId] = plugin;
     emit instance().newExtension(std::shared_ptr<ExtensionInterface>(plugin));
     return true;
-}
-int NotificationCenter::createNotficationNotificationChannel(const QString& id, const QString& name)
-{
-    return instance().d_ptr->m_notificationManager->createNotificationChannel(id, name);
 }
 
 bool NotificationCenter::quietMode()

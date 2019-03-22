@@ -2,22 +2,28 @@
 #define NOTIFICATIONLISTENER_H
 
 #include "notification.h"
+#include "notificationevent.h"
+#include <QObject>
+#include <memory>
 
 class NotificationChannel;
 
-class NotificationListener
+class NotificationListener : public QObject
 {
+    Q_OBJECT
+    signals:
+        void notificationEvent(NotificationEvent *event);
+
     public:
-        NotificationListener() = default;
-        virtual ~NotificationListener() {};
+        NotificationListener(QObject *parent = nullptr);
+        virtual ~NotificationListener();
 
-        void addNotificationChannel(const QString& channelId, const int channelToken);
-        void removeNotificationChannel(const QString& channelId);
-
-        virtual void onNewNotification(Notification notification) {};
+        void setApplicationId(const QString& applicationId) {
+            m_applicationId = applicationId;
+        };
 
     private:
-
+        QString m_applicationId;
 };
 
 #endif // NOTIFICATIONLISTENER_H

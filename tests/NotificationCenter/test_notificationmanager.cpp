@@ -1,5 +1,6 @@
 #include "notificationmanager.h"
 #include "notificationcenter.h"
+#include "notificationservice.h"
 #include "debug.h"
 #include <QApplication>
 #include <QDateTime>
@@ -19,7 +20,7 @@ TEST_CASE("test NotificationManager", "[notification], [database]") {
     NotificationCenter &nc = NotificationCenter::instance();
 
     NotificationManager msgManager(&nc);
-    nc.setNotificationModel(&msgManager);
+    // nc.setNotificationModel(&msgManager);
     Database &ncDb = Database::instance();
     QSqlQuery query(ncDb.internalDatabase());
     query.exec("DELETE FROM notifications");
@@ -53,9 +54,11 @@ TEST_CASE("test NotificationManager", "[notification], [database]") {
     msg->setTitle("title111")
         .setNotificationId("aaa")
         .setApplicationId("bbb")
-        .setContent("content111");
-    NotificationCenter::notify(msg);
+        .setContent("content111")
+        .setCreatedTime(QDateTime::currentDateTime().toString());
+    // NotificationService::postNotification(msg);
     qDebug() << "notificationId:" << msg->notificationId();
+    REQUIRE(msgManager.insertNotification(msg));
     REQUIRE(!msgManager.insertNotification(msg));    // this notification already exists
 
     query.exec("SELECT * FROM notifications");

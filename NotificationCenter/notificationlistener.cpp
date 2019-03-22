@@ -1,13 +1,14 @@
 #include "notificationlistener.h"
-#include "notificationchannel.h"
 #include "notification.h"
 
-void NotificationListener::addNotificationChannel(const QString& channelId, const int channelToken)
+NotificationListener::NotificationListener(QObject *parent) :
+    QObject(parent)
 {
     
 }
 
-void NotificationListener::removeNotificationChannel(const QString& channelId)
+NotificationListener::~NotificationListener()
 {
-    
+    // TODO: auto-unregister and global listener
+    // NotificationCenter::unregisterNotificationService(this);
 }

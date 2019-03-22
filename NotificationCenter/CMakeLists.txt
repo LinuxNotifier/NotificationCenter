@@ -14,6 +14,9 @@ set(HEADERS mainwindow.h
     extensionmanager.h
     extensioninterface.h
     notificationlistener.h
+    notificationservice.h
+    event.h
+    notificationevent.h
     )
 # set(${PROJECT_NAME}_SOURCES main.cpp
 set(SOURCES mainwindow.cpp
@@ -25,6 +28,9 @@ set(SOURCES mainwindow.cpp
     extensionmanager.cpp
     extensioninterface.cpp
     notificationlistener.cpp
+    notificationservice.cpp
+    event.cpp
+    notificationevent.cpp
     )
 set(FORMS mainwindow.ui
     )

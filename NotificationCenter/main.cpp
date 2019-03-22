@@ -17,6 +17,8 @@
 #include <QThread>
 #include <QTimer>
 
+NC_APP("org.linuxnotifier.Notifier")
+
 void initSettings();
 bool setLanguage(const QString& language);
 
@@ -44,21 +46,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     nc.setView(&w);
 
-    NotificationManager notificationManager(&nc);
-    nc.setNotificationModel(&notificationManager);
-
     ExtensionManager extensionManager(&nc);
     nc.setPluginModel(&extensionManager);
 
     w.show();
-
-    std::shared_ptr<Notification> notification(new Notification);
-    notification->setTitle("you cant see me")
-        .setIcon(QIcon::fromTheme("edit-undo"))
-        .setContent("this should not be shown");
-    QTimer::singleShot(5000, [notification] () {
-        NotificationCenter::notify(notification);
-    });
 
     // for some weird, still unknown reason, app.exec() must be executed in python
     // if we want to make it work with threading support in Python.

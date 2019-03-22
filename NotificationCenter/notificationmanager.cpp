@@ -1,8 +1,9 @@
 #include "notificationmanager.h"
 #include "database.h"
 #include "notificationcenter.h"
-#include "notificationchannel.h"
 #include "notification.h"
+#include "notificationlistener.h"
+#include "notificationservice.h"
 #include "global.h"
 #include "debug.h"
 #include <QSqlDatabase>
@@ -22,7 +23,10 @@ NotificationManager::NotificationManager(NotificationCenter *parent) :
     QObject(parent),
     m_ncDb(&Database::instance())
 {
-    connect(parent, SIGNAL(notificationClosed(const QString)), this, SLOT(notificationClosed(const QString)));
+    m_notificationListener = new NotificationListener(this);
+    NotificationService::installGlobalNotificationListener(m_notificationListener);
+    connect(m_notificationListener, SIGNAL(notificationEvent(NotificationEvent *)), this, SLOT(onNotificationEvent(NotificationEvent *)));
+
     initNotificationTable();
     // FIXME: duplicate notification if new notification is inserted before loading
     // notifications when program starts up
@@ -72,7 +76,9 @@ void NotificationManager::loadNotifications()
     for (const std::shared_ptr<Notification> notification : notificationList) {
         Notification::Duration duration = notification->duration();
         if (duration != Notification::Duration::UntilShutdown) {
-            emit newNotification(notification);
+            NotificationEvent *e = new NotificationEvent(Event::Type::NotificationAdded, Event::Reason::Restored);
+            e->setNotification(notification);
+            NotificationService::postEvent(e);
             m_notificationMap[notification->notificationId()] = notification;
         }
         else {
@@ -82,13 +88,21 @@ void NotificationManager::loadNotifications()
 }
 
 
-void NotificationManager::notificationClosed(const QString notificationId)
+void NotificationManager::onNotificationEvent(NotificationEvent *event)
 {
-#if DEBUG
-    qDebug() << "notification closed:" << notificationId;
-#endif
-    m_notificationMap.remove(notificationId);
-    deleteNotification(notificationId);
+    QString notificationId = event->notificationId();
+    switch (event->type()) {
+        case Event::Type::NotificationAdded: {
+            if (event->reason() == Event::Reason::Added)
+                insertNotification(event->notification());
+            break;
+        }
+        case Event::Type::NotificationRemoved: {
+            m_notificationMap.remove(notificationId);
+            deleteNotification(notificationId);
+            break;
+        }
+    }
 }
 
 bool NotificationManager::insertNotification(std::shared_ptr<Notification> notification)
@@ -107,7 +121,6 @@ bool NotificationManager::insertNotification(std::shared_ptr<Notification> notif
             );
     if (inserted) {
         m_notificationMap[notification->notificationId()] = notification;
-        // emit newNotification(notification);
     }
     return inserted;
 }

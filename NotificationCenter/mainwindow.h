@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "notificationevent.h"
+#include "notificationservice.h"
 #include <QWidget>
 #include <QRect>
 #include <memory>
@@ -8,7 +10,9 @@
 #include <QPixmap>
 
 class ExtensionInterface;
+class Notifier;
 class NotificationWidget;
+class NotificationListener;
 class QPluginLoader;
 class QFocusEvent;
 class QEvent;
@@ -66,6 +70,7 @@ class MainWindow : public QWidget
         // is closed, but the user clicked the close button. It give
         // us time to deal with the close animation.
         void onNotificationClosed();
+        void onNotificationEvent(NotificationEvent *event);
         void onModeChanged(bool quiet);
 
         void onNewPlugin(std::shared_ptr<QPluginLoader> pluginLoader);
@@ -89,7 +94,9 @@ class MainWindow : public QWidget
     private:
         Q_DISABLE_COPY(MainWindow)
 
+        NC_APP("org.linuxnotifier.Notifier")
         void showNotification(NotificationWidget *widget);
+        void showNotifier(Notifier *notifier);
 
         void setupGeometry();
         void setupSystemTrayIcon();
@@ -111,6 +118,9 @@ class MainWindow : public QWidget
         MsgId2Widget m_msgId2Widget;
         Widget2MsgId m_widget2MsgId;
         QHash<QString, std::shared_ptr<Notification> > m_notificationMap;
+        QHash<QString, Notifier *> m_notifierMap;
+
+        NotificationListener *m_notificationListener = nullptr;
 };
 
 #endif // MAINWINDOW_H

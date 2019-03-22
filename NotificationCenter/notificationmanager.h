@@ -2,12 +2,14 @@
 #define NOTIFICATIONMANAGER_H
 
 #include "notification.h"
+#include "notificationevent.h"
 #include <QObject>
 #include <memory>
 #include "global.h"
 
 class NotificationCenter;
 class NotificationCenterPrivate;
+class NotificationListener;
 class NotificationChannel;
 class Notification;
 class QString;
@@ -20,12 +22,8 @@ class NotificationManager : public QObject
 {
     Q_OBJECT
 
-    signals:
-        void newNotification(std::shared_ptr<Notification> notification);
-        void notificationExpired(const QString notificationId);
-
     private slots:
-        void notificationClosed(const QString notificationId);
+        void onNotificationEvent(NotificationEvent *event);
 
     friend class NotificationCenter;
 
@@ -64,6 +62,7 @@ class NotificationManager : public QObject
 
         Database *m_ncDb = nullptr;
         NotificationMap m_notificationMap;
+        NotificationListener *m_notificationListener;
         bool m_valid = false;
 };
 

@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "notificationwidget.h"
+#include "notificationlistener.h"
 #include "datetimewidget.h"
 #include "pluginwidget.h"
 #include "notification.h"
+#include "notificationevent.h"
 #include "notificationcenter.h"
 #include "extensioninterface.h"
 #include "notifier.h"
@@ -74,10 +76,6 @@ MainWindow::MainWindow(QWidget *parent) :
     initUi();
 
     NotificationCenter &nc = NotificationCenter::instance();
-    // nc.registerNotificationService("org.linuxnotifier.Notifier", this);
-    connect(&nc, SIGNAL(newNotification(std::shared_ptr<Notification>)), this, SLOT(onNewNotification(std::shared_ptr<Notification>)));
-    connect(&nc, SIGNAL(notificationExpired(const QString)), this, SLOT(onNotificationExpired(const QString)));
-    connect(&nc, SIGNAL(notificationClosed(const QString)), this, SLOT(onNotificationClosed(const QString)));
     connect(&nc, SIGNAL(modeChanged(bool)), this, SLOT(onModeChanged(bool)));
 
     connect(&nc, SIGNAL(newExtension(std::shared_ptr<QPluginLoader>)), this, SLOT(onNewPlugin(std::shared_ptr<QPluginLoader>)));
@@ -85,16 +83,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&nc, SIGNAL(extensionDeleted(const QString)), this, SLOT(onPluginDeleted(const QString)));
     connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(onFocusChanged(QWidget *, QWidget *)));
 
+    m_notificationListener = new NotificationListener(this);
+    NotificationService::installGlobalNotificationListener(m_notificationListener);
+    connect(m_notificationListener, SIGNAL(notificationEvent(NotificationEvent *)), this, SLOT(onNotificationEvent(NotificationEvent *)));
 
     DateTimeWidget *m_dateTimeWidget = new DateTimeWidget;
     m_dateTimeWidget->setFixedWidth(NOTIFICATIONCENTER_WIDTH - 2 * NOTIFICATIONCENTER_MARGIN);
     m_dateTimeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_pluginsLayout->addWidget(m_dateTimeWidget, Qt::AlignTop);
-
-    // m_backgroundScene->show();
-
-    // FIX: NotificationListner
-    // NotificationCenter::registerNotificationService("org.linuxnotifier.Notification", this);
 }
 
 MainWindow::~MainWindow()
@@ -431,6 +427,13 @@ void MainWindow::showNotification(NotificationWidget *widget)
     connect(widget, SIGNAL(closed()), this, SLOT(onNotificationClosed()));
 }
 
+void MainWindow::showNotifier(Notifier *notifier)
+{
+    notifier->show();
+    QString notificationId = notifier->notification()->notificationId();
+    m_notifierMap[notificationId] = notifier;
+}
+
 void MainWindow::onNotificationExpired(const QString notificationId)
 {
     qDebug() << "received a notification expired" << notificationId;
@@ -482,6 +485,14 @@ void MainWindow::onNotificationExpired(const QString notificationId)
         and every Notification cannot be notified twice */
     m_msgId2Widget[notification->notificationId()] = widget;
     m_widget2MsgId[widget] = notification->notificationId();
+
+    Notifier *notifier = m_notifierMap[notificationId];
+    if (notifier) {
+        // TODO: animation
+        notifier->hide();
+        // FIXME: remove space
+        // emit notifier->notifierDestroyed(notifier->index());
+    }
 }
 
 void MainWindow::onNotificationClosed()
@@ -494,7 +505,9 @@ void MainWindow::onNotificationClosed()
     if (m_widget2MsgId.contains(widget)) {
         /* this will cause it receiving a notificationClosed signal again,
             but it doesn't matter */
-        emit notificationClosed(m_widget2MsgId[widget]);
+        NotificationEvent *e = new NotificationEvent(Event::Type::NotificationRemoved);
+        e->setNotificationId(m_widget2MsgId[widget]);
+        NotificationService::postEvent(e);
         QString notificationId = m_widget2MsgId[widget];
         m_msgId2Widget.remove(notificationId);
         m_widget2MsgId.remove(widget);
@@ -514,6 +527,36 @@ void MainWindow::onNotificationClosed(const QString notificationId)
     }
 
     m_notificationMap.remove(notificationId);
+
+    Notifier *notifier = m_notifierMap[notificationId];
+    if (notifier) {
+        notifier->hide();
+        notifier->deleteLater();
+    }
+}
+
+void MainWindow::onNotificationEvent(NotificationEvent *event)
+{
+    qDebug() << "get notificationEvent:" << event->notificationId();
+    switch (event->type()) {
+        case NotificationEvent::Type::NotificationAdded: {
+            auto notification = event->notification();
+            m_notificationMap[notification->notificationId()] = notification;
+
+            Notifier *notifier = new Notifier;
+            notifier->setNotification(notification);
+            showNotifier(notifier);
+            break;
+        }
+        case NotificationEvent::Type::NotificationExpired: {
+            onNotificationExpired(event->notificationId());
+            break;
+        }
+        case NotificationEvent::Type::NotificationRemoved: {
+            onNotificationClosed(event->notificationId());
+            break;
+        }
+    }
 }
 
 void MainWindow::onModeChanged(bool quiet)

@@ -1,4 +1,5 @@
 #include "testplugin.h"
+#include "notifyme.h"
 #include "notificationcenter.h"
 #include "global.h"
 #include "debug.h"
@@ -30,12 +31,7 @@ QJsonObject TestPlugin::metadata() const
 
 QWidget* TestPlugin::centralWidget()
 {
-    QWidget *w = new QWidget;
-    QVBoxLayout *layout = new QVBoxLayout(w);
-    QPushButton *pb = new QPushButton(w);
-    layout->addWidget(pb);
-    w->setWindowTitle("test plugin");
-    pb->setText("test button");
+    NotifyMe *w = new NotifyMe;
     return w;
 }
 

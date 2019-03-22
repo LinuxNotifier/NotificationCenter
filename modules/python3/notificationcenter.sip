@@ -64,7 +64,7 @@ class NotificationCenter : public QObject
             /*     Py_END_ALLOW_THREADS */
             /* %End */
 
-        static bool notify(const Notification& notification /Transfer/);
+        // static bool notify(const Notification& notification /Transfer/);
         /* static bool notify(Notification *notification /Transfer/); */
         /*     %MethodCode */
         /*         Py_BEGIN_ALLOW_THREADS */
@@ -74,7 +74,7 @@ class NotificationCenter : public QObject
         /*     %End */
 
         // NOTE: the following method always returns true
-        static bool display(NotificationWidget *widget);
+        // static bool display(NotificationWidget *widget);
 
         // void registerExtension(ExtensionInterface &plugin /Transfer/);
         void registerExtension(ExtensionInterface *plugin /Transfer/);

@@ -6,6 +6,16 @@
 #define private public
 #endif
 
+#ifndef NC_APP
+#define NC_APP(applicationId) \
+void notify(std::shared_ptr<Notification> notification) { \
+    notification->setApplicationId(applicationId); \
+    NotificationService::postNotification(notification); \
+};
+// #else
+// ERROR: macro NC_APP already defined
+#endif
+
 #define __NOTIFICATIONCENTER_VERSION__ "ver 0.2.0"
 #define __INTERFACE_VERSION__ "ver 0.2.0"
 // #define __NOTIFICATIONCENTER_VERSION__ "ver 0.5.0"

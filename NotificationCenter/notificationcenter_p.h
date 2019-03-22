@@ -8,6 +8,7 @@ class NotificationCenter;
 class Notification;
 class NotificationManager;
 class NotificationManager;
+class NotificationService;
 class ExtensionManager;
 class ExtensionInterface;
 class NotificationHandler;
@@ -27,6 +28,7 @@ class NotificationCenterPrivate
         MainWindow *m_view = nullptr;
         // NotificationManager *m_notificationManager = nullptr;
         NotificationManager *m_notificationManager = nullptr;
+        NotificationService *m_notificationService = nullptr;
         ExtensionManager *m_extensionManager = nullptr;
         bool m_quietMode = false;
         const QString m_ncVersion;

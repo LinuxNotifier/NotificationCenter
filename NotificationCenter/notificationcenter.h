@@ -10,12 +10,13 @@ class Notification;
 class NotificationCenterPrivate;
 class NotificationWidget;
 class MainWindow;
+class Notifier;
 class NotificationManager;
 class ExtensionManager;
-class NotificationHandler;
+class NotificationListener;
 class QPluginLoader;
 
-// this is for Python plugins to detech if in debug mode
+// this is for Python plugins to detect if in debug mode
 extern const bool Debug;
 
 class NotificationCenter : public QObject
@@ -26,12 +27,6 @@ class NotificationCenter : public QObject
         // NOTE: all notifications through NotificationCenter may be leaked to other plugins,
         // you should customize notification widget to display privacy information if you
         // have to do so.
-
-        void newNotification(std::shared_ptr<Notification> notification);
-        void displayNotification(NotificationWidget *widget);
-        void notificationExpired(const QString notificationId);
-        void notificationClosed(const QString notificationId);
-        void notificationHandled(const QString action);
 
         void modeChanged(bool quiet);
 
@@ -52,30 +47,13 @@ class NotificationCenter : public QObject
         static QString version();
 
         void setView(MainWindow *view);
-        void setNotificationModel(NotificationManager *notificationManager);
         void setPluginModel(ExtensionManager *extensionManager);
 
-        // TODO: using signal's sender to idnetify the caller, and trust the applicationId
-        // return notification id
-        static bool notify(std::shared_ptr<Notification> notification);
-        // TODO: directly call MainWindow::show()
-        static bool notify(const Notification& notification);
-        static bool registerNotificationService(const QString& applicationId, NotificationHandler *handler);
-        // TODO
-        // renotify(notificaitonId)
-        // removeNotification(const QString notificationId);
-        // replaceNotification(notificaitonId, notification, CREATE_ON_NO, actionHandler)
-        // NOTE: the following method always returns true
-        static bool display(NotificationWidget *widget);
-
         static bool registerExtension(ExtensionInterface *plugin);
-        /**
-         * @return channelToken the token to post notifications to this channel
-         */
-        static int createNotficationNotificationChannel(const QString& id, const QString& name);
 
         // TODO
         // static QString themeName();  // for the extensions to adjust their theme accordingly
+        // static bool isActive();  // shown and on-the-top
         static bool quietMode();
         static void setQuietMode(bool quiet = true);
         static void toggleQuietMode();

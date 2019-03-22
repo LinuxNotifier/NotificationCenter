@@ -6,6 +6,10 @@
 #include <memory>
 #include <QHash>
 
+class NotificationEvent;
+class NotificationListener;
+class QVBoxLayout;
+class NotificationWidget;
 class QObject;
 class QEvent;
 class QShowEvent;
@@ -25,12 +29,8 @@ class Notifier : public QFrame
         void newNotifier();
         void reposition(bool indexChaned = false);
         void notifierDestroyed(const int index);
-        void notificationClosed(const QString notificationId);
-        // XXX: temporary, remove it when implemented NotificationService
-        void notificationExpired(const QString notificationId);
 
     public slots:
-        void onNotificationExpired(const QString notificationId);
         void onReposition(bool indexChaned = false);
 
         void onExpireClicked();
@@ -41,12 +41,16 @@ class Notifier : public QFrame
         void onNotifierDestroyed(const int index);
 
     public:
-        ~Notifier();
+        virtual ~Notifier();
 
         // NOTE: This method should be called before any instanization.
+        static void initialize();
         static void setCentralWidget(QWidget *widget);
         static void setMasterWidget(QWidget *widget);
-        void setNotification(std::shared_ptr<Notification> notification);
+        std::shared_ptr<Notification> notification() const;
+        virtual void setNotification(std::shared_ptr<Notification> notification);
+
+        int index() const;
 
     protected:
         void showEvent(QShowEvent *event) override;
@@ -61,6 +65,7 @@ class Notifier : public QFrame
 
         int m_index;
         std::shared_ptr<Notification> m_notification;
+        QVBoxLayout *m_layout;
 };
 
 #endif // NOTIFIER_H

@@ -38,7 +38,9 @@ Database::~Database()
 
 Database& Database::instance()
 {
-    static Database ncDb(&NotificationCenter::instance());
+    // NOTE: avoid initialization dependencies loop
+    // static Database ncDb(&NotificationCenter::instance());
+    static Database ncDb(nullptr);
     return ncDb;
 }
 
